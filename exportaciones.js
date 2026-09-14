@@ -31,7 +31,7 @@ async function fetchAllRows(table, select, configure = query => query) {
   const rows = [];
   for (let start = 0; ; start += pageSize) {
     let query = supabaseClient.from(table).select(select).range(start, start + pageSize - 1);
-    query = configure(query);
+    query = configure(query).order('id', { ascending: true });
     const { data, error } = await query;
     if (error) throw error;
     rows.push(...(data || []));
@@ -132,9 +132,10 @@ async function exportDetaineesExcel() {
         'Departamento': p.departamento, 'Provincia': p.provincia, 'Distrito': p.distrito, 'Funcionario/servidor público': r.es_funcionario_publico, 'Entidad pública': r.entidad_publica, 'Detalle entidad pública': r.detalle_entidad_publica, 'Motivo de la detención': r.motivo_detencion,
         'Delito 1 - Tentativa': c1.es_tentativa, 'Delito 1 - Fuero/Ley especial': c1.fuero_ley_especial, 'Delito 1 - General': c1.delito_general, 'Delito 1 - Específico': c1.delito_especifico, 'Delito 1 - Subtipo': c1.subtipo,
         'Delito 2 - Tentativa': c2.es_tentativa, 'Delito 2 - Fuero/Ley especial': c2.fuero_ley_especial, 'Delito 2 - General': c2.delito_general, 'Delito 2 - Específico': c2.delito_especifico, 'Delito 2 - Subtipo': c2.subtipo,
-        'Delitos adicionales': crimes.slice(2).map(c => [c.delito_general,c.delito_especifico,c.subtipo].filter(Boolean).join(' / ')).join(' | '),
+        'Delitos adicionales': crimes.slice(2).map(c => [`Tentativa: ${c.es_tentativa ? 'Sí' : 'No'}`,c.fuero_ley_especial,c.delito_general,c.delito_especifico,c.subtipo].filter(Boolean).join(' / ')).join(' | '),
         'Dirección DIRNIC/DIRNOS': r.direccion_policial, 'Dirección especializada/Región/Frente': r.direccion_especializada_region, 'División policial': r.division_policial, 'Departamento policial': r.departamento_policial, 'Unidad/Área/Equipo': r.unidad_area_equipo,
-        'Integra BBCC/OOCC': r.integra_organizacion, 'Nombre BBCC/OOCC': r.nombre_organizacion, 'Armas': weapon.categoria || 'Ninguna', 'Tipo de arma': weapon.tipo, 'Cantidad de armas': weapon.cantidad, 'Observación de armas': weapon.observacion,
+        'Integra BBCC/OOCC': r.integra_organizacion, 'Participación BBCC/OOCC': r.rol_organizacion, 'Nombre BBCC/OOCC': r.nombre_organizacion, 'Armas': weapon.categoria || 'Ninguna', 'Tipo de arma': weapon.tipo, 'Cantidad de armas': weapon.cantidad, 'Observación de armas': weapon.observacion,
+        'Hallazgos adicionales': (r.detencion_armas || []).slice(1).map(w => [w.categoria,w.tipo,`Cantidad: ${w.cantidad ?? ''}`,w.observacion].filter(Boolean).join(' / ')).join(' | '),
         'Situación actual del detenido': r.situacion_actual, 'Documento de libertad': r.documento_libertad, 'Documento de puesta a disposición': r.documento_disposicion, 'Nombre fiscal': r.fiscal_nombre, 'Fiscalía': r.fiscalia,
         'Puesta a disposición Dirección': r.disposicion_direccion, 'Puesta a disposición Región/Frente': r.disposicion_region, 'Puesta a disposición División': r.disposicion_division, 'Puesta a disposición Departamento': r.disposicion_departamento, 'Puesta a disposición Unidad/Área/Equipo': r.disposicion_unidad,
         'Nota informativa SICPIP': r.nota_sicpip, 'Departamento registrador': r.departamento_registro, 'Área registradora': r.unidad, 'Fecha de registro': excelDateTime(r.creado_en), 'Última actualización': excelDateTime(r.actualizado_en)
