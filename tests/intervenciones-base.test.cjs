@@ -80,4 +80,40 @@ const uid = n => `00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
   await db.exec(migration);
   assert.equal((await db.query('select count(*)::int as n from public.intervenciones')).rows[0].n,2);
   console.log('OK administrador, bloqueo de inactivos, conservación de borradores y reaplicación');
+
+  const rpcMigration = read('supabase/migrations/202609150003_guardar_operativo_borrador.sql');
+  await db.exec(rpcMigration);
+  const input = { tipo:'operativo', fecha:'2026-09-15', departamento:'LIMA' };
+  async function save(request, id, version, i=input, o={personal_cargo:3}) {
+    return (await db.query('select public.guardar_operativo_borrador($1,$2,$3,$4,$5) as result',
+      [uid(request),uid(id),version,JSON.stringify(i),JSON.stringify(o)])).rows[0].result;
+  }
+  await actor(1);
+  const created=await save(201,103,0);
+  assert.equal(created.id,uid(103)); assert.equal(created.version,2);
+  assert.deepEqual(await save(201,103,0),created);
+  assert.equal((await db.query('select count(*)::int as n from public.intervenciones where id=$1',[uid(103)])).rows[0].n,1);
+  await assert.rejects(save(201,103,0,input,{personal_cargo:4}));
+  await assert.rejects(save(202,104,0,input,{personal_cargo:-1}));
+  assert.equal((await db.query('select 1 from public.intervenciones where id=$1',[uid(104)])).rows.length,0);
+  await assert.rejects(save(203,103,1));
+  const updated=await save(204,103,created.version,input,{personal_cargo:8});
+  assert.ok(updated.version>created.version);
+  await assert.rejects(save(205,103,updated.version,input,{personal_cargo:-1}));
+  assert.equal((await db.query('select version from public.intervenciones where id=$1',[uid(103)])).rows[0].version,updated.version);
+  assert.equal((await db.query('select personal_cargo from public.intervencion_operativos where intervencion_id=$1',[uid(103)])).rows[0].personal_cargo,8);
+  await assert.rejects(save(206,105,0,{...input,unidad:'AREA B'}));
+  await assert.rejects(save(207,105,0,{...input,fecha:null}));
+  await assert.rejects(save(208,105,0,input,{personal_cargo:1.5}));
+  await actor(2);
+  await assert.rejects(save(209,103,updated.version));
+  assert.equal((await db.query('select * from public.intervencion_solicitudes')).rows.length,0);
+  await actor(4); await assert.rejects(save(210,105,0));
+  await actor(null); await assert.rejects(save(211,105,0));
+  await actor(3);
+  const adminUpdate=await save(212,103,updated.version,input,{personal_cargo:9});
+  assert.ok(adminUpdate.version>updated.version);
+  await actor(1); await assert.rejects(save(213,103,updated.version));
+  await db.exec('reset role'); await db.exec(rpcMigration);
+  console.log('OK guardado atomico, reintentos, permisos y conflictos de version');
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>db.close());
