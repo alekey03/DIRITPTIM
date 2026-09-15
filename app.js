@@ -763,8 +763,9 @@ supabaseClient.auth.getSession().then(({ data }) => {
 const userModal = document.getElementById('userModal');
 const userForm = document.getElementById('userForm');
 let editingUserId = null;
+let editingUserProfile = null;
 
-function configureUserTerritory({ preserveArea = true } = {}) {
+function configureUserTerritory({ preserveArea = true, initialArea = null } = {}) {
   const role = document.getElementById('newUserRole').value;
   const scopeSelect = document.getElementById('newUserScope');
   const departmentSelect = document.getElementById('newUserDepartment');
@@ -772,18 +773,30 @@ function configureUserTerritory({ preserveArea = true } = {}) {
   const isAdministrator = role === 'administrador';
   scopeSelect.disabled = isAdministrator;
   scopeSelect.value = isAdministrator ? 'NACIONAL' : (scopeSelect.value === 'NACIONAL' ? 'DESCONCENTRADO' : scopeSelect.value);
-  departmentSelect.disabled = isAdministrator;
-  departmentSelect.required = !isAdministrator;
+  departmentSelect.disabled = true;
+  departmentSelect.required = false;
   areaInput.disabled = isAdministrator;
+  const selectedArea = preserveArea ? (initialArea ?? areaInput.value) : '';
+  const hint = document.getElementById('userDependencyHint');
   if (isAdministrator) {
     departmentSelect.value = 'NACIONAL';
-    areaInput.value = 'ADMINISTRACIÓN GENERAL DIRITPTIM';
-  } else if (scopeSelect.value === 'SEDE_CENTRAL') {
-    departmentSelect.disabled = true;
-    departmentSelect.value = 'LIMA';
-    if (!preserveArea) areaInput.value = 'SEDE CENTRAL DIRITPTIM';
+    areaInput.innerHTML = '<option value="ADMINISTRACIÓN GENERAL DIRITPTIM">ADMINISTRACIÓN GENERAL DIRITPTIM</option>';
+    hint.textContent = 'Acceso nacional del administrador general.';
   } else {
-    if (!preserveArea) areaInput.value = '';
+    const choices = DEPENDENCIAS_INSTITUCIONALES.filter(item => item.ambito === scopeSelect.value);
+    areaInput.innerHTML = '<option value="">Seleccionar dependencia</option>' + choices.map(item => `<option value="${escapeHtml(item.unidad)}">${escapeHtml(item.unidad)}</option>`).join('');
+    const selected = choices.find(item => item.unidad === selectedArea);
+    const legacy = preserveArea && !selected && editingUserProfile?.unidad === selectedArea && editingUserProfile?.ambito === scopeSelect.value && editingUserProfile?.rol === role;
+    if (legacy) {
+      areaInput.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(selectedArea)}">${escapeHtml(selectedArea)} (asignación anterior)</option>`);
+      areaInput.value = selectedArea;
+      departmentSelect.value = editingUserProfile.departamento || '';
+      hint.textContent = 'Asignación anterior conservada. Seleccione una dependencia del catálogo para cambiarla; los registros históricos conservarán su área original.';
+    } else {
+      areaInput.value = selected?.unidad || '';
+      departmentSelect.value = selected?.departamento || (scopeSelect.value === 'SEDE_CENTRAL' ? 'LIMA' : '');
+      hint.textContent = 'El departamento se asigna automáticamente según la dependencia.';
+    }
   }
 }
 
@@ -796,9 +809,11 @@ function initializeUserDepartments() {
 initializeUserDepartments();
 document.getElementById('newUserRole').addEventListener('change', () => configureUserTerritory({ preserveArea: false }));
 document.getElementById('newUserScope').addEventListener('change', () => configureUserTerritory({ preserveArea: false }));
+document.getElementById('newUserUnit').addEventListener('change', () => configureUserTerritory());
 
 function openUserForm(profile = null) {
   editingUserId = profile?.id || null;
+  editingUserProfile = profile;
   userForm.reset();
   document.getElementById('userModalTitle').textContent = profile ? 'Editar usuario' : 'Crear nuevo usuario';
   document.getElementById('saveUserButton').textContent = profile ? 'Guardar cambios' : 'Crear usuario';
@@ -820,7 +835,7 @@ function openUserForm(profile = null) {
     document.getElementById('newUserUnit').value = profile.unidad;
     document.getElementById('newUserActive').value = String(profile.activo);
   }
-  configureUserTerritory();
+  configureUserTerritory({ initialArea: profile?.unidad || '' });
   userModal.showModal();
 }
 
@@ -898,6 +913,7 @@ document.getElementById('userSearch').addEventListener('input', loadUsers);
 
 userForm.addEventListener('submit', async event => {
   event.preventDefault();
+  if (!userForm.reportValidity()) return;
   const message = document.getElementById('userFormMessage');
   const saveButton = document.getElementById('saveUserButton');
   saveButton.disabled = true;
@@ -934,24 +950,6 @@ userForm.addEventListener('submit', async event => {
     }
     message.className = 'modal-help error';
     message.textContent = serverMessage || 'Supabase rechazó la solicitud. Revise los registros de la función.';
-    return;
-  }
-  let profileId = editingUserId;
-  if (!profileId) {
-    const { data: createdProfile, error: profileLookupError } = await supabaseClient
-      .from('perfiles').select('id').eq('usuario', payload.usuario).single();
-    if (profileLookupError) {
-      message.className = 'modal-help error';
-      message.textContent = 'El usuario fue creado, pero no se pudo asignar su departamento.';
-      return;
-    }
-    profileId = createdProfile.id;
-  }
-  const { error: departmentError } = await supabaseClient
-    .from('perfiles').update({ departamento: payload.departamento, ambito: payload.ambito }).eq('id', profileId);
-  if (departmentError) {
-    message.className = 'modal-help error';
-    message.textContent = 'El usuario se guardó, pero Supabase rechazó la asignación del departamento.';
     return;
   }
   message.className = 'modal-help success';

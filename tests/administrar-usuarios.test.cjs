@@ -10,7 +10,7 @@ const source = fs.readFileSync(sourcePath,'utf8')
 const sandbox = { module:{exports:{}}, Response, console:{error(){}}, withSupabase:(_config,handler)=>handler };
 vm.runInNewContext(source,sandbox,{filename:sourcePath});
 const handler=sandbox.module.exports.fetch;
-const valid={accion:'crear',usuario:'prueba_ficticia',nombres:'Prueba',apellidos:'Ficticia',unidad:'DIVISION PRUEBA',rol:'operador',ambito:'SEDE_CENTRAL',departamento:'LIMA',activo:true,contrasena:'solo-prueba-local'};
+const valid={accion:'crear',usuario:'prueba_ficticia',nombres:'Prueba',apellidos:'Ficticia',unidad:'DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS',rol:'operador',ambito:'SEDE_CENTRAL',departamento:'LIMA',activo:true,contrasena:'solo-prueba-local'};
 
 async function invoke(overrides={},options={}) {
   const writes=[];
@@ -18,8 +18,8 @@ async function invoke(overrides={},options={}) {
   const admin={
     from(table){
       return {
-        select(){return this;}, eq(){return this;},
-        async single(){return {data:caller,error:null};},
+        select(columns){this.columns=columns;return this;}, eq(){return this;},
+        async single(){return {data:this.columns==='rol, activo'?caller:options.previous,error:null};},
         async insert(data){writes.push({op:'insert',table,data});return {error:options.profileError ? {message:'Fallo simulado'} : null};},
         update(data){writes.push({op:'update',table,data});return {eq:async()=>({error:null})};}
       };
@@ -71,4 +71,29 @@ test('si falla el perfil se revierte la cuenta ficticia recién creada',async()=
   assert.equal(result.status,400);
   assert.equal(result.writes.at(-1).op,'deleteUser');
   assert.equal(result.writes.at(-1).id,'synthetic-user');
+});
+
+test('acepta cada una de las 27 dependencias con su ámbito y departamento',async()=>{
+  const dependencies=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../dependencias.json'),'utf8'));
+  for(const dependency of dependencies){
+    const result=await invoke(dependency); assert.equal(result.status,200,dependency.unidad);
+    assert.equal(result.writes.find(x=>x.op==='insert').data.unidad,dependency.unidad);
+  }
+});
+test('rechaza nombres manuales, ámbito nacional de operador y cruces de departamento',async()=>{
+  for(const assignment of [
+    {unidad:'DEPENDENCIA INVENTADA'},
+    {ambito:'NACIONAL'},
+    {unidad:'DEPITPTIM PUNO',ambito:'DESCONCENTRADO',departamento:'LIMA'},
+    {unidad:'DEPITPTIM PUNO',ambito:'SEDE_CENTRAL',departamento:'LIMA'}
+  ]) { const result=await invoke(assignment); assert.equal(result.status,400);assert.equal(result.writes.length,0); }
+});
+test('permite desactivar una asignación anterior sin reasignarla',async()=>{
+  const previous={unidad:'SEDE CENTRAL DIRITPTIM',ambito:'SEDE_CENTRAL',departamento:'LIMA',rol:'operador'};
+  const result=await invoke({...previous,accion:'actualizar',id:'synthetic-user',activo:false,contrasena:''},{previous});
+  assert.equal(result.status,200);assert.equal(result.writes[0].data.activo,false);
+});
+test('no permite usar asignación antigua de otro perfil como nueva',async()=>{
+  const result=await invoke({unidad:'SEDE CENTRAL DIRITPTIM',accion:'actualizar',id:'synthetic-user',contrasena:''},{previous:{...valid,unidad:'OTRA'}});
+  assert.equal(result.status,400);assert.equal(result.writes.length,0);
 });
