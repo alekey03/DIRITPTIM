@@ -194,6 +194,7 @@
     if (!window.VehiculosUI.discard()) return;
     if (!window.GruposUI.discard()) return;
     if (!window.RequisitoriadosUI.discard()) return;
+    if (!window.VictimasUI.discard()) return;
     if (!window.MenoresUI.discard()) return;
     if (!window.NotasUI.discard()) return;
     if (dirty && !(await saveSelection())) return;
