@@ -9,13 +9,19 @@ let html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
   .replace(/<link[^>]+(?:https:)[^>]*>/gi, '');
 const mock = `
 let currentProfile={id:'fixture-user',activo:true,rol:'operador',unidad:'DEPITPTIM ABANCAY',departamento:'APURIMAC'};
-let requests=[],records=new Map(),detained=[],drugs=[],failOnce=true;
+let requests=[],records=new Map(),detained=[],drugs=[],materials=[],failOnce=true;
 function escapeHtml(value){return String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function formatDate(value){return value;}
 
 const supabaseClient={
  async rpc(name,p){
   requests.push(structuredClone(p));
+  if(name==='guardar_material_operativo'){
+   const old=materials.find(m=>m.id===p.p_id);const row={id:p.p_id,intervencion_id:p.p_intervencion,tipo:p.p_tipo,datos:p.p_datos,version:p.p_version+1};
+   if(old)Object.assign(old,row);else materials.push(row);
+   const parent=records.get(p.p_intervencion);parent.version++;
+   return {data:{id:row.id,version:row.version,operativo_version:parent.version},error:null};
+  }
   if(name==='guardar_droga_operativo'){
    const old=drugs.find(d=>d.id===p.p_id); const record={id:p.p_id,intervencion_id:p.p_intervencion,tipo:p.p_tipo,cantidad:p.p_cantidad,nombre_sustancia:p.p_nombre,version:p.p_version+1};
    if(old) Object.assign(old,record);else drugs.push(record);
@@ -35,7 +41,7 @@ const supabaseClient={
   const saved={...p.p_intervencion,id:p.p_id,version:p.p_version+2,unidad:currentProfile.unidad,departamento_registro:currentProfile.departamento,creado_por:currentProfile.id,resultados_previstos:[],intervencion_operativos:p.p_operativo};
   records.set(saved.id,saved);return {data:{id:saved.id,version:saved.version},error:null};
  },
- from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
+ from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
 };
 document.getElementById('loginScreen').style.display='none';
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
@@ -114,18 +120,33 @@ const checks = `
   window.resetResultadosModule();assert(document.getElementById('drugRecords').textContent==='','Limpiar resultados al salir');
   currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};
   await window.openOperativoResults([...records.keys()][0]);
-  report.textContent='PASS: Operativo, detenido vinculado y drogas; alta, edición sin duplicado, unidades enteras, nombre sintético, consulta de supervisor y limpieza de sesión.';
+  document.querySelector('#resultCards input[value="armas"]').click();
+  assert(document.querySelectorAll('#materialCards svg').length===5,'Cinco iconos');
+  document.querySelector('[data-material="municion"]').click();
+  let mf=document.getElementById('materialForm');mf.elements.namedItem('cantidad').value='15';mf.requestSubmit();await tick();await tick();
+  assert(materials.length===1 && materials[0].datos.cantidad===15,'Alta de municiones');
+  document.querySelector('#materialRecords button').click();mf.elements.namedItem('cantidad').value='18';mf.requestSubmit();await tick();await tick();
+  assert(materials.length===1 && materials[0].datos.cantidad===18,'Edición sin duplicar');
+  document.querySelector('[data-material="fuego"]').click();assert(mf.elements.namedItem('serie'),'Arma tiene serie');
+  mf.elements.namedItem('tipo').value='TIPO FICTICIO';mf.elements.namedItem('situacion').value='FICTICIA';mf.elements.namedItem('serie').value='SOLO-PRUEBA';mf.requestSubmit();await tick();await tick();
+  assert(materials.length===2,'Alta de arma');
+  currentProfile={...currentProfile,id:'supervisor-fixture',rol:'supervisor'};await window.openOperativoResults([...records.keys()][0]);
+  assert(document.querySelector('[data-material="fuego"]').disabled,'Supervisor no agrega');
+  document.querySelector('#materialRecords button').click();assert(document.getElementById('saveMaterial').hidden,'Supervisor consulta sin guardar');
+  window.resetResultadosModule();assert(document.getElementById('materialRecords').textContent==='','Limpieza de materiales');
+  currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};await window.openOperativoResults([...records.keys()][0]);
+  report.textContent='PASS: Operativos, detenidos, drogas y materiales; cinco iconos; alta y edición; permisos de consulta; limpieza de sesión.';
  }catch(error){report.textContent='FAIL: '+error.message;}
 })();
 `;
 html = html.replace('</body>', `<script>${mock}</script>
 <script src="/catalogos.js"></script><script src="/dependencias.js"></script><script src="/catalogos-ui.js"></script>
-<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
-const allowed = new Set(['styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','assets/logo-diriptim.png']);
+<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
+const allowed = new Set(['styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','materiales.js','materiales-catalogo.js','assets/logo-diriptim.png']);
 http.createServer((req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1);
   if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(html);}
-  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150005_drogas_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
+  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150006_materiales_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(!allowed.has(name)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':'image/png');
   res.end(fs.readFileSync(path.join(root,name)));

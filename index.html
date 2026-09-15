@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260915-drogas-v1" />
+  <link rel="stylesheet" href="styles.css?v=20260915-materiales-v1" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
 </head>
 <body>
@@ -326,6 +326,14 @@
         </div><div class="operativo-actions"><button type="submit" class="primary" id="saveDrug">Guardar sustancia</button><button type="button" class="secondary" id="cancelDrug" hidden>Cancelar edición</button></div></fieldset></form>
         <p id="drugStatus" role="status" aria-live="polite"></p><div id="drugRecords"></div><button type="button" class="secondary" id="moreDrugs" hidden>Ver más sustancias</button>
       </section>
+      <section id="materialResultsPanel" class="card result-detail" hidden>
+        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Armas, municiones y explosivos</h3><p>Elija una categoría para agregar su registro al operativo.</p></div><span class="drug-badge">5 tipos de registro</span></div>
+        <div id="materialCards" class="material-cards" aria-label="Categorías de materiales"></div>
+        <p class="results-note">La fecha, ubicación, dependencia y nota informativa se toman del operativo. Registre cada arma o réplica individualmente. Los datos de persona y delitos se completan únicamente cuando correspondan.</p>
+        <form id="materialForm" hidden><fieldset id="materialFields"><legend id="materialFormTitle">Registrar material</legend><div id="materialInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveMaterial">Guardar registro</button><button type="button" class="secondary" id="cancelMaterial">Cerrar formulario</button></div></fieldset></form>
+        <p id="materialStatus" role="status" aria-live="polite"></p><div id="materialRecords"></div><button type="button" class="secondary" id="moreMaterials" hidden>Ver más registros</button>
+        <p class="results-note">Las armas registradas anteriormente en Detenidos no se trasladan automáticamente a esta lista. La conciliación de esos registros y la exportación del detallado siguen pendientes.</p>
+      </section>
       <p id="resultsPendingNote" class="results-note" hidden>Los detalles de las demás categorías se incorporarán en las siguientes etapas. Este borrador todavía no genera el Excel detallado.</p>
       <button type="button" id="openResultsView" data-view="operativoResultsView" hidden></button>
       <button type="button" id="openLinkedDetaineeView" data-view="detaineeFormView" data-from-operativo="true" hidden></button>
@@ -406,7 +414,9 @@
   <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="detenidos.js?v=20260915-resultados-v1"></script>
   <script src="intervenciones.js?v=20260915-resultados-v1"></script>
-  <script src="resultados.js?v=20260915-drogas-v1"></script>
+  <script src="materiales-catalogo.js?v=20260915-materiales-v1"></script>
+  <script src="materiales.js?v=20260915-materiales-v1"></script>
+  <script src="resultados.js?v=20260915-materiales-v1"></script>
   <script src="exportaciones.js?v=20260915-enrolamiento-v1"></script>
 </body>
 </html>
