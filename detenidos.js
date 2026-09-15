@@ -77,6 +77,9 @@ async function saveDetainee(event) {
   if (button.disabled || !detaineeForm.reportValidity()) return;
   if (!currentProfile?.activo) { status.textContent = 'La sesión no está disponible.'; return; }
   if (!currentProfile.departamento) { status.textContent = 'Su cuenta no tiene departamento asignado.'; return; }
+  const workflowToken = window.detaineeWorkflowToken;
+  const linkedOperativo = window.getDetaineeOperativo?.();
+  window.setDetaineeBusy?.(true);
   button.disabled = true; button.textContent = 'Guardando…'; status.className = '';
   try {
   const person = {
@@ -102,10 +105,12 @@ async function saveDetainee(event) {
     // El formulario edita el primer hallazgo; conserva los demás existentes.
     if (editingDetaineeId) weapons.push(...(selectedDetainee.detencion_armas || []).slice(1));
     const payload = { p_persona: person, p_detencion: detention, p_delitos: readCrimes(), p_armas: weapons, p_editar: Boolean(editingDetaineeId), p_motivo: editingDetaineeReason || null, p_version: editingDetaineeId ? selectedDetainee.actualizado_en : null };
+    if (linkedOperativo && !editingDetaineeId) payload.p_detencion.intervencion_id = linkedOperativo.id;
     const storageKey = 'detencion-pendiente:' + currentProfile.id;
     let requestId = editingDetaineeId;
     if (!requestId) {
       const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(payload)));
+      if (workflowToken !== window.detaineeWorkflowToken) return;
       const signature = Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, '0')).join('');
       let pending;
       try { pending = JSON.parse(sessionStorage.getItem(storageKey) || 'null'); } catch { pending = null; }
@@ -114,6 +119,7 @@ async function saveDetainee(event) {
       sessionStorage.setItem(storageKey, JSON.stringify({ id: requestId, signature }));
     }
     const { data, error } = await supabaseClient.rpc('guardar_detenido_atomico', { ...payload, p_solicitud: requestId });
+    if (workflowToken !== window.detaineeWorkflowToken) return;
     if (error) throw error;
     if (!data?.id || !data?.codigo) throw new Error('Respuesta de guardado incompleta. Consulte los registros antes de reintentar.');
     if (!editingDetaineeId) sessionStorage.removeItem(storageKey);
@@ -121,13 +127,15 @@ async function saveDetainee(event) {
     status.textContent = '✓ Detenido ' + data.codigo + (editingDetaineeId ? ' actualizado correctamente.' : ' registrado correctamente.');
     editingDetaineeId = null; editingDetaineeReason = ''; selectedDetainee = null;
     detaineeForm.reset(); window.resetDetaineeDependencies?.(); crimeList.innerHTML = ''; addCrimeRow();
+    window.afterDetaineeSave?.(linkedOperativo?.id);
   } catch (error) {
+    if (workflowToken !== window.detaineeWorkflowToken) return;
     console.error(error);
     status.className = 'error-text';
     status.textContent = moduleUnavailable(error) || error?.code === 'PGRST202'
       ? 'El guardado seguro aún no está instalado en Supabase. Contacte al administrador.'
       : 'No se confirmó el guardado: ' + (error.message || 'error de conexión') + '. Mantenga el formulario para reintentar la misma solicitud.';
-  } finally { button.disabled = false; button.textContent = editingDetaineeId ? 'Guardar cambios' : 'Registrar detenido'; }
+  } finally { if (workflowToken === window.detaineeWorkflowToken) { window.setDetaineeBusy?.(false); button.disabled = false; button.textContent = editingDetaineeId ? 'Guardar cambios' : 'Registrar detenido'; } }
 }
 
 window.loadDetaineeRecords = async function loadDetaineeRecords() {
@@ -147,9 +155,11 @@ window.loadDetaineeRecords = async function loadDetaineeRecords() {
 };
 
 async function openDetaineeRecord(id) {
+  const workflowToken = window.detaineeWorkflowToken;
   document.getElementById('detaineeRecordDetail').innerHTML = '<div class="empty-state"><h3>Cargando detalle…</h3></div>';
   detaineeRecordModal.showModal();
   const { data, error } = await supabaseClient.from('detenciones').select('*,personas(*),detencion_delitos(*),detencion_armas(*)').eq('id', id).single();
+  if (workflowToken !== window.detaineeWorkflowToken) return;
   if (error) { document.getElementById('detaineeRecordDetail').innerHTML = '<p class="records-error">No se pudo cargar el registro.</p>'; return; }
   selectedDetainee = data; const p = data.personas || {};
   document.getElementById('detaineeRecordModalCode').textContent = data.codigo || 'Registro de detenido';
@@ -165,6 +175,7 @@ function beginDetaineeEdit() {
   if (!selectedDetainee || !isDetaineeAdmin()) return;
   const reason = prompt('Indique el motivo de la modificación. Este texto quedará guardado en Auditoría:');
   if (!reason?.trim()) return alert('El motivo es obligatorio para editar un detenido.');
+  window.clearDetaineeOperativo?.();
   editingDetaineeId = selectedDetainee.id; editingDetaineeReason = reason.trim(); const p = selectedDetainee.personas || {}; const weapon = selectedDetainee.detencion_armas?.[0] || {};
   const values = { apellidoPaterno:p.apellido_paterno,apellidoMaterno:p.apellido_materno,nombres:p.nombres,edad:p.edad,genero:p.genero,nacionalidad:p.nacionalidad,tipoDocumento:p.tipo_documento,numeroDocumento:p.numero_documento,fecha:selectedDetainee.fecha,hora:selectedDetainee.hora,motivoDetencion:selectedDetainee.motivo_detencion,esFuncionario:String(Boolean(selectedDetainee.es_funcionario_publico)),entidadPublica:selectedDetainee.entidad_publica,detalleEntidad:selectedDetainee.detalle_entidad_publica,direccionPolicial:selectedDetainee.direccion_policial,direccionRegion:selectedDetainee.direccion_especializada_region,divisionPolicial:selectedDetainee.division_policial,departamentoPolicial:selectedDetainee.departamento_policial,unidadArea:selectedDetainee.unidad_area_equipo,integraOrganizacion:String(Boolean(selectedDetainee.integra_organizacion)),rolOrganizacion:selectedDetainee.rol_organizacion,nombreOrganizacion:selectedDetainee.nombre_organizacion,armaCategoria:weapon.categoria,armaTipo:weapon.tipo,armaCantidad:weapon.cantidad||1,armaObservacion:weapon.observacion,situacionActual:selectedDetainee.situacion_actual,documentoLibertad:selectedDetainee.documento_libertad,documentoDisposicion:selectedDetainee.documento_disposicion,fiscalNombre:selectedDetainee.fiscal_nombre,fiscalia:selectedDetainee.fiscalia,disposicionDireccion:selectedDetainee.disposicion_direccion,disposicionRegion:selectedDetainee.disposicion_region,disposicionDivision:selectedDetainee.disposicion_division,disposicionDepartamento:selectedDetainee.disposicion_departamento,disposicionUnidad:selectedDetainee.disposicion_unidad,notaSicpip:selectedDetainee.nota_sicpip};
   Object.entries(values).forEach(([name,value]) => setDetaineeField(name,value));
@@ -224,3 +235,58 @@ document.getElementById('editDetaineeButton').addEventListener('click', beginDet
 document.getElementById('deleteDetaineeButton').addEventListener('click', deleteDetainee);
 detaineeForm.addEventListener('submit', saveDetainee);
 window.initializeDetaineeForm();
+
+// Contexto explícito: un alta vinculada nunca se convierte silenciosamente en otra.
+(() => {
+  let operativo = null, changed = false, saving = false;
+  const banner = document.getElementById('detaineeOperativoBanner');
+  window.detaineeWorkflowToken = 0;
+  window.getDetaineeOperativo = () => operativo;
+  window.setDetaineeBusy = value => {
+    saving = value; detaineeForm.inert = value;
+    document.getElementById('backToOperativoResults').disabled = value;
+  };
+  window.clearDetaineeOperativo = () => { operativo = null; banner.hidden = true; };
+  detaineeForm.addEventListener('input', () => { changed = true; });
+  detaineeForm.addEventListener('change', () => { changed = true; });
+  detaineeForm.addEventListener('reset', () => { changed = false; });
+  window.addEventListener('beforeunload', event => { if (changed || saving) { event.preventDefault(); event.returnValue = ''; } });
+  window.resetDetaineeWorkflow = () => {
+    window.detaineeWorkflowToken++; window.setDetaineeBusy(false); window.clearDetaineeOperativo();
+    changed = false; editingDetaineeId = null; editingDetaineeReason = ''; selectedDetainee = null;
+    detaineeForm.reset(); window.resetDetaineeDependencies?.(); crimeList.innerHTML = ''; addCrimeRow();
+    document.getElementById('saveDetaineeButton').disabled = false;
+    document.getElementById('saveDetaineeButton').textContent = 'Registrar detenido';
+    document.getElementById('detaineeStatus').textContent = '';
+    document.getElementById('detaineeOperativoLabel').textContent = '';
+    detaineeRecordModal.close(); document.getElementById('detaineeRecordDetail').replaceChildren();
+  };
+  window.prepareStandaloneDetainee = () => {
+    if (saving) return false;
+    if (!operativo) return true;
+    if (changed && !confirm('El formulario tiene cambios sin guardar. ¿Desea descartarlos y registrar un detenido independiente?')) return false;
+    window.resetDetaineeWorkflow(); return true;
+  };
+  window.startDetaineeFromOperativo = record => {
+    if (saving || (changed && !confirm('Hay datos de un detenido sin guardar. ¿Desea descartarlos y comenzar otro registro?'))) return;
+    window.resetDetaineeWorkflow(); operativo = { ...record }; banner.hidden = false;
+    document.getElementById('detaineeOperativoLabel').textContent = `${record.fecha?.split('-').reverse().join('/')} · ${record.unidad}`;
+    setDetaineeField('fecha', record.fecha); setDetaineeField('hora', record.hora);
+    setDetaineeField('notaSicpip', record.nota_sicpip); setDetaineeField('unidadArea', record.unidad_area_equipo);
+    window.setDetaineeDependencies?.({ direccion_policial: record.direccion_policial, direccion_especializada_region: record.direccion_especializada_region, division_policial: record.division_policial, departamento_policial: record.departamento_policial });
+    detaineeForm.querySelectorAll('.profile-registration-department').forEach(input => { input.value = record.departamento_registro; });
+    detaineeForm.querySelectorAll('.profile-registration-area').forEach(input => { input.value = record.unidad; });
+    document.getElementById('detaineeStatus').textContent = 'Al guardar, este detenido quedará vinculado al operativo indicado.';
+    document.getElementById('openLinkedDetaineeView').click();
+    document.querySelector('[data-detainee-step-target]')?.click();
+  };
+  document.getElementById('backToOperativoResults').addEventListener('click', () => {
+    if (saving || !operativo || (changed && !confirm('Hay datos sin guardar. ¿Desea descartarlos y volver a resultados?'))) return;
+    const id = operativo.id; window.resetDetaineeWorkflow(); window.openOperativoResults?.(id);
+  });
+  window.afterDetaineeSave = id => {
+    changed = false; window.clearDetaineeOperativo();
+    if (id) window.onLinkedDetaineeSaved?.(id);
+  };
+  window.openLinkedDetainee = openDetaineeRecord;
+})();

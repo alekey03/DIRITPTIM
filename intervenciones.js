@@ -15,6 +15,7 @@
   function lock(locked) {
     form.querySelectorAll('fieldset').forEach(fieldset => { fieldset.disabled = locked; });
     saveButton.disabled = locked;
+    document.getElementById('continueOperativo').disabled = busy || !version || dirty;
     document.getElementById('newOperativo').disabled = busy;
   }
   function payload() {
@@ -40,8 +41,12 @@
     // Remove values retained solely to display an older catalog entry.
     form.querySelectorAll('option[data-legacy]').forEach(option => option.remove());
   };
-  form.addEventListener('input', () => { dirty = true; });
-  form.addEventListener('change', () => { dirty = true; });
+  function changed() { dirty = true; document.getElementById('continueOperativo').disabled = true; }
+  form.addEventListener('input', changed);
+  form.addEventListener('change', changed);
+  document.getElementById('continueOperativo').addEventListener('click', () => {
+    if (!busy && !dirty && version) window.openOperativoResults?.(id);
+  });
   window.addEventListener('beforeunload', event => {
     if (dirty || busy) { event.preventDefault(); event.returnValue = ''; }
   });
@@ -67,7 +72,7 @@
       if (result.error) throw result.error;
       if (!result.data?.id || !Number.isInteger(result.data.version)) throw new Error('No se recibió la confirmación del guardado. Reintente.');
       id = result.data.id; version = result.data.version; pending = null; dirty = false;
-      message('Borrador guardado. Puede retomarlo desde Intervenciones → Borradores.');
+      message('Borrador guardado. Continúe a resultados para registrar lo obtenido en el operativo.');
     } catch (error) {
       if (turn !== epoch) return;
       const unavailable = ['PGRST202', '42P01'].includes(error.code);
@@ -113,6 +118,7 @@
       if (session === epoch) { busy = false; lock(readOnly); }
     }
   }
+  window.openOperativoById = openRecord;
   window.loadOperativos = async () => {
     const turn = ++listRequest, session = epoch;
     rows.replaceChildren(); listStatus.textContent = 'Consultando borradores…';
@@ -128,13 +134,16 @@
       if (error) throw error;
       for (const record of data.slice(0, 25)) {
         const row = document.createElement('tr');
-        for (const value of [record.fecha, record.tipo === 'megaoperativo' ? 'Megaoperativo' : 'Operativo', record.unidad,
-          [record.departamento, record.provincia, record.distrito].filter(Boolean).join(' / ')]) {
+        for (const value of [record.fecha?.split('-').reverse().join('/'), record.tipo === 'megaoperativo' ? 'Megaoperativo' : 'Operativo', record.unidad,
+          [record.departamento, record.provincia, record.distrito].filter(Boolean).map(value => value.replace(/_/g, ' ').trim()).join(' / ')]) {
           const cell = document.createElement('td'); cell.textContent = value || '—'; row.appendChild(cell);
         }
         const action = document.createElement('td'), button = document.createElement('button');
         button.type = 'button'; button.className = 'table-action'; button.textContent = 'Abrir';
-        button.addEventListener('click', () => openRecord(record.id)); action.appendChild(button); row.appendChild(action); rows.appendChild(row);
+        button.addEventListener('click', () => openRecord(record.id)); action.appendChild(button);
+        const resultsButton = document.createElement('button'); resultsButton.type = 'button'; resultsButton.className = 'table-action'; resultsButton.textContent = 'Resultados';
+        resultsButton.addEventListener('click', () => window.openOperativoResults?.(record.id)); action.appendChild(resultsButton);
+        row.appendChild(action); rows.appendChild(row);
       }
       prev.disabled = page === 0; next.disabled = data.length <= 25;
       document.getElementById('operativosPage').textContent = `Página ${page + 1}`;

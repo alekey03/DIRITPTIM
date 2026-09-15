@@ -54,3 +54,17 @@ test('edición envía motivo, versión y conserva hallazgos adicionales',async()
   assert.equal(p.p_armas[1].categoria,'ADICIONAL'); assert.equal(s.storage.size,0);
 });
 test('sin sesión activa no envía datos',async()=>{const s=setup();s.context.currentProfile.activo=false;await s.save();assert.equal(s.calls.length,0);});
+
+
+test('alta vinculada incluye el operativo en la solicitud y en el hash de reintento',async()=>{
+  const s=setup(); s.context.window.getDetaineeOperativo=()=>({id:'OPERATIVO-FICTICIO'});
+  await s.save(); assert.equal(s.calls[0].payload.p_detencion.intervencion_id,'OPERATIVO-FICTICIO');
+  s.succeed(); await s.save(); assert.equal(s.calls[0].payload.p_solicitud,s.calls[1].payload.p_solicitud);
+});
+test('una respuesta tardía de otra sesión no limpia ni confirma el formulario',async()=>{
+  const s=setup(); s.context.window.detaineeWorkflowToken=1; s.succeed();
+  let release; s.hold(new Promise(resolve=>release=resolve));
+  const saving=s.save(); await new Promise(resolve=>setTimeout(resolve,20));
+  s.context.window.detaineeWorkflowToken=2; release(); await saving;
+  assert.equal(s.resets(),0); assert.notEqual(s.elements.detaineeStatus.className,'success-text');
+});

@@ -674,6 +674,7 @@ const pageTitles = {
   detaineeDashboardView: ['RESUMEN', 'Dashboard de detenidos'],
   detaineeFormView: ['NUEVO REGISTRO', 'Registro de persona detenida'],
   detaineeRecordsView: ['CONSULTA', 'Registros de detenidos'],
+  operativoResultsView: ['INTERVENCIONES', 'Resultados del operativo'],
   operativoView: ['INTERVENCIONES', 'Registro del operativo'],
   operativoRecordsView: ['INTERVENCIONES', 'Borradores de operativos'],
   usersView: ['ADMINISTRACIÓN', 'Gestión de usuarios'],
@@ -682,6 +683,8 @@ const pageTitles = {
 
 function resetMainView() {
   window.resetOperativoModule?.();
+  window.resetResultadosModule?.();
+  window.resetDetaineeWorkflow?.();
   editingRecordId = null;
   editingRecordCode = null;
   selectedRecord = null;
@@ -964,6 +967,7 @@ userForm.addEventListener('submit', async event => {
 document.querySelectorAll('[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     const target = button.dataset.view;
+    if (target === 'detaineeFormView' && !button.dataset.fromOperativo && window.prepareStandaloneDetainee?.() === false) return;
     const parentGroup = button.closest('.nav-group');
     if (parentGroup) {
       parentGroup.classList.add('open');

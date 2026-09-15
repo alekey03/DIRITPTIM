@@ -8,21 +8,34 @@ let html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
   .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
   .replace(/<link[^>]+(?:https:)[^>]*>/gi, '');
 const mock = `
-let currentProfile={id:'fixture-user',activo:true,rol:'operador',unidad:'DEPITPTIM ABANCAY'};
-let requests=[],records=new Map(),failOnce=true;
+let currentProfile={id:'fixture-user',activo:true,rol:'operador',unidad:'DEPITPTIM ABANCAY',departamento:'APURIMAC'};
+let requests=[],records=new Map(),detained=[],failOnce=true;
+function escapeHtml(value){return String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function formatDate(value){return value;}
+
 const supabaseClient={
  async rpc(name,p){
   requests.push(structuredClone(p));
+  if(name==='seleccionar_resultados_operativo'){
+   const record=records.get(p.p_id);record.resultados_previstos=p.p_categorias;record.version++;
+   return {data:{version:record.version,categorias:p.p_categorias},error:null};
+  }
+  if(name==='guardar_detenido_atomico'){
+   const record={...p.p_detencion,id:p.p_solicitud,codigo:'DET-FICTICIO',personas:p.p_persona};detained.push(record);
+   return {data:{id:record.id,codigo:record.codigo},error:null};
+  }
+
   if(failOnce){failOnce=false;throw new Error('Interrupción simulada');}
-  const saved={...p.p_intervencion,id:p.p_id,version:p.p_version+2,unidad:currentProfile.unidad,creado_por:currentProfile.id,intervencion_operativos:p.p_operativo};
+  const saved={...p.p_intervencion,id:p.p_id,version:p.p_version+2,unidad:currentProfile.unidad,departamento_registro:currentProfile.departamento,creado_por:currentProfile.id,resultados_previstos:[],intervencion_operativos:p.p_operativo};
   records.set(saved.id,saved);return {data:{id:saved.id,version:saved.version},error:null};
  },
- from(){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:[...records.values()].slice(a,b+1),error:null}}};}
+ from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
 };
 document.getElementById('loginScreen').style.display='none';
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
  document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.id===button.dataset.view));
  document.querySelectorAll('.nav-item').forEach(item=>item.classList.toggle('active',item===button));
+ document.getElementById('pageHeading').textContent=button.dataset.view==='operativoResultsView'?'Resultados del operativo':button.dataset.view==='detaineeFormView'?'Registro de persona detenida':'Registro del operativo';
  if(button.dataset.view==='operativoView') window.initializeOperativoForm?.();
  if(button.dataset.view==='operativoRecordsView') window.loadOperativos?.();
 }));
@@ -59,17 +72,35 @@ const checks = `
   assert(form.elements.namedItem('operativo.personal_cargo').value==='','Cambio de sesión debe limpiar datos');
   currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};
   document.querySelector('[data-view="operativoView"]').click();
-  report.textContent='PASS: 38 campos, reintento, conservación de datos, listado, reapertura, consulta de supervisor y limpieza de sesión.';
+
+  await window.openOperativoResults([...records.keys()][0]);
+  assert(document.querySelectorAll('#resultCards input').length===10,'Deben existir diez tipos de resultado');
+  document.querySelector('#resultCards input[value="detenidos"]').click();
+  document.querySelector('#resultCards input[value="bandas"]').click();
+  document.getElementById('saveResults').click();await tick();
+  assert(document.getElementById('resultsSelectionStatus').textContent.includes('guardada'),'Debe guardar selección');
+  document.getElementById('addLinkedDetainee').click();await tick();
+  assert(!document.getElementById('detaineeOperativoBanner').hidden,'Debe mostrar vínculo');
+  const df=document.getElementById('detaineeForm');
+  assert(df.elements.namedItem('fecha').value==='2026-09-15','Debe heredar fecha');
+  df.elements.namedItem('apellidoPaterno').value='FICTICIO';df.elements.namedItem('nombres').value='PRUEBA';
+  df.requestSubmit();await tick();await tick();
+  assert(detained.length===1,'Debe registrar detenido');
+  assert(detained[0].intervencion_id===[...records.keys()][0],'Debe conservar vínculo');
+  assert(document.querySelectorAll('.linked-detainee-row').length===1,'Debe volver al listado vinculado');
+  assert(!document.getElementById('resultsPendingNote').hidden,'Otros detalles pendientes deben estar señalados');
+  report.textContent='PASS: Resultados guardados y detenido vinculado;  38 campos, reintento, conservación de datos, listado, reapertura, consulta de supervisor y limpieza de sesión.';
  }catch(error){report.textContent='FAIL: '+error.message;}
 })();
 `;
 html = html.replace('</body>', `<script>${mock}</script>
 <script src="/catalogos.js"></script><script src="/dependencias.js"></script><script src="/catalogos-ui.js"></script>
-<script src="/intervenciones.js"></script><script>${checks}</script></body>`);
-const allowed = new Set(['styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','assets/logo-diriptim.png']);
+<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
+const allowed = new Set(['styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','assets/logo-diriptim.png']);
 http.createServer((req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1);
   if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(html);}
+  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150004_resultados_y_detenidos.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(!allowed.has(name)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':'image/png');
   res.end(fs.readFileSync(path.join(root,name)));

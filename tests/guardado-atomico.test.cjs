@@ -46,6 +46,11 @@ async function save(id, changes = {}) {
   `);
   for (const table of ['personas','detenciones','detencion_delitos','detencion_armas']) await db.exec(`create trigger test_audit after insert or update or delete on public.${table} for each row execute function public.test_audit_trigger()`);
   await db.exec(read('202609140001_guardado_detenidos_atomico.sql'));
+  await db.exec(`create function public.usuario_activo() returns boolean language sql stable security definer as $$ select coalesce((select activo from public.perfiles where id=auth.uid()),false) $$;
+    create function public.unidad_actual() returns text language sql stable security definer as $$ select unidad from public.perfiles where id=auth.uid() and activo $$;`);
+  await db.exec(read('202609150002_base_intervenciones.sql'));
+  await db.exec(read('202609150004_resultados_y_detenidos.sql'));
+
   await identity(1);
   await check('alta completa con cuatro tablas y área derivada del perfil', async () => {
     const r = await save(101, { d:{...detention, unidad:'AREA AJENA', creado_por:uid(999)} });
@@ -93,6 +98,46 @@ async function save(id, changes = {}) {
     await assert.rejects(save(101,{edit:true,reason:'PRUEBA',version:'2000-01-01T00:00:00Z'}));
     await assert.rejects(save(101,{edit:true,reason:' ',version:await version()}));
   });
-  await db.exec('reset role'); await db.exec(read('202609140001_guardado_detenidos_atomico.sql'));
+
+  await identity(1);
+  await db.query("insert into public.intervenciones(id,tipo,fecha) values($1,'operativo','2026-09-15')",[uid(501)]);
+  await check('selección de resultados valida categorías y detecta versiones antiguas', async()=>{
+    await db.query('select public.seleccionar_resultados_operativo($1,1,$2)',[uid(501),['detenidos','bandas']]);
+    await assert.rejects(db.query('select public.seleccionar_resultados_operativo($1,1,$2)',[uid(501),['armas']]));
+    await assert.rejects(db.query('select public.seleccionar_resultados_operativo($1,2,$2)',[uid(501),['INVENTADO']]));
+  });
+  await check('detenido vinculado conserva el operativo y no se duplica por reintento',async()=>{
+    const d={...detention,intervencion_id:uid(501)};
+    await save(301,{d});
+    const before=await snapshot();
+    await save(301,{d});assert.deepEqual(await snapshot(),before);
+    assert.equal((await db.query('select intervencion_id from public.detenciones where id=$1',[uid(301)])).rows[0].intervencion_id,uid(501));
+    await assert.rejects(save(301));
+    await assert.rejects(db.query("update public.intervenciones set resultados_previstos='{}' where id=$1",[uid(501)]));
+  });
+  await check('un fallo de detalle revierte también el resultado y la versión del operativo',async()=>{
+    const before=(await db.query('select version from public.intervenciones where id=$1',[uid(501)])).rows[0].version;
+    await assert.rejects(save(302,{d:{...detention,intervencion_id:uid(501)},weapons:[{cantidad:0}]}));
+    assert.equal((await db.query('select version from public.intervenciones where id=$1',[uid(501)])).rows[0].version,before);
+    assert.equal((await db.query('select 1 from public.detenciones where id=$1',[uid(302)])).rows.length,0);
+  });
+  await db.exec('reset role');
+  await db.query('insert into public.perfiles values($1,$2,true,$3,$4)',[uid(4),'operador','OTRA AREA','CUSCO']);
+  await identity(4);
+  await db.query("insert into public.intervenciones(id,tipo,fecha) values($1,'operativo','2026-09-15')",[uid(502)]);
+  await identity(1);
+  await check('operador de otra dependencia no puede vincular detenidos',async()=>{ await assert.rejects(save(303,{d:{...detention,intervencion_id:uid(502)}})); });
+  await identity(2);
+  await check('administrador registra en el ámbito del operativo sin cambiar perfiles',async()=>{
+    await assert.rejects(save(305,{d:{...detention,intervencion_id:uid(502)}}));
+    await save(304,{d:{...detention,intervencion_id:uid(502)},p:{...person,numero_documento:'PRUEBA-OTRA-AREA'}});
+    const row=(await db.query('select unidad,departamento_registro,persona_id from public.detenciones where id=$1',[uid(304)])).rows[0];
+    assert.equal(row.unidad,'OTRA AREA');assert.equal(row.departamento_registro,'CUSCO');
+    assert.equal((await db.query('select unidad from public.personas where id=$1',[row.persona_id])).rows[0].unidad,'OTRA AREA');
+    await assert.rejects(db.query('update public.detenciones set intervencion_id=$1 where id=$2',[uid(501),uid(304)]));
+    await assert.rejects(db.query("update public.detenciones set unidad='CAMBIO' where id=$1",[uid(304)]));
+  });
+  await db.exec('reset role'); await db.exec(read('202609150004_resultados_y_detenidos.sql'));
+
   console.log(passed + ' escenarios de guardado transaccional aprobados; migración reaplicable.');
 })().catch(error => { console.error(error); process.exitCode=1; }).finally(() => db.close());
