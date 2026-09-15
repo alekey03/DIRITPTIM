@@ -322,3 +322,9 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 @media(max-width:600px){.group-cards{grid-template-columns:1fr;}#groupFields{padding:14px;}}
 
 #groupLegacyNote:empty {display:none;}
+
+#rqFields {border:1px solid var(--line);border-radius:14px;padding:20px;}
+.rq-summary {display:grid;grid-template-columns:minmax(140px,1fr) 3fr;gap:10px 18px;overflow-wrap:anywhere;}
+.rq-summary dt {font-weight:600;}.rq-summary dd {margin:0;color:var(--muted);}
+#rqTotals {font-weight:600;}
+@media(max-width:600px){.rq-summary{grid-template-columns:1fr;gap:6px;}.rq-summary dd{margin-bottom:12px;}#rqFields{padding:14px;}}

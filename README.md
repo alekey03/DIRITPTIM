@@ -66,3 +66,12 @@ Aplicar `supabase/migrations/202609150009_grupos_operativo.sql` después de la m
 Nombre, modalidad y referencia pertenecen al grupo; el rol específico pertenece al vínculo. El nombre anterior en Detenidos se conserva como referencia y no se sobrescribe. Los datos de identidad, delitos, fiscalía y situación se leen del detenido; los datos comunes se toman del operativo. `datos/mapeo-grupos-v1.json` relaciona las 40/41 columnas de ambas hojas. Más de dos delitos se señala para revisión; la exportación completa sigue pendiente. No hay fotografías en este módulo.
 
 Pruebas: `node tests/grupos-operativo.test.cjs` (PGlite) y `node tests/operativos-preview.cjs` (interfaz con datos ficticios).
+
+
+### Requisitoriados del operativo
+
+La migración `202609150010_requisitoriados_operativo.sql` agrega la categoría Requisitoriados y la tabla `intervencion_requisitoriados`. Debe aplicarse antes de publicar `requisitoriados.js`. Cada detalle se vincula a una detención del mismo operativo, sin crear otra persona ni otra detención. El formulario permite iniciar el registro de un detenido desde ese operativo cuando aún no existe.
+
+Se registran tipo de requisitoria (ORDEN DE CAPTURA / RQ INTERNACIONAL, según TIPO_RQ de OTRO!E66:E67) y condición de más buscado (Sí / No, MAS_BUSCADO de OTRO!C51:C52). La identidad, fecha/hora, funcionario y delitos provienen de Detenidos; los datos comunes del hecho provienen del operativo. `datos/mapeo-requisitoriados-v1.json` documenta las 38 columnas. No se asigna una condición automáticamente a las personas. Un detalle por detención; no sumar el listado de requisitoriados al de detenidos para obtener personas únicas.
+
+El guardado valida ámbito, vínculo inmutable, versiones y reintentos. Más de dos delitos se muestra como pendiente de revisión para el futuro Excel. Sin fotografías. Pruebas de base de datos en `tests/requisitoriados-operativo.test.cjs` y de interfaz en `tests/operativos-preview.cjs`.

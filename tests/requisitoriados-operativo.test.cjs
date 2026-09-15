@@ -1,0 +1,62 @@
+const {PGlite}=require('@electric-sql/pglite');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),db=new PGlite();
+const read=n=>fs.readFileSync(path.join(root,'supabase/migrations',n),'utf8');
+const id=n=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
+(async()=>{
+ const schema=JSON.parse(fs.readFileSync(path.join(root,'datos/estructura-detallado-v1.json'),'utf8'));
+ const map=JSON.parse(fs.readFileSync(path.join(root,'datos/mapeo-requisitoriados-v1.json'),'utf8'));
+ assert.equal(Object.keys(map.columnas).length,38);assert.deepEqual(Object.keys(map.columnas),schema.hojas.find(h=>h.nombre===map.hoja).campos.map(c=>c.columna));
+ assert.deepEqual(map.catalogos.tipo.valores,['ORDEN DE CAPTURA','RQ INTERNACIONAL']);
+ await db.exec(`create role authenticated;create role anon;create schema auth;
+ create table perfiles(id uuid primary key,rol text,activo boolean,unidad text,departamento text);
+ create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create function usuario_activo() returns boolean language sql stable security definer set search_path=public as $$select coalesce((select activo from perfiles where id=auth.uid()),false)$$;
+ create function es_administrador() returns boolean language sql stable security definer set search_path=public as $$select exists(select 1 from perfiles where id=auth.uid() and activo and rol='administrador')$$;
+ create function unidad_actual() returns text language sql stable security definer set search_path=public as $$select unidad from perfiles where id=auth.uid()$$;
+ create function puede_acceder_unidad(u text) returns boolean language sql stable security definer set search_path=public as $$select usuario_activo() and (es_administrador() or unidad_actual()=u)$$;
+ grant usage on schema auth to authenticated;grant select on perfiles to authenticated;
+ create table detenciones(id uuid primary key,intervencion_id uuid);
+ grant select,delete on detenciones to authenticated;`);
+ for(const [n,rol,active,u]of [[1,'operador',true,'A'],[2,'operador',true,'B'],[3,'administrador',true,'C'],[4,'operador',false,'A'],[5,'supervisor',true,'A']])await db.query('insert into perfiles values($1,$2,$3,$4,$5)',[id(n),rol,active,u,'LIMA']);
+ await db.exec(read('202609150002_base_intervenciones.sql'));
+ await db.exec("alter table intervenciones add column resultados_previstos text[] not null default '{}'");
+ const migration=read('202609150010_requisitoriados_operativo.sql');await db.exec(migration);
+ async function actor(n){await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[n?id(n):'']);await db.exec('set role authenticated');}
+ const save=async(n=200,v=0,d=10,t='ORDEN DE CAPTURA',wanted=false,parent=100)=>(await db.query('select guardar_requisitoriado_operativo($1,$2,$3,$4,$5,$6) r',[id(n),id(parent),id(d),v,t,wanted])).rows[0].r;
+ await actor(1);
+ for(const n of [100,101])await db.query("insert into intervenciones(id,tipo,fecha) values($1,'operativo','2026-09-15')",[id(n)]);
+ await db.exec('reset role');for(const [n,p]of [[10,100],[11,100],[12,101],[13,null]])await db.query('insert into detenciones values($1,$2)',[id(n),p?id(p):null]);
+ await actor(1);
+ const first=await save();assert.equal(first.version,1);assert.deepEqual(await save(),first);
+ assert((await db.query('select resultados_previstos from intervenciones where id=$1',[id(100)])).rows[0].resultados_previstos.includes('requisitoriados'));
+ const snap=async()=>(await db.query('select version from intervenciones where id=$1',[id(100)])).rows[0].version;
+ const before=await snap();
+ await assert.rejects(save(201,0,10)); // mismo detenido, otro identificador
+ await assert.rejects(save(201,0,12)); // otro operativo
+ await assert.rejects(save(201,0,13)); // detenido independiente
+ await assert.rejects(save(201,0,99));
+ await assert.rejects(save(201,0,11,'TIPO INVENTADO'));
+ await assert.rejects(save(201,0,11,'ORDEN DE CAPTURA',null));
+ assert.equal(await snap(),before);
+ const edit=await save(200,1,10,'RQ INTERNACIONAL',true);assert.equal(edit.version,2);assert.deepEqual(await save(200,1,10,'RQ INTERNACIONAL',true),edit);
+ await assert.rejects(save(200,1,10,'ORDEN DE CAPTURA',false));
+ await assert.rejects(save(200,2,11));
+ await assert.rejects(db.query('update intervencion_requisitoriados set detencion_id=$1 where id=$2',[id(11),id(200)]));
+ await assert.rejects(db.query('update intervencion_requisitoriados set intervencion_id=$1 where id=$2',[id(101),id(200)]));
+ await assert.rejects(db.query('update intervencion_requisitoriados set creado_por=$1 where id=$2',[id(3),id(200)]));
+ await assert.rejects(db.query("update intervenciones set resultados_previstos='{}' where id=$1",[id(100)]));
+ await assert.rejects(db.query("update intervenciones set tipo='directa' where id=$1",[id(100)]));
+ await assert.rejects(db.exec('delete from intervencion_requisitoriados'));
+ await assert.rejects(db.query('delete from detenciones where id=$1',[id(10)]));
+ await actor(2);assert.equal((await db.query('select * from intervencion_requisitoriados')).rows.length,0);await assert.rejects(save(201,0,11));await assert.rejects(save(200,2));
+ await actor(5);assert.equal((await db.query('select * from intervencion_requisitoriados')).rows.length,1);await assert.rejects(save(201,0,11));await assert.rejects(save(200,2));
+ await actor(4);assert.equal((await db.query('select * from intervencion_requisitoriados')).rows.length,0);await assert.rejects(save(201,0,11));
+ await actor(null);await assert.rejects(save(201,0,11));
+ await db.exec('reset role;set role anon');await assert.rejects(db.query('select * from intervencion_requisitoriados'));await assert.rejects(save(201,0,11));
+ await actor(3);await save(200,2);await save(201,0,11,'RQ INTERNACIONAL',true);
+ await db.exec('reset role');await db.exec(migration);
+ assert.equal((await db.query('select count(*)::int n from intervencion_requisitoriados')).rows[0].n,2);
+ assert.equal((await db.query('select count(*)::int n from detenciones')).rows[0].n,4);
+ console.log('OK: 38 columnas; catálogos del Excel; alta/edición; reintentos; duplicados; conflictos; vínculo; permisos y RLS; sin crear detenciones; reaplicación.');
+})().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>db.close());

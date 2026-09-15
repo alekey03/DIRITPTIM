@@ -9,13 +9,21 @@ let html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
   .replace(/<link[^>]+(?:https:)[^>]*>/gi, '');
 const mock = `
 let currentProfile={id:'fixture-user',activo:true,rol:'operador',unidad:'DEPITPTIM ABANCAY',departamento:'APURIMAC'};
-let requests=[],records=new Map(),detained=[],drugs=[],materials=[],vehicles=[],groups=[],failOnce=true;
+let requests=[],records=new Map(),detained=[],drugs=[],materials=[],vehicles=[],groups=[],rqs=[],rqFailOnce=true,failOnce=true;
 function escapeHtml(value){return String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function formatDate(value){return value;}
 
 const supabaseClient={
  async rpc(name,p){
   requests.push(structuredClone(p));
+  if(name==='guardar_requisitoriado_operativo'){
+   const old=rqs.find(r=>r.id===p.p_id),parent=records.get(p.p_intervencion);
+   if(old && old.version===p.p_version+1 && old.tipo===p.p_tipo && old.mas_buscado===p.p_mas_buscado)return {data:{id:old.id,version:old.version,operativo_version:parent.version},error:null};
+   const row={id:p.p_id,intervencion_id:p.p_intervencion,detencion_id:p.p_detencion,tipo:p.p_tipo,mas_buscado:p.p_mas_buscado,version:p.p_version+1};
+   if(old)Object.assign(old,row);else rqs.push(row);parent.version++;
+   if(rqFailOnce){rqFailOnce=false;throw new Error('Respuesta de requisitoria perdida');}
+   return {data:{id:row.id,version:row.version,operativo_version:parent.version},error:null};
+  }
   if(name==='guardar_grupo_operativo'){
    const old=groups.find(g=>g.id===p.p_id);const row={id:p.p_id,intervencion_id:p.p_intervencion,tipo:p.p_tipo,nombre:p.p_nombre,modalidad:p.p_modalidad,referencia_lugar:p.p_referencia,version:p.p_version+1,intervencion_grupo_integrantes:p.p_integrantes};
    if(old)Object.assign(old,row);else groups.push(row);const parent=records.get(p.p_intervencion);parent.version++;
@@ -52,7 +60,7 @@ const supabaseClient={
   const saved={...p.p_intervencion,id:p.p_id,version:p.p_version+2,unidad:currentProfile.unidad,departamento_registro:currentProfile.departamento,creado_por:currentProfile.id,resultados_previstos:[],intervencion_operativos:p.p_operativo};
   records.set(saved.id,saved);return {data:{id:saved.id,version:saved.version},error:null};
  },
- from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_grupos'?groups.filter(d=>d.intervencion_id===id):table==='intervencion_vehiculos'?vehicles.filter(d=>d.intervencion_id===id):table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
+ from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_requisitoriados'?rqs.filter(d=>d.intervencion_id===id):table==='intervencion_grupos'?groups.filter(d=>d.intervencion_id===id):table==='intervencion_vehiculos'?vehicles.filter(d=>d.intervencion_id===id):table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
 };
 document.getElementById('loginScreen').style.display='none';
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
@@ -97,7 +105,7 @@ const checks = `
   document.querySelector('[data-view="operativoView"]').click();
 
   await window.openOperativoResults([...records.keys()][0]);
-  assert(document.querySelectorAll('#resultCards input').length===10,'Deben existir diez tipos de resultado');
+  assert(document.querySelectorAll('#resultCards input').length===11,'Deben existir once tipos de resultado');
   document.querySelector('#resultCards input[value="detenidos"]').click();
   document.querySelector('#resultCards input[value="bandas"]').click();
   document.getElementById('saveResults').click();await tick();
@@ -178,18 +186,34 @@ const checks = `
   window.resetResultadosModule();assert(!document.getElementById('groupRecords').textContent,'Limpieza de grupos al salir');
   currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};await window.openOperativoResults([...records.keys()][0]);
   document.querySelector('#groupRecords button').click();
-  report.textContent='PASS: Bandas y organizaciones; alta, edición, vínculos, tipos, permisos y limpieza.  Operativos, detenidos, drogas, materiales y vehículos; alta y edición, permisos, iconos y limpieza de sesión.';
+  document.querySelector('#resultCards input[value="requisitoriados"]').click();
+  assert(!document.getElementById('rqResultsPanel').hidden,'Panel RQ visible');
+  document.getElementById('addRq').click();const rqf=document.getElementById('rqForm'),rqd=document.getElementById('rqDetention'),rqt=document.getElementById('rqType'),rqw=document.getElementById('rqMostWanted');
+  assert(!rqf.reportValidity(),'RQ exige datos');assert(rqt.options.length===3,'Dos tipos oficiales y opción vacía');
+  rqd.value=detained[0].id;rqd.dispatchEvent(new Event('change'));rqt.value='ORDEN DE CAPTURA';rqw.value='false';
+  const countBeforeRq=detained.length;rqf.requestSubmit();await tick();await tick();
+  assert(rqs.length===1&&!rqf.hidden,'Respuesta perdida conserva formulario');
+  assert(document.getElementById('rqStatus').textContent.includes('No se confirmó'),'Error de red explícito');
+  rqf.requestSubmit();await tick();await tick();assert(rqs.length===1&&detained.length===countBeforeRq,'Reintento sin duplicar detención ni RQ');
+  document.querySelector('#rqRecords button').click();assert(rqd.disabled,'No permite trasladar RQ a otra persona');rqt.value='RQ INTERNACIONAL';rqw.value='true';rqf.requestSubmit();await tick();await tick();
+  assert(rqs.length===1&&rqs[0].tipo==='RQ INTERNACIONAL'&&rqs[0].mas_buscado,'Edición de RQ');
+  document.getElementById('addRq').click();assert(![...rqd.options].some(o=>o.value===detained[0].id),'Excluye detenido ya vinculado');document.getElementById('cancelRq').click();
+  currentProfile={...currentProfile,id:'supervisor-fixture',rol:'supervisor'};await window.openOperativoResults([...records.keys()][0]);
+  assert(document.getElementById('addRq').disabled&&document.getElementById('rqNewDetainee').disabled,'Supervisor no registra RQ');document.querySelector('#rqRecords button').click();assert(document.getElementById('saveRq').hidden&&document.getElementById('rqFields').disabled,'Supervisor consulta sin editar');
+  window.resetResultadosModule();assert(!document.getElementById('rqRecords').textContent&&!document.getElementById('rqDetail').textContent,'Limpia datos RQ al salir');
+  currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};await window.openOperativoResults([...records.keys()][0]);document.querySelector('#rqRecords button').click();
+  report.textContent='PASS: Requisitoriados: validación, reintento tras pérdida de respuesta, edición, vínculo único, roles y limpieza.  Bandas y organizaciones; alta, edición, vínculos, tipos, permisos y limpieza.  Operativos, detenidos, drogas, materiales y vehículos; alta y edición, permisos, iconos y limpieza de sesión.';
  }catch(error){report.textContent='FAIL: '+error.message;}
 })();
 `;
 html = html.replace('</body>', `<script>${mock}</script>
 <script src="/catalogos.js"></script><script src="/dependencias.js"></script><script src="/catalogos-ui.js"></script>
-<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/vehiculos-catalogo.js"></script><script src="/vehiculos.js"></script><script src="/grupos.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
-const allowed = new Set(['styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','grupos.js','materiales.js','materiales-catalogo.js','vehiculos.js','vehiculos-catalogo.js','assets/logo-diriptim.png']);
+<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/vehiculos-catalogo.js"></script><script src="/vehiculos.js"></script><script src="/grupos.js"></script><script src="/requisitoriados.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
+const allowed = new Set(['styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','requisitoriados.js','grupos.js','materiales.js','materiales-catalogo.js','vehiculos.js','vehiculos-catalogo.js','assets/logo-diriptim.png']);
 http.createServer((req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1);
   if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(html);}
-  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150009_grupos_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
+  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150010_requisitoriados_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(!allowed.has(name)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':'image/png');
   res.end(fs.readFileSync(path.join(root,name)));

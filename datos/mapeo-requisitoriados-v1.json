@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "hoja": "2_RQ N",
+  "unidad_fila": "Una detención con detalle de requisitoria. No sumar con Detenidos como personas diferentes.",
+  "catalogos": {
+    "tipo": {
+      "origen": "OTRO!E66:E67 (TIPO_RQ)",
+      "valores": [
+        "ORDEN DE CAPTURA",
+        "RQ INTERNACIONAL"
+      ]
+    },
+    "mas_buscado": {
+      "origen": "OTRO!C51:C52 (MAS_BUSCADO)",
+      "valores": [
+        "SI",
+        "NO"
+      ]
+    }
+  },
+  "reglas": [
+    "Delitos ordenados por orden. Más de dos requiere revisión antes de exportar, sin truncar silenciosamente.",
+    "Entidad pública y detalle quedan vacíos cuando es_funcionario_publico es false.",
+    "Los datos reutilizados se leen del registro original y se actualizan al corregirlo."
+  ],
+  "columnas": {
+    "A": "derivado.numero",
+    "B": "derivado.mes_detencion",
+    "C": "detencion.fecha",
+    "D": "detencion.hora",
+    "E": "persona.apellido_paterno",
+    "F": "persona.apellido_materno",
+    "G": "persona.nombres",
+    "H": "persona.edad",
+    "I": "persona.genero",
+    "J": "persona.nacionalidad",
+    "K": "persona.tipo_documento",
+    "L": "persona.numero_documento",
+    "M": "requisitoria.tipo",
+    "N": "requisitoria.mas_buscado",
+    "O": "operativo.departamento",
+    "P": "operativo.provincia",
+    "Q": "operativo.distrito",
+    "R": "detencion.es_funcionario_publico",
+    "S": "detencion.entidad_publica",
+    "T": "detencion.detalle_entidad_publica",
+    "U": "delitos.0.es_tentativa",
+    "V": "delitos.0.fuero_ley_especial",
+    "W": "delitos.0.delito_general",
+    "X": "delitos.0.delito_especifico",
+    "Y": "delitos.0.subtipo",
+    "Z": "delitos.1.es_tentativa",
+    "AA": "delitos.1.fuero_ley_especial",
+    "AB": "delitos.1.delito_general",
+    "AC": "delitos.1.delito_especifico",
+    "AD": "delitos.1.subtipo",
+    "AE": "operativo.direccion_policial",
+    "AF": "operativo.direccion_especializada_region",
+    "AG": "operativo.division_policial",
+    "AH": "operativo.departamento_policial",
+    "AI": "operativo.unidad_area_equipo",
+    "AJ": "operativo.nota_sicpip",
+    "AK": "operativo.latitud",
+    "AL": "operativo.longitud"
+  }
+}
