@@ -72,42 +72,42 @@ async function uploadRecordFiles(recordId) {
         continue;
       }
 
-      let compressedFile;
       try {
-        compressedFile = await compressImage(file);
+        const compressedFile = await compressImage(file);
+        const path = `${currentProfile.unidad}/${recordId}/${crypto.randomUUID()}.jpg`;
+        const { error: uploadError } = await supabaseClient.storage
+          .from('ficha-archivos')
+          .upload(path, compressedFile, { contentType: 'image/jpeg', upsert: false });
+        if (uploadError) throw uploadError;
+        uploadedMetadata.push({
+          ficha_id: recordId,
+          tipo: group.type,
+          ruta_privada: path,
+          creado_por: currentProfile.id
+        });
       } catch (error) {
         console.error(error);
         failed += 1;
-        continue;
       }
-
-      const path = `${currentProfile.unidad}/${recordId}/${crypto.randomUUID()}.jpg`;
-      const { error: uploadError } = await supabaseClient.storage
-        .from('ficha-archivos')
-        .upload(path, compressedFile, { contentType: 'image/jpeg', upsert: false });
-
-      if (uploadError) {
-        console.error(uploadError);
-        failed += 1;
-        continue;
-      }
-
-      uploadedMetadata.push({
-        ficha_id: recordId,
-        tipo: group.type,
-        ruta_privada: path,
-        creado_por: currentProfile.id
-      });
     }
   }
 
   if (uploadedMetadata.length) {
-    const { error: metadataError } = await supabaseClient.from('archivos').insert(uploadedMetadata);
-    if (metadataError) {
-      console.error(metadataError);
-      await supabaseClient.storage.from('ficha-archivos').remove(uploadedMetadata.map(item => item.ruta_privada));
-      failed += uploadedMetadata.length;
-      return { uploaded: 0, failed };
+    try {
+      const { error: metadataError } = await supabaseClient.from('archivos').insert(uploadedMetadata);
+      if (metadataError) {
+        console.error(metadataError);
+        try {
+          const { error: cleanupError } = await supabaseClient.storage.from('ficha-archivos').remove(uploadedMetadata.map(item => item.ruta_privada));
+          if (cleanupError) console.error(cleanupError);
+        } catch (cleanupError) { console.error(cleanupError); }
+        return { uploaded: 0, failed: failed + uploadedMetadata.length };
+      }
+    } catch (error) {
+      // Si se pierde la respuesta, los metadatos podrían haberse guardado.
+      // No borrar imágenes cuyo resultado no se puede confirmar.
+      console.error(error);
+      return { uploaded: 0, failed: failed + uploadedMetadata.length };
     }
   }
 
@@ -489,8 +489,8 @@ async function loadCurrentProfile(userId) {
   document.getElementById('institutionScope').textContent = assignedScope;
   document.querySelector('.user strong').textContent = `${data.nombres} ${data.apellidos}`;
   document.getElementById('userScope').textContent = isAdministrator ? 'Administrador general' : assignedScope;
-  document.querySelectorAll('.profile-registration-department').forEach(input => { input.value = data.departamento || 'SIN ASIGNAR'; });
-  document.querySelectorAll('.profile-registration-area').forEach(input => { input.value = data.unidad || 'SIN ASIGNAR'; });
+  document.querySelectorAll('.profile-registration-department').forEach(input => { input.defaultValue = input.value = data.departamento || 'SIN ASIGNAR'; });
+  document.querySelectorAll('.profile-registration-area').forEach(input => { input.defaultValue = input.value = data.unidad || 'SIN ASIGNAR'; });
   document.querySelector('.avatar').textContent = data.nombres.slice(0, 1).toUpperCase() + data.apellidos.slice(0, 1).toUpperCase();
   document.title = `${assignedScope} | DIRITPTIM`;
   return true;
@@ -683,6 +683,7 @@ function resetMainView() {
   editingRecordCode = null;
   selectedRecord = null;
   form.reset();
+  window.resetVictimLocation?.();
   document.querySelectorAll('.view').forEach(view => view.classList.toggle('active', view.id === 'dashboardView'));
   document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.view === 'dashboardView'));
   document.getElementById('pageEyebrow').textContent = pageTitles.dashboardView[0];
@@ -1372,7 +1373,7 @@ form.addEventListener('submit', async event => {
   photoLabel.style.backgroundImage = '';
   photoLabel.classList.remove('has-photo');
   status.textContent = fileResult.failed
-    ? `Ficha ${savedCode} guardada; ${fileResult.failed} archivo(s) no pudieron subirse.`
+    ? `Ficha ${savedCode} guardada; no se confirmó la carga de ${fileResult.failed} archivo(s). Revise las fotografías de la ficha antes de volver a adjuntarlas.`
     : `Ficha ${savedCode} guardada con ${fileResult.uploaded} archivo(s).`;
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2800);
@@ -1381,6 +1382,7 @@ form.addEventListener('submit', async event => {
 document.getElementById('clearBtn').addEventListener('click', () => {
   if (!confirm('¿Desea limpiar todos los campos de esta ficha?')) return;
   form.reset();
+  window.resetVictimLocation?.();
   photoLabel.style.backgroundImage = '';
   photoLabel.classList.remove('has-photo');
   status.textContent = '';

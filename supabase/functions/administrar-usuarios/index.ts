@@ -64,13 +64,13 @@ export default {
       } else if (body.accion === 'actualizar') {
         if (!body.id) throw new Error('Usuario no identificado.');
         if (body.id === userId && (body.rol !== 'administrador' || body.activo === false)) throw new Error('No puede quitarse su propio acceso de administrador.');
+        if (body.contrasena && String(body.contrasena).length < 8) throw new Error('La contraseña debe tener al menos 8 caracteres.');
         const { error: profileError } = await ctx.supabaseAdmin.from('perfiles').update({
           nombres: body.nombres.trim(), apellidos: body.apellidos.trim(), unidad, departamento, ambito,
           rol: body.rol, activo: Boolean(body.activo)
         }).eq('id', body.id);
         if (profileError) throw profileError;
         if (body.contrasena) {
-          if (String(body.contrasena).length < 8) throw new Error('La contraseña debe tener al menos 8 caracteres.');
           const { error: passwordError } = await ctx.supabaseAdmin.auth.admin.updateUserById(body.id, { password: body.contrasena });
           if (passwordError) throw passwordError;
         }
