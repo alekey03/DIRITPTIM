@@ -235,3 +235,14 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 
 /* Identidad institucional según la dependencia del usuario. */
 .brand strong{font-size:18px}.brand small{font-size:12px;margin-top:4px}.user span strong{font-size:12px}.user span small{font-size:10px;margin-top:3px}
+
+/* Intervenciones: formulario de borrador independiente. */
+#operativoView { padding: 26px 32px; }
+#operativoForm { padding: 0; width: 100%; max-width: none; }
+.operativo-section { border: 1px solid #dbe5df; margin: 22px 0; padding: 24px; min-width: 0; }
+.operativo-section legend { color: #28533b; font-weight: 700; padding: 0 8px; font-size: 1.05rem; }
+.operativo-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 18px 0; }
+#operativoStatus { flex: 1 1 260px; margin: 0; }
+#operativoForm select, #operativoForm input { min-width: 0; width: 100%; }
+#operativoForm .grid { align-items: start; }
+@media(max-width: 800px) { #operativoView { padding: 20px 12px; } #operativoForm .grid { grid-template-columns: 1fr; } .operativo-section { padding: 16px; } }

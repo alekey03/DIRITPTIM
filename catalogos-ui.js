@@ -3,6 +3,7 @@
   let CRIMES = [];
   let POLICE = [];
   let WEAPONS = [];
+  let operativoCatalogs = null;
 
   const ROOT_LABELS = {
     FUERO_COMUN: 'Fuero común',
@@ -189,10 +190,37 @@
     return cascade;
   };
 
+  window.bindOperativoCatalogs = function bindOperativoCatalogs(form) {
+    const selects = kind => [...form.querySelectorAll(`[data-op-catalog="${kind}"]`)];
+    const geo = bindCascade(selects('geo'), GEO, ['Seleccionar departamento', 'Seleccionar provincia', 'Seleccionar distrito']);
+    const police = bindCascade(selects('police'), POLICE, ['Seleccionar dirección', 'Seleccionar región o dirección', 'Seleccionar división', 'Seleccionar departamento policial']);
+    const crime = bindCascade(selects('crime'), [], ['Seleccionar delito general', 'Seleccionar delito específico']);
+    function refresh() {
+      const generals = new Map();
+      for (const root of CRIMES) for (const general of root.children || []) {
+        const children = generals.get(general.value)?.children || [];
+        const merged = new Map([...children, ...(general.children || [])].map(node => [node.value, node]));
+        generals.set(general.value, { value: general.value, children: [...merged.values()] });
+      }
+      police.setRoots(POLICE);
+      crime.setRoots([...generals.values()]);
+    }
+    operativoCatalogs = { refresh, reset() { geo.reset(); police.reset(); crime.reset(); },
+      set(i, o) {
+        geo.set([i.departamento, i.provincia, i.distrito]);
+        police.set([i.direccion_policial, i.direccion_especializada_region, i.division_policial, i.departamento_policial]);
+        crime.set([o.delito_general, o.delito_especifico]);
+      }
+    };
+    refresh();
+    return operativoCatalogs;
+  };
+
   window.setProtectedCatalogs = function setProtectedCatalogs(catalogs) {
     CRIMES = Array.isArray(catalogs?.delitos) ? catalogs.delitos : [];
     POLICE = Array.isArray(catalogs?.dependencias_policiales) ? catalogs.dependencias_policiales : [];
     WEAPONS = Array.isArray(catalogs?.armas) ? catalogs.armas : [];
+    operativoCatalogs?.refresh();
     policeDependency?.setRoots(POLICE);
     weaponDependency?.setRoots(WEAPONS);
     document.querySelectorAll('.crime-row').forEach(row => {
@@ -210,6 +238,7 @@
     CRIMES = [];
     POLICE = [];
     WEAPONS = [];
+    operativoCatalogs?.refresh();
     policeDependency?.setRoots([]);
     weaponDependency?.setRoots([]);
     document.querySelectorAll('.crime-row').forEach(row => row._crimeCascade?.setRoots([]));

@@ -674,11 +674,14 @@ const pageTitles = {
   detaineeDashboardView: ['RESUMEN', 'Dashboard de detenidos'],
   detaineeFormView: ['NUEVO REGISTRO', 'Registro de persona detenida'],
   detaineeRecordsView: ['CONSULTA', 'Registros de detenidos'],
+  operativoView: ['INTERVENCIONES', 'Registro del operativo'],
+  operativoRecordsView: ['INTERVENCIONES', 'Borradores de operativos'],
   usersView: ['ADMINISTRACIÓN', 'Gestión de usuarios'],
   auditView: ['SEGURIDAD', 'Auditoría del sistema']
 };
 
 function resetMainView() {
+  window.resetOperativoModule?.();
   editingRecordId = null;
   editingRecordCode = null;
   selectedRecord = null;
@@ -975,6 +978,8 @@ document.querySelectorAll('[data-view]').forEach(button => {
     if (target === 'detaineeDashboardView') window.loadDetaineeDashboard?.();
     if (target === 'detaineeFormView') window.initializeDetaineeForm?.();
     if (target === 'detaineeRecordsView') window.loadDetaineeRecords?.();
+    if (target === 'operativoView') window.initializeOperativoForm?.();
+    if (target === 'operativoRecordsView') window.loadOperativos?.();
     if (target === 'usersView') loadUsers();
     if (target === 'auditView') window.loadAudit?.();
     window.scrollTo({ top: 0, behavior: 'smooth' });
