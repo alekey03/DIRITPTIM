@@ -9,13 +9,20 @@ let html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
   .replace(/<link[^>]+(?:https:)[^>]*>/gi, '');
 const mock = `
 let currentProfile={id:'fixture-user',activo:true,rol:'operador',unidad:'DEPITPTIM ABANCAY',departamento:'APURIMAC'};
-let requests=[],records=new Map(),detained=[],drugs=[],materials=[],vehicles=[],groups=[],rqs=[],rqFailOnce=true,failOnce=true;
+let requests=[],records=new Map(),detained=[],drugs=[],materials=[],vehicles=[],groups=[],minors=[],minorFailOnce=true,rqs=[],rqFailOnce=true,failOnce=true;
 function escapeHtml(value){return String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function formatDate(value){return value;}
 
 const supabaseClient={
  async rpc(name,p){
   requests.push(structuredClone(p));
+  if(name==='guardar_menor_operativo'){
+   const old=minors.find(r=>r.id===p.p_id),parent=records.get(p.p_intervencion);
+   if(old&&old.version===p.p_version+1&&JSON.stringify(old.datos)===JSON.stringify(p.p_datos))return {data:{id:old.id,version:old.version,operativo_version:parent.version},error:null};
+   const row={id:p.p_id,intervencion_id:p.p_intervencion,tipo:p.p_tipo,datos:p.p_datos,version:p.p_version+1};if(old)Object.assign(old,row);else minors.push(row);parent.version++;
+   if(minorFailOnce){minorFailOnce=false;throw new Error('Respuesta perdida de menor');}
+   return {data:{id:row.id,version:row.version,operativo_version:parent.version},error:null};
+  }
   if(name==='guardar_requisitoriado_operativo'){
    const old=rqs.find(r=>r.id===p.p_id),parent=records.get(p.p_intervencion);
    if(old && old.version===p.p_version+1 && old.tipo===p.p_tipo && old.mas_buscado===p.p_mas_buscado)return {data:{id:old.id,version:old.version,operativo_version:parent.version},error:null};
@@ -60,7 +67,7 @@ const supabaseClient={
   const saved={...p.p_intervencion,id:p.p_id,version:p.p_version+2,unidad:currentProfile.unidad,departamento_registro:currentProfile.departamento,creado_por:currentProfile.id,resultados_previstos:[],intervencion_operativos:p.p_operativo};
   records.set(saved.id,saved);return {data:{id:saved.id,version:saved.version},error:null};
  },
- from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_requisitoriados'?rqs.filter(d=>d.intervencion_id===id):table==='intervencion_grupos'?groups.filter(d=>d.intervencion_id===id):table==='intervencion_vehiculos'?vehicles.filter(d=>d.intervencion_id===id):table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
+ from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_menores'?minors.filter(d=>d.intervencion_id===id):table==='intervencion_requisitoriados'?rqs.filter(d=>d.intervencion_id===id):table==='intervencion_grupos'?groups.filter(d=>d.intervencion_id===id):table==='intervencion_vehiculos'?vehicles.filter(d=>d.intervencion_id===id):table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
 };
 document.getElementById('loginScreen').style.display='none';
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
@@ -119,7 +126,7 @@ const checks = `
   assert(detained.length===1,'Debe registrar detenido');
   assert(detained[0].intervencion_id===[...records.keys()][0],'Debe conservar vínculo');
   assert(document.querySelectorAll('.linked-detainee-row').length===1,'Debe volver al listado vinculado');
-  document.querySelector('#resultCards input[value="menores"]').click();
+  document.querySelector('#resultCards input[value="victimas"]').click();
   assert(!document.getElementById('resultsPendingNote').hidden,'Otros detalles pendientes deben estar señalados');
   document.querySelector('#resultCards input[value="drogas"]').click();
   const dtype=document.getElementById('drugType'),quantity=document.getElementById('drugQuantity');
@@ -143,12 +150,12 @@ const checks = `
   document.querySelector('#resultCards input[value="armas"]').click();
   assert(document.querySelectorAll('#materialCards svg').length===5,'Cinco iconos');
   document.querySelector('[data-material="municion"]').click();
-  let mf=document.getElementById('materialForm');mf.elements.namedItem('cantidad').value='15';mf.requestSubmit();await tick();await tick();
+  let minorTestForm=document.getElementById('materialForm');minorTestForm.elements.namedItem('cantidad').value='15';minorTestForm.requestSubmit();await tick();await tick();
   assert(materials.length===1 && materials[0].datos.cantidad===15,'Alta de municiones');
-  document.querySelector('#materialRecords button').click();mf.elements.namedItem('cantidad').value='18';mf.requestSubmit();await tick();await tick();
+  document.querySelector('#materialRecords button').click();minorTestForm.elements.namedItem('cantidad').value='18';minorTestForm.requestSubmit();await tick();await tick();
   assert(materials.length===1 && materials[0].datos.cantidad===18,'Edición sin duplicar');
-  document.querySelector('[data-material="fuego"]').click();assert(mf.elements.namedItem('serie'),'Arma tiene serie');
-  mf.elements.namedItem('tipo').value='TIPO FICTICIO';mf.elements.namedItem('situacion').value='FICTICIA';mf.elements.namedItem('serie').value='SOLO-PRUEBA';mf.requestSubmit();await tick();await tick();
+  document.querySelector('[data-material="fuego"]').click();assert(minorTestForm.elements.namedItem('serie'),'Arma tiene serie');
+  minorTestForm.elements.namedItem('tipo').value='TIPO FICTICIO';minorTestForm.elements.namedItem('situacion').value='FICTICIA';minorTestForm.elements.namedItem('serie').value='SOLO-PRUEBA';minorTestForm.requestSubmit();await tick();await tick();
   assert(materials.length===2,'Alta de arma');
   currentProfile={...currentProfile,id:'supervisor-fixture',rol:'supervisor'};await window.openOperativoResults([...records.keys()][0]);
   assert(document.querySelector('[data-material="fuego"]').disabled,'Supervisor no agrega');
@@ -202,18 +209,30 @@ const checks = `
   assert(document.getElementById('addRq').disabled&&document.getElementById('rqNewDetainee').disabled,'Supervisor no registra RQ');document.querySelector('#rqRecords button').click();assert(document.getElementById('saveRq').hidden&&document.getElementById('rqFields').disabled,'Supervisor consulta sin editar');
   window.resetResultadosModule();assert(!document.getElementById('rqRecords').textContent&&!document.getElementById('rqDetail').textContent,'Limpia datos RQ al salir');
   currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};await window.openOperativoResults([...records.keys()][0]);document.querySelector('#rqRecords button').click();
-  report.textContent='PASS: Requisitoriados: validación, reintento tras pérdida de respuesta, edición, vínculo único, roles y limpieza.  Bandas y organizaciones; alta, edición, vínculos, tipos, permisos y limpieza.  Operativos, detenidos, drogas, materiales y vehículos; alta y edición, permisos, iconos y limpieza de sesión.';
+  document.querySelector('#resultCards input[value="menores"]').click();document.querySelector('[data-minor="menor"]').click();
+  const minorCaptureForm=document.getElementById('minorForm'),field=n=>minorCaptureForm.elements.namedItem(n);
+  assert(!minorCaptureForm.checkValidity(),'Menor requiere identidad y edad');assert(field('edad').options.length===17,'16 edades del Excel y opción vacía');
+  assert(!field('esFuncionario'),'Menores no pide funcionario');assert(field('nombre_grupo').disabled,'Ninguno deshabilita nombre de grupo');
+  field('apellido_paterno').value='FICTICIO';field('nombres').value='MENOR PRUEBA';field('edad').value='15';field('fecha').value='2026-09-15';
+  field('grupo').value='Banda criminal';field('grupo').dispatchEvent(new Event('change'));assert(field('nombre_grupo').required&&!field('nombre_grupo').disabled,'Banda requiere nombre');
+  field('nombre_grupo').value='FICTICIA';field('grupo').value='Ninguno';field('grupo').dispatchEvent(new Event('change'));assert(!field('nombre_grupo').value,'Ninguno limpia nombre');
+  minorCaptureForm.requestSubmit();await tick();await tick();assert(minors.length===1&&!minorCaptureForm.hidden,'Pérdida de respuesta conserva formulario');minorCaptureForm.requestSubmit();await tick();await tick();assert(minors.length===1&&minorCaptureForm.hidden,'Reintento no duplica menor');
+  document.querySelector('#minorRecords button').click();field('nombres').value='MENOR EDITADO';minorCaptureForm.requestSubmit();await tick();await tick();assert(minors[0].datos.nombres==='MENOR EDITADO','Edición de menor');
+  currentProfile={...currentProfile,id:'supervisor-fixture',rol:'supervisor'};await window.openOperativoResults([...records.keys()][0]);assert(document.querySelector('[data-minor="menor"]').disabled,'Supervisor no registra menor');document.querySelector('#minorRecords button').click();assert(document.getElementById('saveMinor').hidden&&document.getElementById('minorFields').disabled,'Supervisor solo consulta');document.getElementById('cancelMinor').click();assert(minorCaptureForm.hidden,'Supervisor puede cerrar consulta');
+  window.resetResultadosModule();assert(!document.getElementById('minorRecords').textContent&&!document.getElementById('minorInputs').textContent,'Limpieza de menores');
+  currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};await window.openOperativoResults([...records.keys()][0]);document.querySelector('#minorRecords button').click();
+  report.textContent='PASS: Menores: 48 columnas, validación, grupos, alta, edición, reintentos, consulta por roles y limpieza. Requisitoriados: validación, reintento tras pérdida de respuesta, edición, vínculo único, roles y limpieza.  Bandas y organizaciones; alta, edición, vínculos, tipos, permisos y limpieza.  Operativos, detenidos, drogas, materiales y vehículos; alta y edición, permisos, iconos y limpieza de sesión.';
  }catch(error){report.textContent='FAIL: '+error.message;}
 })();
 `;
 html = html.replace('</body>', `<script>${mock}</script>
 <script src="/catalogos.js"></script><script src="/dependencias.js"></script><script src="/catalogos-ui.js"></script>
-<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/vehiculos-catalogo.js"></script><script src="/vehiculos.js"></script><script src="/grupos.js"></script><script src="/requisitoriados.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
-const allowed = new Set(['styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','requisitoriados.js','grupos.js','materiales.js','materiales-catalogo.js','vehiculos.js','vehiculos-catalogo.js','assets/logo-diriptim.png']);
+<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/vehiculos-catalogo.js"></script><script src="/vehiculos.js"></script><script src="/grupos.js"></script><script src="/requisitoriados.js"></script><script src="/menores-catalogo.js"></script><script src="/menores.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
+const allowed = new Set(['menores.js','menores-catalogo.js','styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','requisitoriados.js','grupos.js','materiales.js','materiales-catalogo.js','vehiculos.js','vehiculos-catalogo.js','assets/logo-diriptim.png']);
 http.createServer((req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1);
   if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(html);}
-  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150010_requisitoriados_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
+  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150011_menores_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(!allowed.has(name)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':'image/png');
   res.end(fs.readFileSync(path.join(root,name)));
