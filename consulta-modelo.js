@@ -15,7 +15,7 @@
       ...Object.entries(drugs).map(([type,title])=>({id:type,title,table:'intervencion_drogas',type,fields:fields([['cantidad','Cantidad'],['medida','Unidad'],['nombre_sustancia','Nombre de sustancia sintética']])})),
       ...[['MATERIALES_CATALOGO','intervencion_materiales'],['VEHICULOS_CATALOGO','intervencion_vehiculos']].flatMap(([catalog,table])=>window[catalog].tipos.map(t=>({id:table+'_'+t.tipo,title:t.titulo,table,type:t.tipo,fields:t.campos})))
     ];
-    return result.map(c=>({...c,...(c.table==='intervenciones'?{select:'*,intervencion_operativos(*)'}:{}),fields:[...c.fields,...(c.table==='intervenciones'?operativeFields:[])].filter(f=>!['fecha','hora'].includes(f.key)).map(f=>({...f,label:/^delito[12]$/.test(f.group)?`${f.label} · Delito ${f.group.slice(-1)}`:f.label}))}));
+    return result.map(c=>({...c,...(c.table==='intervenciones'?{select:'*,intervencion_operativos(*)'}:{}),fields:[...c.fields,...(c.table==='intervenciones'?operativeFields:[])].filter(f=>f.key!=='fecha').map(f=>({...f,label:/^delito[12]$/.test(f.group)?`${f.label} · Delito ${f.group.slice(-1)}`:f.label}))}));
   }
   const normalizeText = value => String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().trim();
   function normalize(record, category, parents) {
