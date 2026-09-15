@@ -43,3 +43,11 @@ La migración `202609150005_drogas_operativo.sql`, aplicada el 15 de septiembre 
 `datos/mapeo-drogas-v1.json` conserva la correspondencia completa de columnas para la exportación futura. Los kilogramos y las unidades no se convierten ni suman entre sí. Los insumos químicos y la generación del Excel continúan pendientes.
 
 El acceso hereda los permisos del operativo: consulta autorizada por dependencia, edición por autor en su unidad o administrador, bloqueo de cuentas inactivas. El guardado tiene control de versión y reintentos idénticos; no permite trasladar ni eliminar resultados. La selección de drogas no puede retirarse si ya existen registros. Validación: `node tests/drogas-operativo.test.cjs` con PGlite y recorrido ficticio en `tests/operativos-preview.cjs`.
+
+## Armas, municiones, explosivos y réplicas
+
+Cinco tarjetas con iconos SVG abren los formularios de las hojas 13, 14, 31, 32 y 51. `datos/mapeo-materiales-v1.json` relaciona todas sus columnas con el contexto del operativo, los datos del material y las columnas derivadas. `scripts/generar-mapeo-materiales.py` regenera ese contrato y `materiales-catalogo.js`. La captura conserva los datos particulares del registro en JSON validado por categoría; no crea automáticamente una persona detenida ni atribuye delitos por seleccionar un material. Los datos de persona y hasta dos delitos son opcionales y corresponden al registro del detallado.
+
+`202609150006_materiales_operativo.sql` agrega `intervencion_materiales` y su guardado con RLS, control de versiones y reintentos. Las pruebas cubren todas las columnas, campos ajenos a la categoría, permisos, cantidades, inmutabilidad del vínculo, conflictos y reaplicación. El recorrido de interfaz verifica tarjetas, alta, edición y consulta. No permite borrar registros ni trasladarlos entre operativos o categorías.
+
+Las municiones son unidades enteras. La plantilla no define unidad para la cantidad de explosivos: se conserva el valor y se pide indicar su medida en el detalle, sin conversiones ni suma de medidas distintas. Las armas se capturan individualmente. Las municiones asociadas a un arma no se duplican automáticamente en la hoja de municiones. La conciliación con `detencion_armas`, la carga de fotografías y la exportación XLSM permanecen pendientes.

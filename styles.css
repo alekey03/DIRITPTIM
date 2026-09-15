@@ -273,6 +273,27 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 .drug-fields select,.drug-fields input { width:100%; min-width:0; padding:13px; border:1px solid var(--line); border-radius:9px; font:inherit; background:white; }
 .drug-fields label[hidden],#cancelDrug[hidden],#moreDrugs[hidden] { display:none; }
 .drug-badge { padding:9px 14px; border-radius:20px; color:var(--navy); background:var(--blue-soft); white-space:nowrap; }
+.material-cards { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin:20px 0; }
+.material-card { display:flex; flex-direction:column; align-items:flex-start; gap:12px; border:1px solid var(--line); border-radius:15px; background:#fff; color:var(--ink); padding:20px 16px; text-align:left; cursor:pointer; font:inherit; transition:background .15s,border-color .15s; }
+.material-card:hover,.material-card.selected { background:var(--blue-soft); border-color:var(--blue); }
+.material-card:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+.material-card svg { width:44px; height:44px; background:var(--blue-soft); padding:9px; border-radius:12px; color:var(--navy); }
+.material-card small { color:var(--muted); line-height:1.5; }
+.material-card span { margin-top:auto; color:var(--blue); font-size:12px; font-weight:700; }
+.material-card:disabled { opacity:.65; cursor:default; }
+.material-fields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; padding:14px 0 24px; }
+.material-fields label { display:flex; flex-direction:column; gap:8px; font-weight:600; }
+.material-fields input,.material-fields select { min-width:0; width:100%; border:1px solid var(--line); background:#fff; border-radius:8px; padding:12px; font:inherit; }
+#materialFields { border:1px solid var(--line); border-radius:14px; padding:20px; }
+#materialInputs details { border-top:1px solid var(--line); padding:17px 0; }
+#materialInputs summary { font-weight:700; cursor:pointer; }
+.material-record { display:flex; align-items:center; gap:15px; padding:18px 0; border-bottom:1px solid var(--line); }
+.material-record>div { flex:1; min-width:0; overflow-wrap:anywhere; }
+.material-record small { display:block; margin-top:8px; color:var(--muted); }
+.material-record-icon svg { width:34px; height:34px; color:var(--navy); }
+#materialForm[hidden],#saveMaterial[hidden],#moreMaterials[hidden] { display:none; }
+@media(max-width:1100px) { .material-cards { grid-template-columns:repeat(3,minmax(0,1fr)); } .material-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) { .material-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .material-card { padding:15px 12px; } .material-fields { grid-template-columns:1fr; } .material-record { flex-wrap:wrap; } }
 #drugFields { padding:20px; border:1px solid var(--line); border-radius:12px; }
 #drugRecords { margin-top:18px; }
 @media(max-width:600px) { .drug-fields { grid-template-columns:1fr; } .drug-badge { white-space:normal; } }
