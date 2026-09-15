@@ -81,3 +81,9 @@ La migración 011 crea `intervencion_menores` con permisos heredados del operati
 Migración 012: Requisitoriados captura identidad y datos propios sin crear Detenidos. Conserva los registros anteriores y su referencia de origen, copiando sus datos; `detenciones_reportables` excluye únicamente esos orígenes del listado, indicadores y exportación de Detenidos. No borra personas ni detenciones históricas.
 
 Migración 013: ampliaciones en `intervencion_notas`, con número, fecha, hora y detalle, vinculadas al mismo operativo. No sustituye la NI principal, no crea otro operativo ni agrega automáticamente bienes. Los hallazgos se registran en su categoría correspondiente. Permisos y control de versiones del operativo. La exportación completa del detallado sigue pendiente.
+
+### Registros y Dashboard generales
+
+Accesos principales independientes para consultar las categorías implementadas sin recorrer cada operativo. Comparten filtros por fechas, dependencia, lugar, texto y campo de la categoría; Registros incorpora paginación, detalle, vínculo al operativo y exportación de la consulta a Excel. Dashboard presenta conteos, distribución por dependencia y evolución mensual, con enlace a los registros filtrados. Las cantidades de drogas se separan en kg y envoltorios. Esta exportación de consulta no sustituye al detallado completo de 56 hojas.
+
+Las lecturas usan las tablas y políticas RLS existentes y `detenciones_reportables`: administrador nacional, operador de su unidad, supervisor de dependencias autorizadas. Los datos se limpian al cambiar/cerrar sesión y se descartan respuestas tardías. No requiere migración ni cambia permisos. Verificación: `node tests/consulta.test.cjs`; vista con datos ficticios: `node tests/consulta-preview.cjs` (puerto 8767).

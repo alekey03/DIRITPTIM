@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260916-rq-ni-v1" />
+  <link rel="stylesheet" href="styles.css?v=20260916-consulta-v1" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
 </head>
 <body>
@@ -30,6 +30,8 @@
     <button class="sidebar-collapse" id="sidebarCollapse" type="button" aria-label="Contraer menú lateral" aria-expanded="true" title="Contraer menú lateral"><span aria-hidden="true">☰</span></button>
     <div class="brand"><img class="institution-logo" src="assets/logo-diriptim.png" alt="Escudo DIRIPTIM PNP"><div><strong id="institutionName">DIRITPTIM</strong><small id="institutionScope">Sistema nacional</small></div></div>
     <nav aria-label="Navegación principal">
+      <button class="nav-item" data-view="generalDashboardView"><span>▥</span>Dashboard</button>
+      <button class="nav-item" data-view="consultaRecordsView"><span>▤</span>Registros</button>
       <div class="nav-group" data-nav-group="victims">
         <button class="nav-group-toggle" type="button" aria-expanded="false"><span>♙</span><strong>Ficha de enrolamiento</strong><i>⌄</i></button>
         <div class="nav-submenu">
@@ -38,17 +40,9 @@
           <button class="nav-item" data-view="recordsView"><span>▤</span>Registros</button>
         </div>
       </div>
-      <div class="nav-group" data-nav-group="detainees">
-        <button class="nav-group-toggle" type="button" aria-expanded="false"><span>⚖</span><strong>Detenidos</strong><i>⌄</i></button>
-        <div class="nav-submenu">
-          <button class="nav-item" data-view="detaineeDashboardView"><span>⌂</span>Dashboard</button>
-          <button class="nav-item" data-view="detaineeFormView"><span>＋</span>Nuevo detenido</button>
-          <button class="nav-item" data-view="detaineeRecordsView"><span>▤</span>Registros</button>
-        </div>
-      </div>
       <div class="nav-group" data-nav-group="intervenciones">
         <button class="nav-group-toggle" type="button" aria-expanded="false"><span>▣</span><strong>Intervenciones</strong><i>⌄</i></button>
-        <div class="nav-submenu"><button class="nav-item" data-view="operativoView"><span>＋</span>Registrar operativo</button><button class="nav-item" data-view="operativoRecordsView"><span>▤</span>Borradores</button></div>
+        <div class="nav-submenu"><button class="nav-item" data-view="operativoView"><span>＋</span>Registrar operativo</button><button class="nav-item" data-view="operativoRecordsView"><span>▤</span>Operativos</button></div>
       </div>
       <button class="nav-item admin-only" data-view="usersView"><span>♙</span>Usuarios</button>
       <button class="nav-item admin-only" data-view="auditView"><span>☷</span>Auditoría</button>
@@ -64,6 +58,9 @@
       <button class="user" id="logoutBtn" title="Cerrar sesión"><span><strong>Admin</strong><small id="userScope">Cerrar sesión</small></span><div class="avatar">AD</div></button>
     </header>
 
+    <section id="generalDashboardView" class="view"></section>
+    <section id="consultaRecordsView" class="view"></section>
+    <button type="button" data-view="detaineeFormView" hidden aria-hidden="true"></button>
     <section id="dashboardView" class="view dashboard-view active">
       <div class="records-toolbar">
         <div><h2>Resumen de fichas de enrolamiento</h2><p>Indicadores consolidados de las fichas autorizadas para su unidad.</p></div>
@@ -453,7 +450,7 @@
   <script src="catalogos-ui.js?v=20260915-menores-v1"></script>
   <script src="mapa.js?v=20260910-map-v5"></script>
   <script src="dependencias.js?v=20260915-dependencias-v1"></script>
-  <script src="app.js?v=20260915-menu-cerrado-v1"></script>
+  <script src="app.js?v=20260916-consulta-v1"></script>
   <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="detenidos.js?v=20260916-rq-ni-v1"></script>
   <script src="intervenciones.js?v=20260915-resultados-v1"></script>
@@ -470,5 +467,7 @@
   <script src="menores.js?v=20260915-menores-v1"></script>
   <script src="resultados.js?v=20260916-rq-ni-v1"></script>
   <script src="exportaciones.js?v=20260916-rq-ni-v1"></script>
+  <script src="consulta-modelo.js?v=20260916-consulta-v1"></script>
+  <script src="consulta.js?v=20260916-consulta-v1"></script>
 </body>
 </html>

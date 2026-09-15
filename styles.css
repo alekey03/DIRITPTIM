@@ -340,3 +340,20 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 .material-fields textarea {width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:12px;font:inherit;resize:vertical;}
 #rqInputs input:disabled,#rqInputs select:disabled {background:#f3f5f7;color:#64748b;}
 #noteInputs label:has(textarea) {grid-column:1/-1;}
+/* Consulta transversal: mismos permisos y categorías en Registros y Dashboard. */
+#generalDashboardView,#consultaRecordsView{padding:28px}
+.consulta-table-wrap[hidden],.consulta-pagination[hidden]{display:none}
+.consulta-detail{max-height:60vh;overflow:auto;margin:20px 0}.consulta-detail p{padding:9px 0;border-bottom:1px solid #edf1f4;overflow-wrap:anywhere}
+.consulta-scope{padding:12px 18px;margin-bottom:18px;border-left:4px solid #497955;background:#eaf3ee;color:#234737;border-radius:8px}
+.consulta-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;padding:24px}
+.consulta-category{grid-column:span 2}.consulta-filter-actions{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+.consulta-status{margin:20px 0;color:#526579;min-height:24px}
+.consulta-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.consulta-metrics article{padding:22px;display:flex;flex-direction:column;gap:12px}.consulta-metrics strong{font-size:30px;color:#28523d}.consulta-metrics small{font-size:14px;color:#526579}
+.consulta-table-wrap{overflow:auto;max-height:65vh;background:white;border:1px solid #dce4eb;border-radius:14px}
+.consulta-table-wrap th{position:sticky;top:0;background:#edf3f0;z-index:1;min-width:150px}.consulta-table-wrap td{min-width:150px;max-width:340px;overflow-wrap:anywhere}
+.consulta-table-wrap th:nth-child(2),.consulta-table-wrap td:nth-child(2){min-width:270px}.consulta-pagination{display:flex;gap:20px;align-items:center;margin:20px 0}
+.consulta-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.consulta-charts>button{justify-self:start;grid-column:1/-1}.consulta-chart{padding:26px;max-height:520px;overflow:auto}.consulta-chart p{color:#68798a;margin:10px 0 24px}
+.consulta-bar{display:grid;grid-template-columns:1fr auto;gap:8px;margin:18px 0;font-size:14px}.consulta-track{grid-column:1/-1;background:#edf3ef;height:10px;border-radius:8px;overflow:hidden}.consulta-track i{display:block;background:#497955;height:100%;border-radius:8px}
+@media(max-width:1000px){.consulta-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.consulta-charts{grid-template-columns:1fr}}
+@media(max-width:600px){#generalDashboardView,#consultaRecordsView{padding:16px}.consulta-filters{grid-template-columns:1fr}.consulta-category{grid-column:auto}.consulta-pagination{gap:10px;flex-wrap:wrap}.consulta-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
