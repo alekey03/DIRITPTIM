@@ -284,14 +284,16 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 .material-fields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; padding:14px 0 24px; }
 .material-fields label { display:flex; flex-direction:column; gap:8px; font-weight:600; }
 .material-fields input,.material-fields select { min-width:0; width:100%; border:1px solid var(--line); background:#fff; border-radius:8px; padding:12px; font:inherit; }
-#materialFields { border:1px solid var(--line); border-radius:14px; padding:20px; }
-#materialInputs details { border-top:1px solid var(--line); padding:17px 0; }
-#materialInputs summary { font-weight:700; cursor:pointer; }
+#materialFields,#vehicleFields { border:1px solid var(--line); border-radius:14px; padding:20px; }
+#materialInputs details,#vehicleInputs details { border-top:1px solid var(--line); padding:17px 0; }
+#materialInputs summary,#vehicleInputs summary { font-weight:700; cursor:pointer; }
 .material-record { display:flex; align-items:center; gap:15px; padding:18px 0; border-bottom:1px solid var(--line); }
 .material-record>div { flex:1; min-width:0; overflow-wrap:anywhere; }
 .material-record small { display:block; margin-top:8px; color:var(--muted); }
 .material-record-icon svg { width:34px; height:34px; color:var(--navy); }
 #materialForm[hidden],#saveMaterial[hidden],#moreMaterials[hidden] { display:none; }
+.vehicle-cards { grid-template-columns:repeat(3,minmax(0,1fr)); }
+#vehicleForm[hidden],#saveVehicle[hidden],#moreVehicles[hidden] { display:none; }
 @media(max-width:1100px) { .material-cards { grid-template-columns:repeat(3,minmax(0,1fr)); } .material-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:600px) { .material-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .material-card { padding:15px 12px; } .material-fields { grid-template-columns:1fr; } .material-record { flex-wrap:wrap; } }
 #drugFields { padding:20px; border:1px solid var(--line); border-radius:12px; }

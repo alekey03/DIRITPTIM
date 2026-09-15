@@ -51,3 +51,9 @@ Cinco tarjetas con iconos SVG abren los formularios de las hojas 13, 14, 31, 32 
 `202609150006_materiales_operativo.sql` agrega `intervencion_materiales` y su guardado con RLS, control de versiones y reintentos. Las pruebas cubren todas las columnas, campos ajenos a la categoría, permisos, cantidades, inmutabilidad del vínculo, conflictos y reaplicación. El recorrido de interfaz verifica tarjetas, alta, edición y consulta. No permite borrar registros ni trasladarlos entre operativos o categorías.
 
 Las municiones son unidades enteras. La plantilla no define unidad para la cantidad de explosivos: se conserva el valor y se pide indicar su medida en el detalle, sin conversiones ni suma de medidas distintas. Las armas se capturan individualmente. Las municiones asociadas a un arma no se duplican automáticamente en la hoja de municiones. La conciliación con `detencion_armas`, la carga de fotografías y la exportación XLSM permanecen pendientes.
+
+## Vehículos y maquinaria
+
+Las tarjetas de vehículos mayores, menores y maquinaria capturan los campos de las hojas 17, 18 y 19. `datos/mapeo-vehiculos-v1.json` conserva sus 29 columnas por hoja; `scripts/generar-mapeo-vehiculos.py` regenera el contrato y el catálogo de formularios. La fecha, ubicación y dependencia provienen del operativo. Placa y valorización pueden quedar sin indicar; marca y situación son necesarias para guardar el borrador. La plantilla no especifica moneda: no se convierte ni se totaliza la valorización automáticamente.
+
+La migración `202609150007_vehiculos_operativo.sql` agrega la tabla y el guardado con permisos, versión y reintentos; debe aplicarse antes de publicar esta interfaz. `tests/vehiculos-operativo.test.cjs` comprueba las tres correspondencias, importes y permisos. El recorrido local verifica alta, edición y consulta. No se incorporan fotografías: únicamente la Ficha de Enrolamiento las admite. La exportación completa del detallado sigue pendiente.
