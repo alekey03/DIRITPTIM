@@ -357,3 +357,5 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 .consulta-bar{display:grid;grid-template-columns:1fr auto;gap:8px;margin:18px 0;font-size:14px}.consulta-track{grid-column:1/-1;background:#edf3ef;height:10px;border-radius:8px;overflow:hidden}.consulta-track i{display:block;background:#497955;height:100%;border-radius:8px}
 @media(max-width:1000px){.consulta-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.consulta-charts{grid-template-columns:1fr}}
 @media(max-width:600px){#generalDashboardView,#consultaRecordsView{padding:16px}.consulta-filters{grid-template-columns:1fr}.consulta-category{grid-column:auto}.consulta-pagination{gap:10px;flex-wrap:wrap}.consulta-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+#victimFields{border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0;min-width:0}#victimFields legend{font-weight:700;color:var(--primary);padding:0 8px}#victimForm[hidden],#saveVictim[hidden],#moreVictims[hidden]{display:none}#victimInputs section{padding:12px 0}#victimInputs input:read-only{background:#edf3ef}

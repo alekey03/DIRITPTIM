@@ -9,6 +9,7 @@
       {id:'megaoperativos',title:'Megaoperativos',table:'intervenciones',type:'megaoperativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
       {id:'detenidos',title:'Detenidos',table:'detenciones_reportables',select:'*,personas(*),detencion_delitos(*)',fields:fields([['nombre','Apellidos y nombres'],['numero_documento','Documento'],['edad','Edad'],['genero','Género'],['nacionalidad','Nacionalidad'],['motivo_detencion','Motivo'],['situacion_actual','Situación'],['delitos','Delitos'],['nombre_organizacion','Banda / organización'],['codigo','Código']])},
       {id:'rq',title:'Requisitoriados',table:'intervencion_requisitoriados',fields:window.REQUISITORIADOS_CATALOGO.campos},
+      {id:'victimas',title:'Víctimas de trata',table:'intervencion_victimas',fields:window.VICTIMAS_CATALOGO.campos},
       {id:'menores',title:'Menores',table:'intervencion_menores',fields:window.MENORES_CATALOGO.campos},
       ...[['banda','Bandas criminales'],['organizacion','Organizaciones criminales']].map(([type,title])=>({id:type,title,table:'intervencion_grupos',type,select:'*,intervencion_grupo_integrantes(*)',fields:fields([['nombre','Nombre'],['modalidad','Modalidad'],['referencia_lugar','Referencia'],['integrantes','Integrantes registrados']])})),
       {id:'drogas',title:'Drogas · todas las sustancias',table:'intervencion_drogas',fields:fields([['sustancia','Sustancia'],['cantidad','Cantidad'],['medida','Unidad'],['nombre_sustancia','Nombre de sustancia sintética']])},
@@ -37,6 +38,7 @@
     if(category.table==='intervencion_drogas') for(const unit of ['kg','envoltorios']) {const relevant=rows.filter(r=>r.data.medida===unit);if(relevant.length)out.push([unit==='kg'?'Cantidad (kg)':'Cantidad (envoltorios)',relevant.reduce((sum,r)=>sum+Number(r.data.cantidad||0),0)]);}
     if(category.table==='intervencion_vehiculos') out[0][0]='Vehículos / maquinaria registrados';
     if(category.table==='intervencion_grupos')out.push(['Vínculos de integrantes',rows.reduce((n,r)=>n+Number(r.data.integrantes||0),0)]);
+    if(category.id==='victimas')out.push(['Víctimas rescatadas',rows.filter(r=>r.data.situacion==='VICTIMA RESCATADA').length],['Presuntas víctimas',rows.filter(r=>r.data.situacion==='PRESUNTA VICTIMA').length],['Menores de edad',rows.filter(r=>r.data.condicion_edad==='MENOR').length]);
     return out;
   }
   async function readAll(client, category, alive=()=>true) {

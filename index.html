@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260916-consulta-v2" />
+  <link rel="stylesheet" href="styles.css?v=20260916-victimas-v1" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
 </head>
 <body>
@@ -274,7 +274,7 @@
 </div></fieldset>
 <fieldset class="card operativo-section"><legend>3. Unidad participante</legend><div class="grid cols-3">
 <label>Dirección policial<select name="intervencion.direccion_policial" id="op-direccion_policial" data-op-catalog="police"><option value="">Seleccionar</option></select></label>
-<label>Dirección especializada / región<select name="intervencion.direccion_especializada_region" id="op-direccion_especializada_region" data-op-catalog="police"><option value="">Seleccionar</option></select></label>
+<label>Dirección especializada / región<select name="intervencion.direccion_especializada_region" id="op-direccion_especializada_region" data-uppercase-options="true" data-op-catalog="police"><option value="">Seleccionar</option></select></label>
 <label>División policial<select name="intervencion.division_policial" id="op-division_policial" data-op-catalog="police"><option value="">Seleccionar</option></select></label>
 <label>Departamento policial<select name="intervencion.departamento_policial" id="op-departamento_policial" data-op-catalog="police"><option value="">Seleccionar</option></select></label>
 <label>Unidad / área / equipo<select name="intervencion.unidad_area_equipo" id="op-unidad_area_equipo" data-op-catalog="unit"><option value="">Seleccionar</option></select></label>
@@ -345,6 +345,13 @@
         <form id="vehicleForm" hidden><fieldset id="vehicleFields"><legend id="vehicleFormTitle">Registrar vehículo</legend><div id="vehicleInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveVehicle">Guardar registro</button><button type="button" class="secondary" id="cancelVehicle">Cerrar formulario</button></div></fieldset></form>
         <p id="vehicleStatus" role="status" aria-live="polite"></p><div id="vehicleRecords"></div><button type="button" class="secondary" id="moreVehicles" hidden>Ver más registros</button>
       </section>
+      <section id="victimResultsPanel" class="card result-detail" hidden>
+        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Víctimas de trata</h3><p>Identificación, situación y entidad de puesta a disposición.</p></div><span class="drug-badge">Hoja 21 · Víctimas de trata</span></div>
+        <div id="victimCards" class="material-cards" aria-label="Registrar víctima"></div>
+        <p class="results-note">La ubicación, dependencia, NI principal y coordenadas se toman del operativo. La condición de mayor o menor se calcula con la edad al momento del hecho. Este registro es independiente de la Ficha de enrolamiento y no incluye fotografías.</p>
+        <form id="victimForm" hidden><fieldset id="victimFields"><legend id="victimFormTitle">Registrar víctima</legend><div id="victimInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveVictim">Guardar víctima</button></div></fieldset><button type="button" class="secondary" id="cancelVictim">Cerrar formulario</button></form>
+        <p id="victimStatus" role="status" aria-live="polite"></p><div id="victimRecords"></div><button type="button" class="secondary" id="moreVictims" hidden>Ver más registros</button>
+      </section>
       <section id="minorResultsPanel" class="card result-detail" hidden>
         <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Menores de edad</h3><p>Identidad, detención, delitos y puesta a disposición.</p></div><span class="drug-badge">Hoja 4_MENORES</span></div>
         <div id="minorCards" class="material-cards" aria-label="Registrar menor"></div>
@@ -380,7 +387,7 @@
     </section>
     <section id="operativoRecordsView" class="view records-view">
       <div class="records-toolbar"><div><h2>Borradores de operativos</h2><p>Registros disponibles según sus permisos. Todavía no forman un reporte final.</p></div><button type="button" class="secondary" id="refreshOperativos">Actualizar</button></div>
-      <p id="operativosListStatus" role="status"></p><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Dependencia</th><th>Lugar</th><th>Acción</th></tr></thead><tbody id="operativosRows"></tbody></table></div>
+      <p id="operativosListStatus" role="status"></p><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>NI principal</th><th>Dependencia</th><th>Lugar</th><th>Acción</th></tr></thead><tbody id="operativosRows"></tbody></table></div>
       <div class="operativo-actions"><button type="button" class="secondary" id="operativosPrev">Anterior</button><span id="operativosPage"></span><button type="button" class="secondary" id="operativosNext">Siguiente</button></div>
     </section>
 
@@ -453,7 +460,7 @@
   <script src="app.js?v=20260916-consulta-v2"></script>
   <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="detenidos.js?v=20260916-rq-ni-v1"></script>
-  <script src="intervenciones.js?v=20260915-resultados-v1"></script>
+  <script src="intervenciones.js?v=20260916-victimas-v1"></script>
   <script src="materiales-catalogo.js?v=20260915-materiales-v1"></script>
   <script src="materiales.js?v=20260915-materiales-v1"></script>
   <script src="vehiculos-catalogo.js?v=20260915-vehiculos-v1"></script>
@@ -465,9 +472,11 @@
   <script src="requisitoriados.js?v=20260916-rq-ni-v1"></script>
   <script src="menores-catalogo.js?v=20260915-menores-v1"></script>
   <script src="menores.js?v=20260915-menores-v1"></script>
-  <script src="resultados.js?v=20260916-rq-ni-v1"></script>
+  <script src="victimas-catalogo.js?v=20260916-victimas-v1"></script>
+  <script src="victimas.js?v=20260916-victimas-v1"></script>
+  <script src="resultados.js?v=20260916-victimas-v1"></script>
   <script src="exportaciones.js?v=20260916-rq-ni-v1"></script>
-  <script src="consulta-modelo.js?v=20260916-consulta-v2"></script>
+  <script src="consulta-modelo.js?v=20260916-victimas-v1"></script>
   <script src="consulta.js?v=20260916-consulta-v2"></script>
 </body>
 </html>
