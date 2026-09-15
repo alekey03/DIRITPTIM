@@ -2,7 +2,7 @@
   "name": "ficha-enrolamiento-security-tests",
   "private": true,
   "scripts": {
-    "test": "node administrar-usuarios.test.cjs && node security-policies.test.cjs && node exportaciones.test.cjs && node archivos.test.cjs && node guardado-atomico.test.cjs && node detenidos-cliente.test.cjs"
+    "test": "node administrar-usuarios.test.cjs && node security-policies.test.cjs && node exportaciones.test.cjs && node archivos.test.cjs && node guardado-atomico.test.cjs && node detenidos-cliente.test.cjs && node dependencias.test.cjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.8"
