@@ -57,3 +57,12 @@ Las municiones son unidades enteras. La plantilla no define unidad para la canti
 Las tarjetas de vehículos mayores, menores y maquinaria capturan los campos de las hojas 17, 18 y 19. `datos/mapeo-vehiculos-v1.json` conserva sus 29 columnas por hoja; `scripts/generar-mapeo-vehiculos.py` regenera el contrato y el catálogo de formularios. La fecha, ubicación y dependencia provienen del operativo. Placa y valorización pueden quedar sin indicar; marca y situación son necesarias para guardar el borrador. La plantilla no especifica moneda: no se convierte ni se totaliza la valorización automáticamente.
 
 La migración `202609150007_vehiculos_operativo.sql` agrega la tabla y el guardado con permisos, versión y reintentos; debe aplicarse antes de publicar esta interfaz. `tests/vehiculos-operativo.test.cjs` comprueba las tres correspondencias, importes y permisos. El recorrido local verifica alta, edición y consulta. No se incorporan fotografías: únicamente la Ficha de Enrolamiento las admite. La exportación completa del detallado sigue pendiente.
+
+
+### Bandas y organizaciones vinculadas al operativo
+
+Aplicar `supabase/migrations/202609150009_grupos_operativo.sql` después de la migración 008 y antes de publicar `grupos.js`. Crea cabeceras y vínculos a detenciones, con lectura según el operativo y escritura mediante una función que verifica cuenta activa y ámbito. Cada detención puede estar vinculada a un grupo; el tipo debe coincidir con su clasificación. Los registros anteriores sin clasificación no se asignan automáticamente.
+
+Nombre, modalidad y referencia pertenecen al grupo; el rol específico pertenece al vínculo. El nombre anterior en Detenidos se conserva como referencia y no se sobrescribe. Los datos de identidad, delitos, fiscalía y situación se leen del detenido; los datos comunes se toman del operativo. `datos/mapeo-grupos-v1.json` relaciona las 40/41 columnas de ambas hojas. Más de dos delitos se señala para revisión; la exportación completa sigue pendiente. No hay fotografías en este módulo.
+
+Pruebas: `node tests/grupos-operativo.test.cjs` (PGlite) y `node tests/operativos-preview.cjs` (interfaz con datos ficticios).

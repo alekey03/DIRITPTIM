@@ -308,3 +308,15 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 #operativosRows .table-action { margin-right:12px; }
 @media(max-width:1050px) { .result-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .results-hero { flex-direction:column; align-items:stretch; } .results-summary { max-width:none; } }
 @media(max-width:600px) { .result-cards { grid-template-columns:1fr; } .results-hero { padding:22px; } .results-hero h2 { font-size:23px; } .linked-operativo-banner { margin:16px 12px; flex-direction:column; align-items:stretch; } .result-detail { padding:18px; } .linked-detainee-row { flex-wrap:wrap; } }
+
+.group-cards {grid-template-columns:repeat(2,minmax(0,1fr));max-width:850px;}
+#groupFields {border:1px solid var(--line);border-radius:14px;padding:20px;}
+.group-member {border:1px solid var(--line);border-radius:12px;padding:18px;margin:12px 0;}
+.group-member-choice {display:flex;flex-direction:row;align-items:center;gap:12px;margin-bottom:6px;}
+.group-member-choice input {width:20px;height:20px;accent-color:var(--primary);}
+.group-member>label:not(.group-member-choice) {display:flex;flex-direction:column;gap:8px;margin-top:14px;max-width:500px;}
+.group-member input[type=text] {border:1px solid var(--line);border-radius:8px;padding:12px;font:inherit;}
+.group-person-detail {margin-top:14px;color:var(--muted);overflow-wrap:anywhere;}
+.group-person-detail summary {cursor:pointer;font-weight:600;}
+#groupTotals {font-weight:600;}
+@media(max-width:600px){.group-cards{grid-template-columns:1fr;}#groupFields{padding:14px;}}
