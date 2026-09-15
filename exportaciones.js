@@ -115,7 +115,7 @@ async function exportDetaineesExcel() {
   await withExportButton(button, async () => {
     const from = document.getElementById('detaineeDateFrom').value;
     const to = document.getElementById('detaineeDateTo').value;
-    const records = await fetchAllRows('detenciones', '*,personas(*),detencion_delitos(*),detencion_armas(*)', query => {
+    const records = await fetchAllRows('detenciones_reportables', '*,personas(*),detencion_delitos(*),detencion_armas(*)', query => {
       if (from) query = query.gte('fecha', from);
       if (to) query = query.lte('fecha', to);
       return query.order('fecha', { ascending: false });

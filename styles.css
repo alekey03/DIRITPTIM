@@ -332,3 +332,11 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 .rq-summary dt {font-weight:600;}.rq-summary dd {margin:0;color:var(--muted);}
 #rqTotals {font-weight:600;}
 @media(max-width:600px){.rq-summary{grid-template-columns:1fr;gap:6px;}.rq-summary dd{margin-bottom:12px;}#rqFields{padding:14px;}}
+
+#rqInputs details,#noteInputs details {border-top:1px solid var(--line);padding:17px 0;}
+#rqInputs summary,#noteInputs summary {font-weight:700;cursor:pointer;}
+#noteFields {border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0;min-width:0;}
+#rqForm[hidden],#noteForm[hidden],#saveRq[hidden],#saveNote[hidden],#moreRqs[hidden],#moreNotes[hidden] {display:none;}
+.material-fields textarea {width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:12px;font:inherit;resize:vertical;}
+#rqInputs input:disabled,#rqInputs select:disabled {background:#f3f5f7;color:#64748b;}
+#noteInputs label:has(textarea) {grid-column:1/-1;}

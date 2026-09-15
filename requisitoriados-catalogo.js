@@ -1,4 +1,4 @@
-{
+window.REQUISITORIADOS_CATALOGO = {
   "version": 2,
   "hoja": "2_RQ N",
   "unidad_fila": "Un requisitoriado independiente del módulo Detenidos.",
@@ -264,4 +264,4 @@
     "Funcionario No limpia entidad y detalle.",
     "Las 38 columnas quedan mapeadas; la exportación completa sigue pendiente."
   ]
-}
+};

@@ -155,7 +155,7 @@ async function saveDetainee(event) {
 window.loadDetaineeRecords = async function loadDetaineeRecords() {
   const result = document.getElementById('detaineeRecordsResult');
   result.innerHTML = '<div class="empty-state"><span>▤</span><h3>Cargando detenidos…</h3></div>';
-  let query = supabaseClient.from('detenciones').select('id,codigo,fecha,hora,motivo_detencion,situacion_actual,unidad,personas(apellido_paterno,apellido_materno,nombres,tipo_documento,numero_documento),detencion_delitos(delito_general,delito_especifico)').order('fecha', { ascending: false }).limit(100);
+  let query = supabaseClient.from('detenciones_reportables').select('id,codigo,fecha,hora,motivo_detencion,situacion_actual,unidad,personas(apellido_paterno,apellido_materno,nombres,tipo_documento,numero_documento),detencion_delitos(delito_general,delito_especifico)').order('fecha', { ascending: false }).limit(100);
   const from = document.getElementById('detaineeDateFrom').value; const to = document.getElementById('detaineeDateTo').value;
   if (from) query = query.gte('fecha', from); if (to) query = query.lte('fecha', to);
   const { data, error } = await query;
@@ -172,7 +172,7 @@ async function openDetaineeRecord(id) {
   const workflowToken = window.detaineeWorkflowToken;
   document.getElementById('detaineeRecordDetail').innerHTML = '<div class="empty-state"><h3>Cargando detalle…</h3></div>';
   detaineeRecordModal.showModal();
-  const { data, error } = await supabaseClient.from('detenciones').select('*,personas(*),detencion_delitos(*),detencion_armas(*)').eq('id', id).single();
+  const { data, error } = await supabaseClient.from('detenciones_reportables').select('*,personas(*),detencion_delitos(*),detencion_armas(*)').eq('id', id).single();
   if (workflowToken !== window.detaineeWorkflowToken) return;
   if (error) { document.getElementById('detaineeRecordDetail').innerHTML = '<p class="records-error">No se pudo cargar el registro.</p>'; return; }
   selectedDetainee = data; const p = data.personas || {};
@@ -215,7 +215,7 @@ async function deleteDetainee() {
 window.loadDetaineeDashboard = async function loadDetaineeDashboard() {
   const status = document.getElementById('detaineeDashboardStatus');
   status.textContent = 'Consultando información…'; status.classList.add('visible');
-  let query = supabaseClient.from('detenciones').select('id,persona_id,fecha,motivo_detencion,situacion_actual,personas(nacionalidad,genero,departamento,provincia,distrito),detencion_delitos(delito_general)');
+  let query = supabaseClient.from('detenciones_reportables').select('id,persona_id,fecha,motivo_detencion,situacion_actual,personas(nacionalidad,genero,departamento,provincia,distrito),detencion_delitos(delito_general)');
   const from = document.getElementById('detaineeDashboardFrom').value;
   const to = document.getElementById('detaineeDashboardTo').value;
   if (from) query = query.gte('fecha', from);

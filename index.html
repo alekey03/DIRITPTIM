@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260915-menores-v1" />
+  <link rel="stylesheet" href="styles.css?v=20260916-rq-ni-v1" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
 </head>
 <body>
@@ -313,6 +313,13 @@
       <div class="operativo-steps"><button type="button" id="backOperativo" class="secondary">← 1 · Datos del operativo</button><span class="current">2 · Resultados</span><span>3 · Detalle de registros</span></div>
       <div class="results-hero"><div><small>RESULTADOS DEL OPERATIVO</small><h2>¿Qué se obtuvo en la intervención?</h2><p>Seleccione lo que corresponda. Después complete los registros de cada resultado.</p></div><div id="resultsSummary" class="results-summary"></div></div>
       <p id="resultsStatus" role="status" aria-live="polite"></p>
+      <section id="noteResultsPanel" class="card result-detail" >
+        <div class="records-toolbar"><div><small>DOCUMENTOS DEL OPERATIVO</small><h3>Notas informativas y ampliaciones</h3><p>Agregue nuevas notas sin crear otro operativo.</p></div></div>
+        <p id="notePrimary" class="results-note"></p>
+        <div id="noteCards" class="material-cards"></div><p class="results-note">Cada ampliación conserva su propio número y fecha. Describa aquí lo encontrado y registre los bienes en el resultado correspondiente del mismo operativo.</p>
+        <form id="noteForm" hidden><fieldset id="noteFields"><legend id="noteFormTitle">Registrar</legend><div id="noteInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveNote">Guardar</button></div></fieldset><button type="button" class="secondary" id="cancelNote">Cerrar formulario</button></form>
+        <p id="noteStatus" role="status" aria-live="polite"></p><div id="noteRecords"></div><button type="button" class="secondary" id="moreNotes" hidden>Ver más registros</button>
+      </section>
       <fieldset id="resultsSelection"><legend>Tipos de resultado</legend><div id="resultCards" class="result-cards"></div></fieldset>
       <div class="operativo-actions"><button type="button" class="primary" id="saveResults">Guardar selección</button><button type="button" class="secondary" id="refreshResults">Actualizar</button><span id="resultsSelectionStatus" role="status"></span></div>
       <section id="linkedDetaineesPanel" class="card result-detail" hidden><div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Detenidos de este operativo</h3><p>Se guardan una sola vez y también aparecen en el módulo Detenidos.</p></div><button type="button" class="primary" id="addLinkedDetainee">＋ Registrar detenido</button></div><div id="linkedDetainees"></div><button type="button" class="secondary" id="moreLinkedDetainees" hidden>Ver más</button></section>
@@ -349,15 +356,11 @@
         <p id="minorStatus" role="status" aria-live="polite"></p><div id="minorRecords"></div><button type="button" class="secondary" id="moreMinors" hidden>Ver más registros</button>
       </section>
       <section id="rqResultsPanel" class="card result-detail" hidden>
-        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Requisitoriados</h3><p>Complete la requisitoria de un detenido registrado en este operativo.</p></div><span class="drug-badge">Hoja 2_RQ N</span></div>
-        <div class="operativo-actions"><button type="button" class="primary" id="addRq"><span aria-hidden="true">⌕</span> Registrar requisitoriado</button><button type="button" class="secondary" id="rqNewDetainee">Registrar detenido en este operativo</button></div>
-        <p class="results-note">Se reutilizan identidad, fecha, hora, condición de funcionario y delitos de Detenidos; ubicación, dependencia, nota y coordenadas vienen del operativo. Es la misma detención: no sume ambos registros para contar personas.</p>
-        <form id="rqForm" hidden><fieldset id="rqFields"><legend id="rqFormTitle">Registrar requisitoriado</legend><div class="material-fields">
-          <label>Detenido del operativo *<select id="rqDetention" required></select></label>
-          <label>Tipo de requisitoria *<select id="rqType" required><option value="">Seleccionar</option><option value="ORDEN DE CAPTURA">Orden de captura</option><option value="RQ INTERNACIONAL">RQ internacional</option></select></label>
-          <label>¿Pertenece a los más buscados? *<select id="rqMostWanted" required><option value="">Seleccionar</option><option value="true">Sí</option><option value="false">No</option></select></label>
-        </div><div id="rqDetail"></div><button type="submit" class="primary" id="saveRq">Guardar requisitoriado</button></fieldset><div class="operativo-actions"><button type="button" class="secondary" id="cancelRq">Cerrar formulario</button></div></form>
-        <p id="rqStatus" role="status" aria-live="polite"></p><p id="rqTotals"></p><div id="rqRecords"></div>
+        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Requisitoriados</h3><p>Registre directamente a la persona y los datos de su requisitoria.</p></div></div>
+
+        <div id="rqCards" class="material-cards"></div><p class="results-note">Este registro corresponde únicamente a Requisitoriados: no exige ni suma un detenido. Ubicación, dependencia y nota principal se toman del operativo.</p>
+        <form id="rqForm" hidden><fieldset id="rqFields"><legend id="rqFormTitle">Registrar</legend><div id="rqInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveRq">Guardar</button></div></fieldset><button type="button" class="secondary" id="cancelRq">Cerrar formulario</button></form>
+        <p id="rqTotals" class="results-note"></p><p id="rqStatus" role="status" aria-live="polite"></p><div id="rqRecords"></div><button type="button" class="secondary" id="moreRqs" hidden>Ver más registros</button>
       </section>
       <section id="groupResultsPanel" class="card result-detail" hidden>
         <div class="records-toolbar"><div><small>GRUPOS E INTEGRANTES</small><h3>Bandas y organizaciones criminales</h3><p>Registre el grupo una sola vez y vincule a sus detenidos.</p></div><span class="drug-badge">2 hojas del detallado</span></div>
@@ -452,17 +455,20 @@
   <script src="dependencias.js?v=20260915-dependencias-v1"></script>
   <script src="app.js?v=20260915-menu-cerrado-v1"></script>
   <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
-  <script src="detenidos.js?v=20260915-grupo-v1"></script>
+  <script src="detenidos.js?v=20260916-rq-ni-v1"></script>
   <script src="intervenciones.js?v=20260915-resultados-v1"></script>
   <script src="materiales-catalogo.js?v=20260915-materiales-v1"></script>
   <script src="materiales.js?v=20260915-materiales-v1"></script>
   <script src="vehiculos-catalogo.js?v=20260915-vehiculos-v1"></script>
   <script src="vehiculos.js?v=20260915-vehiculos-v1"></script>
   <script src="grupos.js?v=20260915-grupos-v1"></script>
-  <script src="requisitoriados.js?v=20260915-menores-v1"></script>
+  <script src="requisitoriados-catalogo.js?v=20260916-rq-ni-v1"></script>
+  <script src="notas-catalogo.js?v=20260916-rq-ni-v1"></script>
+  <script src="notas.js?v=20260916-rq-ni-v1"></script>
+  <script src="requisitoriados.js?v=20260916-rq-ni-v1"></script>
   <script src="menores-catalogo.js?v=20260915-menores-v1"></script>
   <script src="menores.js?v=20260915-menores-v1"></script>
-  <script src="resultados.js?v=20260915-menores-v1"></script>
-  <script src="exportaciones.js?v=20260915-enrolamiento-v1"></script>
+  <script src="resultados.js?v=20260916-rq-ni-v1"></script>
+  <script src="exportaciones.js?v=20260916-rq-ni-v1"></script>
 </body>
 </html>
