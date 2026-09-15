@@ -320,3 +320,5 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 .group-person-detail summary {cursor:pointer;font-weight:600;}
 #groupTotals {font-weight:600;}
 @media(max-width:600px){.group-cards{grid-template-columns:1fr;}#groupFields{padding:14px;}}
+
+#groupLegacyNote:empty {display:none;}
