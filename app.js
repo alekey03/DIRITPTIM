@@ -668,6 +668,8 @@ async function loadDashboard() {
 }
 
 const pageTitles = {
+  generalDashboardView: ['INDICADORES', 'Dashboard'],
+  consultaRecordsView: ['CONSULTA GENERAL', 'Registros'],
   dashboardView: ['RESUMEN', 'Dashboard de fichas de enrolamiento'],
   formView: ['NUEVO REGISTRO', 'Ficha voluntaria de identificación'],
   recordsView: ['CONSULTA', 'Registros de enrolamiento'],
@@ -686,6 +688,7 @@ function resetMainView() {
     group.classList.remove('open');
     group.querySelector('.nav-group-toggle')?.setAttribute('aria-expanded', 'false');
   });
+  window.resetConsulta?.();
   window.resetOperativoModule?.();
   window.resetResultadosModule?.();
   window.resetDetaineeWorkflow?.();
@@ -694,14 +697,14 @@ function resetMainView() {
   selectedRecord = null;
   form.reset();
   window.resetVictimLocation?.();
-  document.querySelectorAll('.view').forEach(view => view.classList.toggle('active', view.id === 'dashboardView'));
-  document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.view === 'dashboardView'));
-  document.getElementById('pageEyebrow').textContent = pageTitles.dashboardView[0];
-  document.getElementById('pageHeading').textContent = pageTitles.dashboardView[1];
+  document.querySelectorAll('.view').forEach(view => view.classList.toggle('active', view.id === 'generalDashboardView'));
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.view === 'generalDashboardView'));
+  document.getElementById('pageEyebrow').textContent = pageTitles.generalDashboardView[0];
+  document.getElementById('pageHeading').textContent = pageTitles.generalDashboardView[1];
   document.getElementById('cancelEditButton').classList.add('hidden-control');
   registerButton.textContent = 'Registrar ficha';
   status.textContent = '';
-  if (currentProfile) loadDashboard();
+  if (currentProfile) window.loadGeneralDashboard?.();
 }
 
 document.getElementById('loginForm').addEventListener('submit', async event => {
@@ -981,6 +984,8 @@ document.querySelectorAll('[data-view]').forEach(button => {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.view === target));
     document.getElementById('pageEyebrow').textContent = pageTitles[target][0];
     document.getElementById('pageHeading').textContent = pageTitles[target][1];
+    if (target === 'generalDashboardView') window.loadGeneralDashboard?.();
+    if (target === 'consultaRecordsView') window.loadConsultaRecords?.();
     if (target === 'dashboardView') loadDashboard();
     if (target === 'recordsView') loadRecords();
     if (target === 'detaineeDashboardView') window.loadDetaineeDashboard?.();
