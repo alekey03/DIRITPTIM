@@ -682,6 +682,10 @@ const pageTitles = {
 };
 
 function resetMainView() {
+  document.querySelectorAll('.nav-group').forEach(group => {
+    group.classList.remove('open');
+    group.querySelector('.nav-group-toggle')?.setAttribute('aria-expanded', 'false');
+  });
   window.resetOperativoModule?.();
   window.resetResultadosModule?.();
   window.resetDetaineeWorkflow?.();
