@@ -50,8 +50,17 @@ async function save(id, changes = {}) {
     create function public.unidad_actual() returns text language sql stable security definer as $$ select unidad from public.perfiles where id=auth.uid() and activo $$;`);
   await db.exec(read('202609150002_base_intervenciones.sql'));
   await db.exec(read('202609150004_resultados_y_detenidos.sql'));
+  await db.exec(read('202609150008_tipo_grupo_detenidos.sql'));
 
   await identity(1);
+  await check('banda, organización y ninguno conservan su tipo', async()=>{
+    for(const [idx,tipo] of ['banda','organizacion',null].entries()){
+      await save(901+idx,{d:{...detention,integra_organizacion:tipo!==null,tipo_organizacion:tipo,rol_organizacion:'Integrante',nombre_organizacion:'GRUPO FICTICIO'}});
+      const r=(await db.query('select tipo_organizacion,nombre_organizacion from detenciones where id=$1',[uid(901+idx)])).rows[0];assert.equal(r.tipo_organizacion,tipo);if(!tipo)assert.equal(r.nombre_organizacion,null);
+    }
+    await assert.rejects(save(904,{d:{...detention,integra_organizacion:true,tipo_organizacion:'otro',rol_organizacion:'Integrante',nombre_organizacion:'FICTICIO'}}));
+    await db.exec('reset role; truncate detencion_armas,detencion_delitos,detenciones,personas,auditoria_eventos cascade;');await identity(1);
+  });
   await check('alta completa con cuatro tablas y área derivada del perfil', async () => {
     const r = await save(101, { d:{...detention, unidad:'AREA AJENA', creado_por:uid(999)} });
     assert.equal(r.id,uid(101));
@@ -138,6 +147,7 @@ async function save(id, changes = {}) {
     await assert.rejects(db.query("update public.detenciones set unidad='CAMBIO' where id=$1",[uid(304)]));
   });
   await db.exec('reset role'); await db.exec(read('202609150004_resultados_y_detenidos.sql'));
+  await db.exec(read('202609150008_tipo_grupo_detenidos.sql'));
 
   console.log(passed + ' escenarios de guardado transaccional aprobados; migración reaplicable.');
 })().catch(error => { console.error(error); process.exitCode=1; }).finally(() => db.close());

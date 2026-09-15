@@ -15,7 +15,7 @@ test('entidad pública se habilita solo con Sí y se limpia con No',()=>{
   fields.entidadPublica.value='FICTICIA';fields.detalleEntidad.value='FICTICIO';fields.esFuncionario.value='false';ctx.syncDetaineePublicEntity();assert.equal(fields.entidadPublica.value,'');assert.equal(fields.detalleEntidad.value,'');
 });
 function setup() {
-  const fields={apellidoPaterno:'FICTICIO',nombres:'PRUEBA',fecha:'2026-09-14',armaCategoria:'FICTICIA',armaCantidad:'1'};
+  const fields={integraOrganizacion:'false',apellidoPaterno:'FICTICIO',nombres:'PRUEBA',fecha:'2026-09-14',armaCategoria:'FICTICIA',armaCantidad:'1'};
   const elements = { detaineeStatus:{}, saveDetaineeButton:{ disabled:false } };
   const storage = new Map(), calls=[];
   let resets=0, fail=true, resolveCall;
@@ -76,3 +76,6 @@ test('una respuesta tardía de otra sesión no limpia ni confirma el formulario'
   s.context.window.detaineeWorkflowToken=2; release(); await saving;
   assert.equal(s.resets(),0); assert.notEqual(s.elements.detaineeStatus.className,'success-text');
 });
+
+for (const tipo of ['banda','organizacion','false']) test('guarda pertenencia '+tipo,async()=>{const s=setup();s.fields.integraOrganizacion=tipo;s.fields.rolOrganizacion='Integrante';s.fields.nombreOrganizacion='GRUPO FICTICIO';s.succeed();await s.save();const d=s.calls[0].payload.p_detencion;assert.equal(d.integra_organizacion,tipo!=='false');assert.equal(d.tipo_organizacion,tipo==='false'?null:tipo);if(tipo==='false'){assert.equal(d.nombre_organizacion,null);assert.equal(d.rol_organizacion,null);}});
+test('clasificación pendiente impide guardar sin perder formulario',async()=>{const s=setup();s.fields.integraOrganizacion='';await s.save();assert.equal(s.calls.length,0);assert.equal(s.resets(),0);});

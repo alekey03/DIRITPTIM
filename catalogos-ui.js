@@ -120,7 +120,7 @@
   const organizationRole = document.getElementById('organizationRole');
   const organizationName = document.getElementById('organizationName');
   function updateOrganizationFields() {
-    const enabled = organizationToggle?.value === 'true';
+    const enabled = ['banda', 'organizacion', ''].includes(organizationToggle?.value);
     if (organizationRole) {
       organizationRole.disabled = !enabled;
       organizationRole.required = enabled;
@@ -154,7 +154,7 @@
     detaineeLocation?.set([values.departamento, values.provincia, values.distrito]);
     policeDependency?.set([values.direccion_policial, values.direccion_especializada_region, values.division_policial, values.departamento_policial]);
     weaponDependency?.set([values.arma_categoria, values.arma_tipo]);
-    if (organizationToggle) organizationToggle.value = String(Boolean(values.integra_organizacion));
+    if (organizationToggle) organizationToggle.value = values.integra_organizacion ? (values.tipo_organizacion || '') : 'false';
     updateOrganizationFields();
     if (organizationRole) organizationRole.value = values.rol_organizacion || '';
     if (organizationName) organizationName.value = values.nombre_organizacion || '';
