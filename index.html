@@ -316,7 +316,17 @@
       <fieldset id="resultsSelection"><legend>Tipos de resultado</legend><div id="resultCards" class="result-cards"></div></fieldset>
       <div class="operativo-actions"><button type="button" class="primary" id="saveResults">Guardar selección</button><button type="button" class="secondary" id="refreshResults">Actualizar</button><span id="resultsSelectionStatus" role="status"></span></div>
       <section id="linkedDetaineesPanel" class="card result-detail" hidden><div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Detenidos de este operativo</h3><p>Se guardan una sola vez y también aparecen en el módulo Detenidos.</p></div><button type="button" class="primary" id="addLinkedDetainee">＋ Registrar detenido</button></div><div id="linkedDetainees"></div><button type="button" class="secondary" id="moreLinkedDetainees" hidden>Ver más</button></section>
-      <p id="resultsPendingNote" class="results-note" hidden>La selección de los otros resultados queda guardada. Sus formularios de detalle se incorporarán en las siguientes etapas. Este borrador todavía no genera el Excel detallado.</p>
+      <section id="drugResultsPanel" class="card result-detail" hidden>
+        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Drogas registradas</h3><p>Agregue cada sustancia y su cantidad. Las unidades y los kilogramos se registran por separado.</p></div><span class="drug-badge">8 hojas del detallado</span></div>
+        <p class="results-note">La fecha, hora, ubicación, dependencia y nota SICPIP corresponden al operativo. Puede corregirlos en «Datos del operativo». Los insumos químicos se incorporarán en otra etapa.</p>
+        <form id="drugResultForm"><fieldset id="drugFields"><legend id="drugFormTitle">Agregar sustancia</legend><div class="drug-fields">
+          <label>Tipo de sustancia y presentación<select id="drugType" required><option value="">Seleccione una opción</option><optgroup label="En unidades"><option value="env_pbc">Pasta básica de cocaína · unidades</option><option value="env_cc">Clorhidrato de cocaína · unidades</option><option value="env_marihuana">Marihuana · unidades</option></optgroup><optgroup label="En kilogramos"><option value="kg_pbc">Pasta básica de cocaína · kg</option><option value="kg_cc">Clorhidrato de cocaína · kg</option><option value="kg_marihuana">Marihuana · kg</option><option value="kg_opio">Látex de opio · kg</option><option value="kg_sintetica">Droga sintética · kg</option></optgroup></select></label>
+          <label><span id="drugQuantityLabel">Cantidad</span><input id="drugQuantity" type="number" min="0.000001" max="999999999999" step="0.000001" required inputmode="decimal"></label>
+          <label id="drugNameField" hidden>Nombre de la droga sintética<input id="drugName" maxlength="200" autocomplete="off"></label>
+        </div><div class="operativo-actions"><button type="submit" class="primary" id="saveDrug">Guardar sustancia</button><button type="button" class="secondary" id="cancelDrug" hidden>Cancelar edición</button></div></fieldset></form>
+        <p id="drugStatus" role="status" aria-live="polite"></p><div id="drugRecords"></div><button type="button" class="secondary" id="moreDrugs" hidden>Ver más sustancias</button>
+      </section>
+      <p id="resultsPendingNote" class="results-note" hidden>Los detalles de las demás categorías se incorporarán en las siguientes etapas. Este borrador todavía no genera el Excel detallado.</p>
       <button type="button" id="openResultsView" data-view="operativoResultsView" hidden></button>
       <button type="button" id="openLinkedDetaineeView" data-view="detaineeFormView" data-from-operativo="true" hidden></button>
     </section>
@@ -396,7 +406,7 @@
   <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="detenidos.js?v=20260915-resultados-v1"></script>
   <script src="intervenciones.js?v=20260915-resultados-v1"></script>
-  <script src="resultados.js?v=20260915-resultados-v1"></script>
+  <script src="resultados.js?v=20260915-drogas-v1"></script>
   <script src="exportaciones.js?v=20260915-enrolamiento-v1"></script>
 </body>
 </html>

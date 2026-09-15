@@ -35,3 +35,11 @@ La siguiente etapa añade tarjetas de resultados declarados y permite registrar 
 La migración `202609150004_resultados_y_detenidos.sql` añade el vínculo opcional `detenciones.intervencion_id`, sin trasladar detenciones anteriores. El vínculo y su ámbito son inmutables. El alta hereda el ámbito del operativo; solo el autor en su unidad y el administrador pueden agregar registros. La edición de detenidos mantiene las reglas previas de administrador, motivo y auditoría. Para evitar identidades invisibles a la unidad del operativo, una identidad existente en otro ámbito requiere revisión y no se reutiliza automáticamente en este flujo.
 
 Los otros tipos de resultado pueden seleccionarse y guardarse; sus formularios aún están pendientes y se señala en pantalla. El Excel completo sigue pendiente. Las pruebas de guardado incluyen selección, conflictos, aislamiento, reintentos, reversión del resultado y alta nacional del administrador. La vista local de pruebas también verifica el recorrido desde las tarjetas hasta el detenido vinculado.
+
+## Drogas dentro del operativo
+
+La migración `202609150005_drogas_operativo.sql`, aplicada el 15 de septiembre de 2026, incorpora `intervencion_drogas`: ocho tipos que corresponden a las hojas 5 a 12. El formulario permite agregar y editar sustancias, distingue unidades enteras de kilogramos (hasta seis decimales) y exige el nombre de la droga sintética. La fecha, ubicación, dependencia interviniente y nota SICPIP se obtienen del operativo; al corregir ese contexto se corrige el contexto común de sus resultados.
+
+`datos/mapeo-drogas-v1.json` conserva la correspondencia completa de columnas para la exportación futura. Los kilogramos y las unidades no se convierten ni suman entre sí. Los insumos químicos y la generación del Excel continúan pendientes.
+
+El acceso hereda los permisos del operativo: consulta autorizada por dependencia, edición por autor en su unidad o administrador, bloqueo de cuentas inactivas. El guardado tiene control de versión y reintentos idénticos; no permite trasladar ni eliminar resultados. La selección de drogas no puede retirarse si ya existen registros. Validación: `node tests/drogas-operativo.test.cjs` con PGlite y recorrido ficticio en `tests/operativos-preview.cjs`.

@@ -1,0 +1,48 @@
+const {PGlite}=require('@electric-sql/pglite');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'), db=new PGlite();
+const read=n=>fs.readFileSync(path.join(root,'supabase/migrations',n),'utf8');
+const id=n=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
+(async()=>{
+ const schema=JSON.parse(fs.readFileSync(path.join(root,'datos/estructura-detallado-v1.json'),'utf8'));
+ const mapping=JSON.parse(fs.readFileSync(path.join(root,'datos/mapeo-drogas-v1.json'),'utf8').replace(/^\uFEFF/,''));
+ assert.equal(mapping.hojas.length,8);
+ for(const h of mapping.hojas) assert.deepEqual(Object.keys(h.columnas),schema.hojas.find(s=>s.nombre===h.hoja).campos.map(c=>c.columna));
+ await db.exec(`create role authenticated; create schema auth;
+ create table perfiles(id uuid primary key,rol text,activo boolean,unidad text,departamento text);
+ create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create function usuario_activo() returns boolean language sql stable security definer set search_path=public as $$select coalesce((select activo from perfiles where id=auth.uid()),false)$$;
+ create function es_administrador() returns boolean language sql stable security definer set search_path=public as $$select exists(select 1 from perfiles where id=auth.uid() and activo and rol='administrador')$$;
+ create function unidad_actual() returns text language sql stable security definer set search_path=public as $$select unidad from perfiles where id=auth.uid()$$;
+ create function puede_acceder_unidad(u text) returns boolean language sql stable security definer set search_path=public as $$select usuario_activo() and (es_administrador() or unidad_actual()=u)$$;
+ grant usage on schema auth to authenticated; grant select on perfiles to authenticated;`);
+ for(const [n,rol,activo,u] of [[1,'operador',true,'A'],[2,'operador',true,'B'],[3,'administrador',true,'C'],[4,'operador',false,'A'],[5,'supervisor',true,'A']]) await db.query('insert into perfiles values($1,$2,$3,$4,$5)',[id(n),rol,activo,u,'LIMA']);
+ await db.exec(read('202609150002_base_intervenciones.sql'));
+ await db.exec("alter table intervenciones add column resultados_previstos text[] not null default '{}'");
+ const migration=read('202609150005_drogas_operativo.sql'); await db.exec(migration);
+ async function actor(n){await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[n?id(n):'']);await db.exec('set role authenticated');}
+ const save=async(n,v=0,t='kg_pbc',q='1.234567',name=null,parent=100)=>(await db.query('select guardar_droga_operativo($1,$2,$3,$4,$5,$6) r',[id(n),id(parent),v,t,q,name])).rows[0].r;
+ await actor(1);await db.query("insert into intervenciones(id,tipo,fecha) values($1,'operativo','2026-09-15')",[id(100)]);
+ const first=await save(200);assert.equal(first.version,1);assert.deepEqual(await save(200),first);
+ assert.equal((await db.query('select count(*)::int n from intervencion_drogas')).rows[0].n,1);
+ assert.deepEqual((await db.query('select resultados_previstos from intervenciones')).rows[0].resultados_previstos,['drogas']);
+ await assert.rejects(save(200,0,'kg_pbc','2'));await assert.rejects(save(201,0,'env_pbc','1.5'));
+ for(const q of ['0','-1','NaN','Infinity','0.0000001','1000000000000']) await assert.rejects(save(201,0,'kg_pbc',q));
+ await assert.rejects(save(201,0,'kg_sintetica','1'));await assert.rejects(save(201,0,'kg_pbc','1','no corresponde'));
+ await assert.rejects(db.query("update intervenciones set resultados_previstos='{}'"));
+ const changed=await save(200,1,'kg_pbc','2');assert.equal(changed.version,2);assert.deepEqual(await save(200,1,'kg_pbc','2'),changed);
+ await assert.rejects(save(200,1,'kg_pbc','3'));
+ for(const [n,t] of ['env_pbc','env_cc','env_marihuana','kg_pbc','kg_cc','kg_marihuana','kg_opio','kg_sintetica'].entries()) await save(300+n,0,t,'2',t==='kg_sintetica'?'SUSTANCIA FICTICIA':null);
+ await actor(2);assert.equal((await db.query('select * from intervencion_drogas')).rows.length,0);await assert.rejects(save(201));
+ await actor(5);assert.equal((await db.query('select * from intervencion_drogas')).rows.length,9);await assert.rejects(save(201));await assert.rejects(save(200,2,'kg_pbc','4'));
+ await actor(4);await assert.rejects(save(201));assert.equal((await db.query('select * from intervencion_drogas')).rows.length,0);
+ await actor(null);await assert.rejects(save(201));
+ await actor(3);await save(200,2,'kg_cc','4');await assert.rejects(db.exec('delete from intervencion_drogas'));
+ await db.query("insert into intervenciones(id,tipo) values($1,'operativo')",[id(101)]);
+ await assert.rejects(db.query('update intervencion_drogas set intervencion_id=$1 where id=$2',[id(101),id(200)]));
+ await assert.rejects(db.query('update intervencion_drogas set creado_por=$1 where id=$2',[id(3),id(200)]));
+ await db.exec('reset role');await db.exec(migration);
+ assert.equal((await db.query('select count(*)::int n from intervencion_drogas')).rows[0].n,9);
+ console.log('OK: 8 tipos; cantidades; reintentos; edición concurrente; RLS operador/supervisor/admin/inactivo; sin borrado ni traslado; migración reaplicable.');
+})().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>db.close());
+
