@@ -31,7 +31,7 @@
     <div class="brand"><img class="institution-logo" src="assets/logo-diriptim.png" alt="Escudo DIRIPTIM PNP"><div><strong id="institutionName">DIRITPTIM</strong><small id="institutionScope">Sistema nacional</small></div></div>
     <nav aria-label="Navegación principal">
       <div class="nav-group open" data-nav-group="victims">
-        <button class="nav-group-toggle" type="button" aria-expanded="true"><span>♙</span><strong>Víctimas</strong><i>⌄</i></button>
+        <button class="nav-group-toggle" type="button" aria-expanded="true"><span>♙</span><strong>Ficha de enrolamiento</strong><i>⌄</i></button>
         <div class="nav-submenu">
           <button class="nav-item active" data-view="dashboardView"><span>⌂</span>Dashboard</button>
           <button class="nav-item" data-view="formView"><span>＋</span>Nueva ficha</button>
@@ -56,13 +56,13 @@
   <main>
     <header class="topbar">
       <button class="menu" aria-label="Abrir menú">☰</button>
-      <div class="page-title"><small id="pageEyebrow">RESUMEN</small><h1 id="pageHeading">Dashboard de víctimas</h1></div>
+      <div class="page-title"><small id="pageEyebrow">RESUMEN</small><h1 id="pageHeading">Dashboard de fichas de enrolamiento</h1></div>
       <button class="user" id="logoutBtn" title="Cerrar sesión"><span><strong>Admin</strong><small id="userScope">Cerrar sesión</small></span><div class="avatar">AD</div></button>
     </header>
 
     <section id="dashboardView" class="view dashboard-view active">
       <div class="records-toolbar">
-        <div><h2>Resumen de víctimas registradas</h2><p>Indicadores consolidados de las fichas autorizadas para su unidad.</p></div>
+        <div><h2>Resumen de fichas de enrolamiento</h2><p>Indicadores consolidados de las fichas autorizadas para su unidad.</p></div>
         <div class="toolbar-actions"><button class="secondary" id="exportDashboard">⇩ Exportar PDF</button><button class="secondary" id="refreshDashboard">↻ Actualizar</button></div>
       </div>
       <div class="card dashboard-filters">
@@ -72,10 +72,10 @@
         <label>Hasta<input id="dashboardDateTo" type="date" disabled></label>
         <button class="primary" id="applyDashboardFilters">Aplicar filtros</button>
       </div>
-      <article class="card crime-map-card"><div class="crime-map-heading"><div><small>MAPA INTERACTIVO</small><h2>Mapa de víctimas</h2><p>Seleccione un departamento para ver sus provincias y luego sus distritos.</p></div><button class="secondary" data-map-back="victimCrimeMap" hidden>← Volver al Perú</button></div><div class="crime-map-layout"><div id="victimCrimeMap" class="crime-map"></div><aside class="crime-map-summary" data-map-summary="victimCrimeMap"><strong>Perú</strong><span>Consultando información…</span></aside></div></article>
+      <article class="card crime-map-card"><div class="crime-map-heading"><div><small>MAPA INTERACTIVO</small><h2>Mapa de fichas de enrolamiento</h2><p>Seleccione un departamento para ver sus provincias y luego sus distritos.</p></div><button class="secondary" data-map-back="victimCrimeMap" hidden>← Volver al Perú</button></div><div class="crime-map-layout"><div id="victimCrimeMap" class="crime-map"></div><aside class="crime-map-summary" data-map-summary="victimCrimeMap"><strong>Perú</strong><span>Consultando información…</span></aside></div></article>
       <div class="privacy-banner"><span>🔒</span><div><strong>Información estadística protegida</strong><p>Los indicadores no muestran nombres y respetan los permisos asignados a cada cuenta.</p></div></div>
       <div class="dashboard-stats">
-        <article><small>TOTAL DE VÍCTIMAS</small><strong id="dashboardTotal">—</strong><span>Fichas registradas</span></article>
+        <article><small>TOTAL DE FICHAS</small><strong id="dashboardTotal">—</strong><span>Fichas registradas</span></article>
         <article><small>PERUANAS</small><strong id="dashboardPeruvians">—</strong><span id="dashboardPeruviansPercent">— del total</span></article>
         <article><small>MENORES DE EDAD</small><strong id="dashboardMinors">—</strong><span id="dashboardMinorsPercent">— del total</span></article>
         <article><small>REGISTRADAS ESTE MES</small><strong id="dashboardMonth">—</strong><span>Según fecha de creación</span></article>
@@ -257,7 +257,7 @@
           <label>Desde<input id="auditDateFrom" type="date"></label>
           <label>Hasta<input id="auditDateTo" type="date"></label>
           <label>Acción<select id="auditAction"><option value="">Todas</option><option value="INSERT">Creación</option><option value="UPDATE">Modificación</option><option value="DELETE">Eliminación</option></select></label>
-          <label>Módulo<select id="auditTable"><option value="">Todos</option><option value="fichas">Víctimas</option><option value="personas">Personas detenidas</option><option value="detenciones">Detenciones</option><option value="detencion_delitos">Delitos</option><option value="detencion_armas">Armas</option><option value="archivos">Archivos de víctimas</option><option value="detencion_archivos">Archivos de detenidos</option><option value="operativos">Operativos</option><option value="perfiles">Usuarios</option></select></label>
+          <label>Módulo<select id="auditTable"><option value="">Todos</option><option value="fichas">Ficha de enrolamiento</option><option value="personas">Personas detenidas</option><option value="detenciones">Detenciones</option><option value="detencion_delitos">Delitos</option><option value="detencion_armas">Armas</option><option value="archivos">Archivos de enrolamiento</option><option value="detencion_archivos">Archivos de detenidos</option><option value="operativos">Operativos</option><option value="perfiles">Usuarios</option></select></label>
           <button class="secondary" id="applyAuditFilters" type="button">Buscar</button>
         </div>
         <p class="records-status" id="auditStatus"></p>
@@ -314,9 +314,9 @@
   <script src="catalogos-ui.js?v=20260910-detainee-edit"></script>
   <script src="mapa.js?v=20260910-map-v5"></script>
   <script src="dependencias.js?v=20260915-dependencias-v1"></script>
-  <script src="app.js?v=20260915-dependencias-v1"></script>
-  <script src="auditoria.js?v=20260910-audit-comparison"></script>
+  <script src="app.js?v=20260915-enrolamiento-v1"></script>
+  <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="detenidos.js?v=20260914-atomic-save-v1"></script>
-  <script src="exportaciones.js?v=20260914-stability-v1"></script>
+  <script src="exportaciones.js?v=20260915-enrolamiento-v1"></script>
 </body>
 </html>

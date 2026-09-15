@@ -106,7 +106,7 @@ async function exportVictimsExcel() {
       'Tipo de documento': r.tipo_documento, 'Número de documento': r.numero_documento, 'Motivo de intervención': r.motivo_intervencion, 'Fecha de intervención': excelDate(r.fecha_intervencion), 'Lugar de intervención': r.lugar_intervencion,
       'Departamento registrador': r.departamento_registro, 'Área registradora': r.unidad, 'Grado del responsable': r.responsable_grado, 'Apellidos del responsable': r.responsable_apellidos, 'Nombres del responsable': r.responsable_nombres, 'Fecha de registro': excelDateTime(r.creado_en), 'Última actualización': excelDateTime(r.actualizado_en)
     }));
-    downloadWorkbook(rows, 'Victimas', `victimas_${currentProfile?.unidad || 'unidad'}`);
+    downloadWorkbook(rows, 'Ficha de enrolamiento', `fichas_enrolamiento_${currentProfile?.unidad || 'unidad'}`);
   });
 }
 

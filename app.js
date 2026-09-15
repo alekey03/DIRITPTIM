@@ -627,7 +627,7 @@ function renderDashboard() {
   window.renderCrimeMap?.('victimCrimeMap', records.map(record => {
     const [department = '', province = '', district = ''] = String(record.lugar_intervencion || '').split('/').map(value => value.trim());
     return { department, province, district };
-  }), 'víctimas');
+  }), 'fichas de enrolamiento');
   dashboardStatus.textContent = `${total.toLocaleString('es-PE')} ficha${total === 1 ? '' : 's'} en el periodo seleccionado.`;
   dashboardStatus.classList.toggle('visible', Boolean(document.getElementById('dashboardPeriod').value !== 'all' || document.getElementById('dashboardNationality').value));
 }
@@ -668,7 +668,7 @@ async function loadDashboard() {
 }
 
 const pageTitles = {
-  dashboardView: ['RESUMEN', 'Dashboard de víctimas'],
+  dashboardView: ['RESUMEN', 'Dashboard de fichas de enrolamiento'],
   formView: ['NUEVO REGISTRO', 'Ficha voluntaria de identificación'],
   recordsView: ['CONSULTA', 'Registros de enrolamiento'],
   detaineeDashboardView: ['RESUMEN', 'Dashboard de detenidos'],
@@ -1018,7 +1018,7 @@ document.getElementById('exportDashboard').addEventListener('click', () => {
   report.querySelector('.dashboard-filters')?.remove();
   report.querySelector('.privacy-banner')?.remove();
   report.querySelector('#dashboardStatus')?.remove();
-  printSheet.innerHTML = `<div class="print-page dashboard-report"><header class="dashboard-report-header"><img src="assets/logo-diriptim.png" alt=""><div><h1>Dashboard de víctimas</h1><p>${escapeHtml(dashboardFilterDescription())}</p></div><small>Generado: ${escapeHtml(new Intl.DateTimeFormat('es-PE', { dateStyle: 'long', timeStyle: 'short' }).format(new Date()))}</small></header>${report.innerHTML}<footer>Reporte estadístico protegido · Uso exclusivo para personal autorizado</footer></div>`;
+  printSheet.innerHTML = `<div class="print-page dashboard-report"><header class="dashboard-report-header"><img src="assets/logo-diriptim.png" alt=""><div><h1>Dashboard de fichas de enrolamiento</h1><p>${escapeHtml(dashboardFilterDescription())}</p></div><small>Generado: ${escapeHtml(new Intl.DateTimeFormat('es-PE', { dateStyle: 'long', timeStyle: 'short' }).format(new Date()))}</small></header>${report.innerHTML}<footer>Reporte estadístico protegido · Uso exclusivo para personal autorizado</footer></div>`;
   window.print();
 });
 

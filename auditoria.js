@@ -4,8 +4,8 @@
 
   const actionLabels = { INSERT: 'Creación', UPDATE: 'Modificación', DELETE: 'Eliminación' };
   const tableLabels = {
-    fichas: 'Víctimas', personas: 'Personas detenidas', detenciones: 'Detenciones',
-    detencion_delitos: 'Delitos', detencion_armas: 'Armas', archivos: 'Archivos de víctimas',
+    fichas: 'Ficha de enrolamiento', personas: 'Personas detenidas', detenciones: 'Detenciones',
+    detencion_delitos: 'Delitos', detencion_armas: 'Armas', archivos: 'Archivos de enrolamiento',
     detencion_archivos: 'Archivos de detenidos', operativos: 'Operativos', perfiles: 'Usuarios'
   };
 
