@@ -27,3 +27,11 @@ Para regenerar la estructura: `python scripts/extraer-estructura-detallado.py "r
 `202609150003_guardar_operativo_borrador.sql` añade el guardado transaccional, identificadores de solicitud para reintentos y control de versión. Se aplicó después de `202609150002_base_intervenciones.sql` el 15 de septiembre de 2026. El listado permite consultar borradores por permisos y retomar la edición al autor en su unidad o al administrador. El supervisor tiene consulta de los registros autorizados por la política de acceso. Los borradores no son reportes finalizados.
 
 Validación: `node tests/intervenciones-base.test.cjs` con PGlite; `node tests/operativos-preview.cjs` sirve un entorno local sin conexión a Supabase en `http://127.0.0.1:8766/`, con pruebas de interfaz y únicamente datos ficticios. No publicar ni usar esa vista como sistema real. Pendientes: vínculo con detenciones, formularios de otros resultados y exportación fiel del XLSM completo.
+
+## Resultados y detenidos vinculados
+
+La siguiente etapa añade tarjetas de resultados declarados y permite registrar detenidos dentro de un operativo, reutilizando personas, detenciones, delitos y armas. La ficha de enrolamiento permanece independiente. Marcar una banda u organización no implica desarticulación y no se infiere de la pertenencia de una persona.
+
+La migración `202609150004_resultados_y_detenidos.sql` añade el vínculo opcional `detenciones.intervencion_id`, sin trasladar detenciones anteriores. El vínculo y su ámbito son inmutables. El alta hereda el ámbito del operativo; solo el autor en su unidad y el administrador pueden agregar registros. La edición de detenidos mantiene las reglas previas de administrador, motivo y auditoría. Para evitar identidades invisibles a la unidad del operativo, una identidad existente en otro ámbito requiere revisión y no se reutiliza automáticamente en este flujo.
+
+Los otros tipos de resultado pueden seleccionarse y guardarse; sus formularios aún están pendientes y se señala en pantalla. El Excel completo sigue pendiente. Las pruebas de guardado incluyen selección, conflictos, aislamiento, reintentos, reversión del resultado y alta nacional del administrador. La vista local de pruebas también verifica el recorrido desde las tarjetas hasta el detenido vinculado.
