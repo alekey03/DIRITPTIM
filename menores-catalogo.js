@@ -1,0 +1,358 @@
+// Contrato de la hoja 4_MENORES.
+window.MENORES_CATALOGO = {
+  "version": 1,
+  "hoja": "4_MENORES",
+  "campos": [
+    {
+      "key": "fecha",
+      "label": "Fecha de detención",
+      "group": "identidad",
+      "type": "date",
+      "required": true
+    },
+    {
+      "key": "hora",
+      "label": "Hora de detención",
+      "group": "identidad",
+      "type": "time",
+      "required": false
+    },
+    {
+      "key": "apellido_paterno",
+      "label": "Apellido paterno",
+      "group": "identidad",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "apellido_materno",
+      "label": "Apellido materno",
+      "group": "identidad",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "nombres",
+      "label": "Nombres",
+      "group": "identidad",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "edad",
+      "label": "Edad al momento del hecho",
+      "group": "identidad",
+      "type": "number",
+      "required": true,
+      "options": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "key": "genero",
+      "label": "Género",
+      "group": "identidad",
+      "type": "text",
+      "required": false,
+      "source": "genero"
+    },
+    {
+      "key": "nacionalidad",
+      "label": "Nacionalidad",
+      "group": "identidad",
+      "type": "text",
+      "required": false,
+      "source": "nacionalidad"
+    },
+    {
+      "key": "tipo_documento",
+      "label": "Tipo de documento",
+      "group": "identidad",
+      "type": "text",
+      "required": false,
+      "source": "tipoDocumento"
+    },
+    {
+      "key": "numero_documento",
+      "label": "Número de documento",
+      "group": "identidad",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "motivo",
+      "label": "Motivo de detención",
+      "group": "identidad",
+      "type": "text",
+      "required": false,
+      "options": [
+        "FLAGRANCIA",
+        "DETENCION PRELIMINAR"
+      ]
+    },
+    {
+      "key": "tentativa",
+      "label": "¿Es tentativa?",
+      "group": "delito1",
+      "type": "text",
+      "required": false,
+      "options": [
+        "Sí",
+        "No"
+      ]
+    },
+    {
+      "key": "fuero",
+      "label": "Fuero / leyes especiales",
+      "group": "delito1",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "delito_general",
+      "label": "Delito general",
+      "group": "delito1",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "delito_especifico",
+      "label": "Delito específico",
+      "group": "delito1",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "subtipo",
+      "label": "Subtipo",
+      "group": "delito1",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "tentativa_2",
+      "label": "¿Es tentativa?",
+      "group": "delito2",
+      "type": "text",
+      "required": false,
+      "options": [
+        "Sí",
+        "No"
+      ]
+    },
+    {
+      "key": "fuero_2",
+      "label": "Fuero / leyes especiales",
+      "group": "delito2",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "delito_general_2",
+      "label": "Delito general",
+      "group": "delito2",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "delito_especifico_2",
+      "label": "Delito específico",
+      "group": "delito2",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "subtipo_2",
+      "label": "Subtipo",
+      "group": "delito2",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "grupo",
+      "label": "Pertenencia a grupo criminal",
+      "group": "hallazgos",
+      "type": "text",
+      "required": true,
+      "options": [
+        "Ninguno",
+        "Banda criminal",
+        "Organización criminal"
+      ]
+    },
+    {
+      "key": "nombre_grupo",
+      "label": "Nombre de la banda u organización",
+      "group": "hallazgos",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "arma_categoria",
+      "label": "Arma / hallazgo",
+      "group": "hallazgos",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "arma_tipo",
+      "label": "Tipo de arma",
+      "group": "hallazgos",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "situacion",
+      "label": "Situación actual",
+      "group": "situacion",
+      "type": "text",
+      "required": false,
+      "options": [
+        "LIBERTAD SEDE POLICIAL",
+        "LIBERTAD SEDE FISCAL",
+        "LIBERTAD SEDE JUDICIAL",
+        "LIBERTAD CONDICIONAL",
+        "PRIVADO DE SU LIBERTAD_ ESTABLECIMIENTO PENITENCIARIO",
+        "PRIVADO DE SU LIBERTAD_ ESTABLECIMIENTO PENITENCIARIO (PRISION PREVENTIVA )",
+        "CONTINUA DETENIDO",
+        "PUESTO A DISPOSICION DE UNIDAD PNP",
+        "PUESTO A DISPOSICION DE FISCALIA",
+        "PUESTO A DISPOSICION DE JUZGADO"
+      ]
+    },
+    {
+      "key": "documento_libertad",
+      "label": "Documento de libertad",
+      "group": "situacion",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "documento_disposicion",
+      "label": "Documento de puesta a disposición",
+      "group": "situacion",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "fiscal",
+      "label": "Nombre del fiscal",
+      "group": "situacion",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "fiscalia",
+      "label": "Fiscalía",
+      "group": "situacion",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "disposicion_direccion",
+      "label": "Dirección receptora",
+      "group": "receptor",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "disposicion_region",
+      "label": "Región / dirección receptora",
+      "group": "receptor",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "disposicion_division",
+      "label": "División receptora",
+      "group": "receptor",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "disposicion_departamento",
+      "label": "Departamento policial receptor",
+      "group": "receptor",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "disposicion_unidad",
+      "label": "Unidad / área / equipo receptor",
+      "group": "receptor",
+      "type": "text",
+      "required": false
+    }
+  ],
+  "columnas": {
+    "A": "generado.numero",
+    "B": "generado.mes_fecha",
+    "C": "menor.datos.fecha",
+    "D": "menor.datos.hora",
+    "E": "menor.datos.apellido_paterno",
+    "F": "menor.datos.apellido_materno",
+    "G": "menor.datos.nombres",
+    "H": "menor.datos.edad",
+    "I": "menor.datos.genero",
+    "J": "menor.datos.nacionalidad",
+    "K": "menor.datos.tipo_documento",
+    "L": "menor.datos.numero_documento",
+    "M": "operativo.departamento",
+    "N": "operativo.provincia",
+    "O": "operativo.distrito",
+    "P": "menor.datos.motivo",
+    "Q": "menor.datos.tentativa",
+    "R": "menor.datos.fuero",
+    "S": "menor.datos.delito_general",
+    "T": "menor.datos.delito_especifico",
+    "U": "menor.datos.subtipo",
+    "V": "menor.datos.tentativa_2",
+    "W": "menor.datos.fuero_2",
+    "X": "menor.datos.delito_general_2",
+    "Y": "menor.datos.delito_especifico_2",
+    "Z": "menor.datos.subtipo_2",
+    "AA": "operativo.direccion_policial",
+    "AB": "operativo.direccion_especializada_region",
+    "AC": "operativo.division_policial",
+    "AD": "operativo.departamento_policial",
+    "AE": "operativo.unidad_area_equipo",
+    "AF": "menor.datos.grupo",
+    "AG": "menor.datos.nombre_grupo",
+    "AH": "menor.datos.arma_categoria",
+    "AI": "menor.datos.arma_tipo",
+    "AJ": "menor.datos.situacion",
+    "AK": "menor.datos.documento_libertad",
+    "AL": "menor.datos.documento_disposicion",
+    "AM": "menor.datos.fiscal",
+    "AN": "menor.datos.fiscalia",
+    "AO": "menor.datos.disposicion_direccion",
+    "AP": "menor.datos.disposicion_region",
+    "AQ": "menor.datos.disposicion_division",
+    "AR": "menor.datos.disposicion_departamento",
+    "AS": "menor.datos.disposicion_unidad",
+    "AT": "operativo.nota_sicpip",
+    "AU": "operativo.latitud",
+    "AV": "operativo.longitud"
+  },
+  "reglas": [
+    "Edades 2 a 17 según MENOR_DE_EDAD de OTRO!A37:A52; no es una validación de responsabilidad penal.",
+    "Registro independiente en Menores; no crea automáticamente detenciones ni fichas.",
+    "Datos del operativo compartidos en vivo. Dos bloques de delitos conforme al Excel.",
+    "No fotografias. La exportación del Excel completo sigue pendiente."
+  ]
+};

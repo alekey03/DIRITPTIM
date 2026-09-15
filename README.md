@@ -75,3 +75,7 @@ La migración `202609150010_requisitoriados_operativo.sql` agrega la categoría 
 Se registran tipo de requisitoria (ORDEN DE CAPTURA / RQ INTERNACIONAL, según TIPO_RQ de OTRO!E66:E67) y condición de más buscado (Sí / No, MAS_BUSCADO de OTRO!C51:C52). La identidad, fecha/hora, funcionario y delitos provienen de Detenidos; los datos comunes del hecho provienen del operativo. `datos/mapeo-requisitoriados-v1.json` documenta las 38 columnas. No se asigna una condición automáticamente a las personas. Un detalle por detención; no sumar el listado de requisitoriados al de detenidos para obtener personas únicas.
 
 El guardado valida ámbito, vínculo inmutable, versiones y reintentos. Más de dos delitos se muestra como pendiente de revisión para el futuro Excel. Sin fotografías. Pruebas de base de datos en `tests/requisitoriados-operativo.test.cjs` y de interfaz en `tests/operativos-preview.cjs`.
+
+## Menores del operativo
+
+La migración 011 crea `intervencion_menores` con permisos heredados del operativo, versiones y reintentos. Aplicar antes de publicar `menores.js`. `datos/mapeo-menores-v1.json` cubre las 48 columnas de 4_MENORES: edad histórica 2–17 según el catálogo del Excel, dos delitos, grupo, armas, situación y dependencia receptora. Ubicación, unidad interviniente, nota y coordenadas se reutilizan del operativo. No incluye funcionario público ni fotografías. No traslada registros previos de Detenidos ni genera vínculos automáticos con grupos. La exportación completa sigue pendiente.

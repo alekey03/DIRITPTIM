@@ -190,6 +190,17 @@
     return cascade;
   };
 
+  window.bindMinorCatalogs = function(container, values = {}) {
+    const controls = keys => keys.map(k => container.querySelector('[name="'+k+'"]'));
+    const weapon = bindCascade(controls(['arma_categoria','arma_tipo']), WEAPONS, ['Ninguna','Seleccionar tipo']);
+    weapon.set([values.arma_categoria,values.arma_tipo]);
+    const keys=['disposicion_direccion','disposicion_region','disposicion_division','disposicion_departamento'];
+    const police=bindCascade(controls(keys),POLICE,['Seleccionar dirección','Seleccionar región / dirección','Seleccionar división','Seleccionar departamento']);
+    police.set(keys.map(k=>values[k]));
+    // Keep historical values readable if the source catalog changes.
+    controls(['arma_categoria','arma_tipo',...keys]).forEach(control=>{const value=values[control.name];if(value&&!Array.from(control.options).some(o=>o.value===value)){control.append(new Option(value,value));control.value=value;control.disabled=false;}});
+  };
+
   window.bindOperativoCatalogs = function bindOperativoCatalogs(form) {
     const selects = kind => [...form.querySelectorAll(`[data-op-catalog="${kind}"]`)];
     const geo = bindCascade(selects('geo'), GEO, ['Seleccionar departamento', 'Seleccionar provincia', 'Seleccionar distrito']);
