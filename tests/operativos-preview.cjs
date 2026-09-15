@@ -9,13 +9,20 @@ let html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
   .replace(/<link[^>]+(?:https:)[^>]*>/gi, '');
 const mock = `
 let currentProfile={id:'fixture-user',activo:true,rol:'operador',unidad:'DEPITPTIM ABANCAY',departamento:'APURIMAC'};
-let requests=[],records=new Map(),detained=[],drugs=[],materials=[],vehicles=[],groups=[],minors=[],minorFailOnce=true,notes=[],noteFailOnce=true,rqs=[],rqFailOnce=true,failOnce=true;
+let requests=[],records=new Map(),detained=[],drugs=[],materials=[],vehicles=[],groups=[],victims=[],victimFailOnce=true,minors=[],minorFailOnce=true,notes=[],noteFailOnce=true,rqs=[],rqFailOnce=true,failOnce=true;
 function escapeHtml(value){return String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function formatDate(value){return value;}
 
 const supabaseClient={
  async rpc(name,p){
   requests.push(structuredClone(p));
+  if(name==='guardar_victima_operativo'){
+   const old=victims.find(r=>r.id===p.p_id),parent=records.get(p.p_intervencion);
+   if(old&&old.version===p.p_version+1&&JSON.stringify(old.datos)===JSON.stringify(p.p_datos))return {data:{id:old.id,version:old.version,operativo_version:parent.version},error:null};
+   const row={id:p.p_id,intervencion_id:p.p_intervencion,tipo:p.p_tipo,datos:p.p_datos,version:p.p_version+1};if(old)Object.assign(old,row);else victims.push(row);parent.version++;
+   if(victimFailOnce){victimFailOnce=false;throw new Error('Respuesta perdida de victima');}
+   return {data:{id:row.id,version:row.version,operativo_version:parent.version},error:null};
+  }
   if(name==='guardar_menor_operativo'){
    const old=minors.find(r=>r.id===p.p_id),parent=records.get(p.p_intervencion);
    if(old&&old.version===p.p_version+1&&JSON.stringify(old.datos)===JSON.stringify(p.p_datos))return {data:{id:old.id,version:old.version,operativo_version:parent.version},error:null};
@@ -67,7 +74,7 @@ const supabaseClient={
   const saved={...p.p_intervencion,id:p.p_id,version:p.p_version+2,unidad:currentProfile.unidad,departamento_registro:currentProfile.departamento,creado_por:currentProfile.id,resultados_previstos:[],intervencion_operativos:p.p_operativo};
   records.set(saved.id,saved);return {data:{id:saved.id,version:saved.version},error:null};
  },
- from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_notas'?notes.filter(d=>d.intervencion_id===id):table==='intervencion_menores'?minors.filter(d=>d.intervencion_id===id):table==='intervencion_requisitoriados'?rqs.filter(d=>d.intervencion_id===id):table==='intervencion_grupos'?groups.filter(d=>d.intervencion_id===id):table==='intervencion_vehiculos'?vehicles.filter(d=>d.intervencion_id===id):table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):['detenciones','detenciones_reportables'].includes(table)?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
+ from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_victimas'?victims.filter(d=>d.intervencion_id===id):table==='intervencion_notas'?notes.filter(d=>d.intervencion_id===id):table==='intervencion_menores'?minors.filter(d=>d.intervencion_id===id):table==='intervencion_requisitoriados'?rqs.filter(d=>d.intervencion_id===id):table==='intervencion_grupos'?groups.filter(d=>d.intervencion_id===id):table==='intervencion_vehiculos'?vehicles.filter(d=>d.intervencion_id===id):table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):['detenciones','detenciones_reportables'].includes(table)?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
 };
 document.getElementById('loginScreen').style.display='none';
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
@@ -84,6 +91,7 @@ const checks = `
  const report=document.createElement('p');report.id='test-result';report.style='padding:12px;background:#fff';document.querySelector('main').prepend(report);
  const assert=(value,message)=>{if(!value)throw new Error(message)};
  const tick=()=>new Promise(resolve=>setTimeout(resolve,30));
+ const wait=async predicate=>{for(let n=0;n<100;n++){if(predicate())return;await tick();}throw Error("Tiempo de espera de comprobación agotado");};
  try{
   const form=document.getElementById('operativoForm');
   assert(form.querySelectorAll('[name]').length===38,'Faltan campos del Excel');
@@ -126,7 +134,7 @@ const checks = `
   assert(detained.length===1,'Debe registrar detenido');
   assert(detained[0].intervencion_id===[...records.keys()][0],'Debe conservar vínculo');
   assert(document.querySelectorAll('.linked-detainee-row').length===1,'Debe volver al listado vinculado');
-  document.querySelector('#resultCards input[value="victimas"]').click();
+  document.querySelector('#resultCards input[value="otros"]').click();
   assert(!document.getElementById('resultsPendingNote').hidden,'Otros detalles pendientes deben estar señalados');
   document.querySelector('#resultCards input[value="drogas"]').click();
   const dtype=document.getElementById('drugType'),quantity=document.getElementById('drugQuantity');
@@ -219,17 +227,25 @@ const checks = `
   currentProfile={...currentProfile,id:'supervisor-fixture',rol:'supervisor'};await window.openOperativoResults([...records.keys()][0]);assert(document.querySelector('[data-minor="menor"]').disabled,'Supervisor no registra menor');document.querySelector('#minorRecords button').click();assert(document.getElementById('saveMinor').hidden&&document.getElementById('minorFields').disabled,'Supervisor solo consulta');document.getElementById('cancelMinor').click();assert(minorCaptureForm.hidden,'Supervisor puede cerrar consulta');
   window.resetResultadosModule();assert(!document.getElementById('minorRecords').textContent&&!document.getElementById('minorInputs').textContent,'Limpieza de menores');
   currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};await window.openOperativoResults([...records.keys()][0]);document.querySelector('#minorRecords button').click();
-  report.textContent='PASS: Menores: 48 columnas, validación, grupos, alta, edición, reintentos, consulta por roles y limpieza. RQ independiente y ampliaciones NI: altas, ediciones, reintentos, conteos separados, roles y limpieza.  Bandas y organizaciones; alta, edición, vínculos, tipos, permisos y limpieza.  Operativos, detenidos, drogas, materiales y vehículos; alta y edición, permisos, iconos y limpieza de sesión.';
+  await window.openOperativoResults([...records.keys()][0]);const victimBox=document.querySelector('#resultCards input[value="victimas"]');victimBox.checked=true;victimBox.dispatchEvent(new Event('change',{bubbles:true}));document.querySelector('#victimCards button').click();
+  const victimCaptureForm=document.getElementById('victimForm');assert(!victimCaptureForm.hidden,'Formulario de víctimas visible');assert(!victimCaptureForm.querySelector('input[type="file"]'),'Víctimas sin fotografías');
+  for(const [key,value]of Object.entries({apellido_paterno:'FICTICIO',nombres:'PRUEBA VICTIMA',edad:'17',situacion:'VICTIMA RESCATADA',entidad_disposicion:'UPE'})){victimCaptureForm.elements.namedItem(key).value=value;victimCaptureForm.elements.namedItem(key).dispatchEvent(new Event('input',{bubbles:true}));}
+  assert(victimCaptureForm.elements.condicion_edad.value==='MENOR'&&victimCaptureForm.elements.condicion_edad.readOnly,'Condición calculada');victimCaptureForm.elements.edad.value='18';victimCaptureForm.elements.edad.dispatchEvent(new Event('input',{bubbles:true}));assert(victimCaptureForm.elements.condicion_edad.value==='MAYOR','Frontera de 18 años');
+  victimCaptureForm.dispatchEvent(new Event('submit',{cancelable:true}));await wait(()=>document.getElementById('victimStatus').textContent.includes('No se confirmó'));assert(victims.length===1,'Alta con respuesta perdida');victimCaptureForm.dispatchEvent(new Event('submit',{cancelable:true}));await wait(()=>victimCaptureForm.hidden);assert(victims.length===1,'Reintento sin duplicar');
+  document.querySelector('#victimRecords button').click();victimCaptureForm.elements.nombres.value='PRUEBA EDITADA';victimCaptureForm.elements.nombres.dispatchEvent(new Event('input',{bubbles:true}));victimCaptureForm.dispatchEvent(new Event('submit',{cancelable:true}));await wait(()=>victimCaptureForm.hidden);assert(victims[0].datos.nombres==='PRUEBA EDITADA','Edición víctima');
+  currentProfile={...currentProfile,id:'fixture-supervisor',rol:'supervisor'};await window.openOperativoResults([...records.keys()][0]);document.querySelector('#victimRecords button').click();assert(document.getElementById('victimFields').disabled&&document.getElementById('saveVictim').hidden,'Víctimas consulta por supervisor');document.getElementById('cancelVictim').click();assert(victimCaptureForm.hidden,'Cerrar consulta');window.resetResultadosModule();assert(!document.getElementById('victimRecords').textContent&&!document.getElementById('victimInputs').textContent,'Limpieza de víctimas');
+  report.textContent='PASS: Víctimas: alta/edición, edad, sin fotos, reintentos y roles. Menores: 48 columnas, validación, grupos, alta, edición, reintentos, consulta por roles y limpieza. RQ independiente y ampliaciones NI: altas, ediciones, reintentos, conteos separados, roles y limpieza.  Bandas y organizaciones; alta, edición, vínculos, tipos, permisos y limpieza.  Operativos, detenidos, drogas, materiales y vehículos; alta y edición, permisos, iconos y limpieza de sesión.';
  }catch(error){report.textContent='FAIL: '+error.message;}
 })();
 `;
 html = html.replace('</body>', `<script>${mock}</script>
 <script src="/catalogos.js"></script><script src="/dependencias.js"></script><script src="/catalogos-ui.js"></script>
-<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/vehiculos-catalogo.js"></script><script src="/vehiculos.js"></script><script src="/grupos.js"></script><script src="/requisitoriados-catalogo.js"></script><script src="/notas-catalogo.js"></script><script src="/notas.js"></script><script src="/requisitoriados.js"></script><script src="/menores-catalogo.js"></script><script src="/menores.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
-const allowed = new Set(['notas.js','notas-catalogo.js','requisitoriados-catalogo.js','menores.js','menores-catalogo.js','styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','requisitoriados.js','grupos.js','materiales.js','materiales-catalogo.js','vehiculos.js','vehiculos-catalogo.js','assets/logo-diriptim.png']);
+<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/vehiculos-catalogo.js"></script><script src="/vehiculos.js"></script><script src="/grupos.js"></script><script src="/requisitoriados-catalogo.js"></script><script src="/notas-catalogo.js"></script><script src="/notas.js"></script><script src="/requisitoriados.js"></script><script src="/menores-catalogo.js"></script><script src="/menores.js"></script><script src="/victimas-catalogo.js"></script><script src="/victimas.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
+const allowed = new Set(['victimas.js','victimas-catalogo.js','notas.js','notas-catalogo.js','requisitoriados-catalogo.js','menores.js','menores-catalogo.js','styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','requisitoriados.js','grupos.js','materiales.js','materiales-catalogo.js','vehiculos.js','vehiculos-catalogo.js','assets/logo-diriptim.png']);
 http.createServer((req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1);
   if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(html);}
+  if(name==='victims-migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609160014_victimas_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(name==='migration'||name==='notes-migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,name==='notes-migration'?'supabase/migrations/202609160013_ampliaciones_ni.sql':'supabase/migrations/202609160012_requisitoriados_independientes.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(!allowed.has(name)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':'image/png');

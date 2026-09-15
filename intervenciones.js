@@ -127,14 +127,14 @@
     if (!currentProfile?.activo) { listStatus.textContent = 'Inicie sesión con una cuenta activa.'; return; }
     try {
       const { data, error } = await supabaseClient.from('intervenciones')
-        .select('id,fecha,tipo,unidad,departamento,provincia,distrito')
+        .select('id,fecha,tipo,nota_sicpip,unidad,departamento,provincia,distrito')
         .in('tipo', ['operativo', 'megaoperativo']).order('creado_en', { ascending: false }).order('id')
         .range(page * 25, page * 25 + 25);
       if (session !== epoch || turn !== listRequest) return;
       if (error) throw error;
       for (const record of data.slice(0, 25)) {
         const row = document.createElement('tr');
-        for (const value of [record.fecha?.split('-').reverse().join('/'), record.tipo === 'megaoperativo' ? 'Megaoperativo' : 'Operativo', record.unidad,
+        for (const value of [record.fecha?.split('-').reverse().join('/'), record.tipo === 'megaoperativo' ? 'Megaoperativo' : 'Operativo', record.nota_sicpip, record.unidad,
           [record.departamento, record.provincia, record.distrito].filter(Boolean).map(value => value.replace(/_/g, ' ').trim()).join(' / ')]) {
           const cell = document.createElement('td'); cell.textContent = value || '—'; row.appendChild(cell);
         }
