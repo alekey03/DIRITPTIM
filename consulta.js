@@ -91,5 +91,7 @@
   }
   const records=setup('consultaRecordsView',false),dashboard=setup('generalDashboardView',true);
   window.loadConsultaRecords=()=>load(records);window.loadGeneralDashboard=()=>load(dashboard);
+  // La sesión puede restablecerse antes de terminar de descargar este módulo.
+  if(currentProfile?.activo&&dashboard.root.classList.contains('active'))load(dashboard);
   window.resetConsulta=()=>{session++;detail.close();detailContent.replaceChildren();for(const s of states.values()){s.turn++;s.loaded=false;clearOutput(s);s.root.querySelector('form').reset();s.root.querySelector('[name="category"]').value='detenidos';options(s.root.querySelector('[name="unit"]'),[],'Todas las autorizadas');options(s.root.querySelector('[name="field"]'),categories.find(c=>c.id==='detenidos').fields.map(f=>[f.key,f.label]),'Todos los campos');s.status.textContent='';s.root.querySelector('.consulta-scope').textContent='';}};
 })();
