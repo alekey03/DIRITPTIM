@@ -48,7 +48,8 @@
     document.getElementById('linkedDetaineesPanel').hidden = !selected().includes('detenidos');
     document.getElementById('drugResultsPanel').hidden = !selected().includes('drogas');
     document.getElementById('materialResultsPanel').hidden = !selected().includes('armas');
-    document.getElementById('resultsPendingNote').hidden = !selected().some(type => !['detenidos','drogas','armas'].includes(type));
+    document.getElementById('vehicleResultsPanel').hidden = !selected().includes('vehiculos');
+    document.getElementById('resultsPendingNote').hidden = !selected().some(type => !['detenidos','drogas','armas','vehiculos'].includes(type));
   }
   function lock() {
     document.getElementById('resultsSelection').disabled = busy || readOnly || !current;
@@ -59,12 +60,13 @@
     document.getElementById('drugFields').disabled = busy || readOnly || !current;
     document.getElementById('moreDrugs').disabled = busy || !current;
     window.MaterialesUI.lock(busy || !current,readOnly);
+    window.VehiculosUI.lock(busy || !current,readOnly);
   }
   cards.addEventListener('change', () => { dirty = true; selectionStatus.textContent = 'Selección sin guardar'; renderSelection(); });
-  window.addEventListener('beforeunload', event => { if (dirty || drugDirty || window.MaterialesUI.dirty || busy) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', event => { if (dirty || drugDirty || (window.MaterialesUI.dirty || window.VehiculosUI.dirty) || busy) { event.preventDefault(); event.returnValue = ''; } });
   window.resetResultadosModule = () => {
     generation++; current = null; busy = false; dirty = false; readOnly = true; shown = 25;
-    window.MaterialesUI.reset();
+    window.MaterialesUI.reset(); window.VehiculosUI.reset();
     resetDrug(); drugShown = 25; drugRecords.replaceChildren(); drugStatus.textContent = '';
     boxes.forEach(box => { box.checked = false; }); renderSelection(); lock(); list.replaceChildren();
     status.textContent = selectionStatus.textContent = document.getElementById('resultsSummary').textContent = '';
@@ -89,9 +91,9 @@
     document.getElementById('moreLinkedDetainees').hidden = data.length <= shown;
   }
   window.openOperativoResults = async recordId => {
-    if (busy || ((dirty || drugDirty || window.MaterialesUI.dirty) && !confirm('Hay cambios sin guardar. ¿Desea descartarlos y volver a cargar los resultados?'))) return;
+    if (busy || ((dirty || drugDirty || (window.MaterialesUI.dirty || window.VehiculosUI.dirty)) && !confirm('Hay cambios sin guardar. ¿Desea descartarlos y volver a cargar los resultados?'))) return;
     const token = ++generation; current = null; busy = true; dirty = false; readOnly = true; shown = 25;
-    window.MaterialesUI.reset();
+    window.MaterialesUI.reset(); window.VehiculosUI.reset();
     resetDrug(); drugShown = 25; drugRecords.replaceChildren(); drugStatus.textContent = '';
     boxes.forEach(box => { box.checked = false; }); renderSelection(); lock(); list.replaceChildren();
     document.getElementById('resultsSummary').textContent = ''; selectionStatus.textContent = '';
@@ -111,6 +113,12 @@
         prepare:async()=>!busy && !readOnly && (!dirty || await saveSelection()),
         setBusy:value=>{busy=value;lock();},
         saved:version=>{current.version=version;if(!current.resultados_previstos.includes('armas'))current.resultados_previstos.push('armas');}
+      });
+      if(token!==generation)return;
+      await window.VehiculosUI.load(current,readOnly,{
+        prepare:async()=>!busy && !readOnly && (!dirty || await saveSelection()),
+        setBusy:value=>{busy=value;lock();},
+        saved:version=>{current.version=version;if(!current.resultados_previstos.includes('vehiculos'))current.resultados_previstos.push('vehiculos');}
       });
       if (token !== generation) return;
       status.textContent = readOnly ? 'Consulta de resultados: su cuenta no puede modificar este operativo.' : 'Puede seleccionar varios resultados. Seleccionar una categoría no equivale a completar su detalle.';
@@ -135,16 +143,17 @@
   document.getElementById('saveResults').addEventListener('click', saveSelection);
   document.getElementById('refreshResults').addEventListener('click', () => { if (current) window.openOperativoResults(current.id); });
   document.getElementById('backOperativo').addEventListener('click', () => {
-    if (busy || !current || ((dirty || drugDirty || window.MaterialesUI.dirty) && !confirm('Hay cambios sin guardar. ¿Desea descartarlos?'))) return;
-    dirty = false; resetDrug(); window.MaterialesUI.clear(); window.openOperativoById(current.id);
+    if (busy || !current || ((dirty || drugDirty || (window.MaterialesUI.dirty || window.VehiculosUI.dirty)) && !confirm('Hay cambios sin guardar. ¿Desea descartarlos?'))) return;
+    dirty = false; resetDrug(); window.MaterialesUI.clear(); window.VehiculosUI.clear(); window.openOperativoById(current.id);
   });
   document.getElementById('addLinkedDetainee').addEventListener('click', async () => {
     if (busy || readOnly || !current) return;
     if (drugDirty && !confirm('Hay una sustancia sin guardar. ¿Desea descartarla?')) return;
     if (!window.MaterialesUI.discard()) return;
+    if (!window.VehiculosUI.discard()) return;
     if (dirty && !(await saveSelection())) return;
     resetDrug();
-    window.MaterialesUI.clear();
+    window.MaterialesUI.clear(); window.VehiculosUI.clear();
     window.startDetaineeFromOperativo?.(current);
   });
   document.getElementById('moreLinkedDetainees').addEventListener('click', async () => {
@@ -186,9 +195,9 @@
   document.addEventListener('click',event=>{
     const nav=event.target.closest('[data-view]');
     if(!nav || nav.dataset.view==='operativoResultsView' || !document.getElementById('operativoResultsView').classList.contains('active')) return;
-    if(busy || ((drugDirty || window.MaterialesUI.dirty) && !confirm('Hay detalles sin guardar. ¿Desea descartarlos?'))) {event.preventDefault();event.stopImmediatePropagation();return;}
+    if(busy || ((drugDirty || (window.MaterialesUI.dirty || window.VehiculosUI.dirty)) && !confirm('Hay detalles sin guardar. ¿Desea descartarlos?'))) {event.preventDefault();event.stopImmediatePropagation();return;}
     if(drugDirty) resetDrug();
-    window.MaterialesUI.clear();
+    window.MaterialesUI.clear(); window.VehiculosUI.clear();
   },true);
   document.getElementById('cancelDrug').addEventListener('click',()=>{
     if (!busy && (!drugDirty || confirm('¿Descartar los cambios de esta sustancia?'))) { resetDrug(); drugStatus.textContent=''; }
@@ -227,3 +236,4 @@
   });
   window.resetResultadosModule();
 })();
+
