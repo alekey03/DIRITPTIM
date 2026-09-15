@@ -1,0 +1,190 @@
+{
+  "version": 1,
+  "hojas": [
+    {
+      "columnas": {
+        "A": "derivado.numero",
+        "B": "derivado.mes",
+        "C": "intervencion.fecha",
+        "D": "intervencion.hora",
+        "E": "droga.cantidad",
+        "F": "intervencion.direccion_policial",
+        "G": "intervencion.direccion_especializada_region",
+        "H": "intervencion.division_policial",
+        "I": "intervencion.departamento_policial",
+        "J": "intervencion.unidad_area_equipo",
+        "K": "intervencion.departamento",
+        "L": "intervencion.provincia",
+        "M": "intervencion.distrito",
+        "N": "intervencion.nota_sicpip",
+        "O": "intervencion.latitud",
+        "P": "intervencion.longitud"
+      },
+      "tipo": "env_pbc",
+      "unidad": "unidades",
+      "hoja": "5_ENV PBC"
+    },
+    {
+      "columnas": {
+        "A": "derivado.numero",
+        "B": "derivado.mes",
+        "C": "intervencion.fecha",
+        "D": "intervencion.hora",
+        "E": "droga.cantidad",
+        "F": "intervencion.direccion_policial",
+        "G": "intervencion.direccion_especializada_region",
+        "H": "intervencion.division_policial",
+        "I": "intervencion.departamento_policial",
+        "J": "intervencion.unidad_area_equipo",
+        "K": "intervencion.departamento",
+        "L": "intervencion.provincia",
+        "M": "intervencion.distrito",
+        "N": "intervencion.nota_sicpip",
+        "O": "intervencion.latitud",
+        "P": "intervencion.longitud"
+      },
+      "tipo": "env_cc",
+      "unidad": "unidades",
+      "hoja": "6_ENV CC"
+    },
+    {
+      "columnas": {
+        "A": "derivado.numero",
+        "B": "derivado.mes",
+        "C": "intervencion.fecha",
+        "D": "intervencion.hora",
+        "E": "droga.cantidad",
+        "F": "intervencion.direccion_policial",
+        "G": "intervencion.direccion_especializada_region",
+        "H": "intervencion.division_policial",
+        "I": "intervencion.departamento_policial",
+        "J": "intervencion.unidad_area_equipo",
+        "K": "intervencion.departamento",
+        "L": "intervencion.provincia",
+        "M": "intervencion.distrito",
+        "N": "intervencion.nota_sicpip",
+        "O": "intervencion.latitud",
+        "P": "intervencion.longitud"
+      },
+      "tipo": "env_marihuana",
+      "unidad": "unidades",
+      "hoja": "7_ENV MARIHUANA"
+    },
+    {
+      "columnas": {
+        "A": "derivado.numero",
+        "B": "derivado.mes",
+        "C": "intervencion.fecha",
+        "D": "intervencion.hora",
+        "E": "droga.cantidad",
+        "F": "intervencion.direccion_policial",
+        "G": "intervencion.direccion_especializada_region",
+        "H": "intervencion.division_policial",
+        "I": "intervencion.departamento_policial",
+        "J": "intervencion.unidad_area_equipo",
+        "K": "intervencion.departamento",
+        "L": "intervencion.provincia",
+        "M": "intervencion.distrito",
+        "N": "intervencion.nota_sicpip",
+        "O": "intervencion.latitud",
+        "P": "intervencion.longitud"
+      },
+      "tipo": "kg_pbc",
+      "unidad": "kg",
+      "hoja": "8_KG_PBC"
+    },
+    {
+      "columnas": {
+        "A": "derivado.numero",
+        "B": "derivado.mes",
+        "C": "intervencion.fecha",
+        "D": "intervencion.hora",
+        "E": "droga.cantidad",
+        "F": "intervencion.direccion_policial",
+        "G": "intervencion.direccion_especializada_region",
+        "H": "intervencion.division_policial",
+        "I": "intervencion.departamento_policial",
+        "J": "intervencion.unidad_area_equipo",
+        "K": "intervencion.departamento",
+        "L": "intervencion.provincia",
+        "M": "intervencion.distrito",
+        "N": "intervencion.nota_sicpip",
+        "O": "intervencion.latitud",
+        "P": "intervencion.longitud"
+      },
+      "tipo": "kg_cc",
+      "unidad": "kg",
+      "hoja": "9_KG CC"
+    },
+    {
+      "columnas": {
+        "A": "derivado.numero",
+        "B": "derivado.mes",
+        "C": "intervencion.fecha",
+        "D": "intervencion.hora",
+        "E": "droga.cantidad",
+        "F": "intervencion.direccion_policial",
+        "G": "intervencion.direccion_especializada_region",
+        "H": "intervencion.division_policial",
+        "I": "intervencion.departamento_policial",
+        "J": "intervencion.unidad_area_equipo",
+        "K": "intervencion.departamento",
+        "L": "intervencion.provincia",
+        "M": "intervencion.distrito",
+        "N": "intervencion.nota_sicpip",
+        "O": "intervencion.latitud",
+        "P": "intervencion.longitud"
+      },
+      "tipo": "kg_marihuana",
+      "unidad": "kg",
+      "hoja": "10_KG MARIHUANA"
+    },
+    {
+      "columnas": {
+        "A": "derivado.numero",
+        "B": "derivado.mes",
+        "C": "intervencion.fecha",
+        "D": "intervencion.hora",
+        "E": "droga.cantidad",
+        "F": "intervencion.direccion_policial",
+        "G": "intervencion.direccion_especializada_region",
+        "H": "intervencion.division_policial",
+        "I": "intervencion.departamento_policial",
+        "J": "intervencion.unidad_area_equipo",
+        "K": "intervencion.departamento",
+        "L": "intervencion.provincia",
+        "M": "intervencion.distrito",
+        "N": "intervencion.nota_sicpip",
+        "O": "intervencion.latitud",
+        "P": "intervencion.longitud"
+      },
+      "tipo": "kg_opio",
+      "unidad": "kg",
+      "hoja": "11_KG LATEX DE OPIO"
+    },
+    {
+      "columnas": {
+        "A": "derivado.numero",
+        "B": "derivado.mes",
+        "C": "intervencion.fecha",
+        "D": "intervencion.hora",
+        "E": "droga.nombre_sustancia",
+        "F": "droga.cantidad",
+        "G": "intervencion.direccion_policial",
+        "H": "intervencion.direccion_especializada_region",
+        "I": "intervencion.division_policial",
+        "J": "intervencion.departamento_policial",
+        "K": "intervencion.unidad_area_equipo",
+        "L": "intervencion.departamento",
+        "M": "intervencion.provincia",
+        "N": "intervencion.distrito",
+        "O": "intervencion.nota_sicpip",
+        "P": "intervencion.latitud",
+        "Q": "intervencion.longitud"
+      },
+      "tipo": "kg_sintetica",
+      "unidad": "kg",
+      "hoja": "12_KG DROGA SINTETICA"
+    }
+  ]
+}

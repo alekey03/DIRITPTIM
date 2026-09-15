@@ -9,13 +9,19 @@ let html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
   .replace(/<link[^>]+(?:https:)[^>]*>/gi, '');
 const mock = `
 let currentProfile={id:'fixture-user',activo:true,rol:'operador',unidad:'DEPITPTIM ABANCAY',departamento:'APURIMAC'};
-let requests=[],records=new Map(),detained=[],failOnce=true;
+let requests=[],records=new Map(),detained=[],drugs=[],failOnce=true;
 function escapeHtml(value){return String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function formatDate(value){return value;}
 
 const supabaseClient={
  async rpc(name,p){
   requests.push(structuredClone(p));
+  if(name==='guardar_droga_operativo'){
+   const old=drugs.find(d=>d.id===p.p_id); const record={id:p.p_id,intervencion_id:p.p_intervencion,tipo:p.p_tipo,cantidad:p.p_cantidad,nombre_sustancia:p.p_nombre,version:p.p_version+1};
+   if(old) Object.assign(old,record);else drugs.push(record);
+   const parent=records.get(p.p_intervencion);parent.version++;
+   return {data:{id:record.id,version:record.version,operativo_version:parent.version},error:null};
+  }
   if(name==='seleccionar_resultados_operativo'){
    const record=records.get(p.p_id);record.resultados_previstos=p.p_categorias;record.version++;
    return {data:{version:record.version,categorias:p.p_categorias},error:null};
@@ -29,7 +35,7 @@ const supabaseClient={
   const saved={...p.p_intervencion,id:p.p_id,version:p.p_version+2,unidad:currentProfile.unidad,departamento_registro:currentProfile.departamento,creado_por:currentProfile.id,resultados_previstos:[],intervencion_operativos:p.p_operativo};
   records.set(saved.id,saved);return {data:{id:saved.id,version:saved.version},error:null};
  },
- from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
+ from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):table==='detenciones'?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
 };
 document.getElementById('loginScreen').style.display='none';
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
@@ -89,7 +95,26 @@ const checks = `
   assert(detained[0].intervencion_id===[...records.keys()][0],'Debe conservar vínculo');
   assert(document.querySelectorAll('.linked-detainee-row').length===1,'Debe volver al listado vinculado');
   assert(!document.getElementById('resultsPendingNote').hidden,'Otros detalles pendientes deben estar señalados');
-  report.textContent='PASS: Resultados guardados y detenido vinculado;  38 campos, reintento, conservación de datos, listado, reapertura, consulta de supervisor y limpieza de sesión.';
+  document.querySelector('#resultCards input[value="drogas"]').click();
+  const dtype=document.getElementById('drugType'),quantity=document.getElementById('drugQuantity');
+  dtype.value='kg_sintetica';dtype.dispatchEvent(new Event('change'));
+  assert(!document.getElementById('drugNameField').hidden,'Debe pedir nombre de droga sintética');
+  document.getElementById('drugName').value='FICTICIA';quantity.value='1.25';
+  document.getElementById('drugResultForm').requestSubmit();await tick();await tick();
+  assert(drugs.length===1 && drugs[0].cantidad===1.25,'Debe guardar droga vinculada');
+  document.querySelector('#drugRecords button').click();quantity.value='2.5';
+  document.getElementById('drugResultForm').requestSubmit();await tick();await tick();
+  assert(drugs.length===1 && drugs[0].cantidad===2.5,'Debe editar sin duplicar');
+  dtype.value='env_cc';dtype.dispatchEvent(new Event('change'));quantity.value='1.5';
+  assert(!quantity.checkValidity(),'Unidades debe rechazar fracciones');
+  currentProfile={...currentProfile,id:'supervisor-fixture',rol:'supervisor'};
+  await window.openOperativoResults([...records.keys()][0]);
+  assert(document.getElementById('drugFields').disabled,'Consulta sin edición para supervisor');
+  assert(document.querySelectorAll('#drugRecords button').length===0,'Supervisor sin botones de edición');
+  window.resetResultadosModule();assert(document.getElementById('drugRecords').textContent==='','Limpiar resultados al salir');
+  currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};
+  await window.openOperativoResults([...records.keys()][0]);
+  report.textContent='PASS: Operativo, detenido vinculado y drogas; alta, edición sin duplicado, unidades enteras, nombre sintético, consulta de supervisor y limpieza de sesión.';
  }catch(error){report.textContent='FAIL: '+error.message;}
 })();
 `;
@@ -100,7 +125,7 @@ const allowed = new Set(['styles.css','catalogos.js','dependencias.js','catalogo
 http.createServer((req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1);
   if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(html);}
-  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150004_resultados_y_detenidos.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
+  if(name==='migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609150005_drogas_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(!allowed.has(name)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':'image/png');
   res.end(fs.readFileSync(path.join(root,name)));
