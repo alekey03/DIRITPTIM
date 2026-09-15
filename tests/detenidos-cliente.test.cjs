@@ -6,6 +6,14 @@ const vm = require('node:vm');
 const { webcrypto } = require('node:crypto');
 const source = fs.readFileSync(path.join(__dirname,'../detenidos.js'),'utf8');
 const handler = source.slice(source.indexOf('async function saveDetainee('),source.indexOf('window.loadDetaineeRecords ='));
+test('entidad pública se habilita solo con Sí y se limpia con No',()=>{
+  const fields={esFuncionario:{value:'false'},entidadPublica:{value:'ANTERIOR'},detalleEntidad:{value:'DETALLE'}};
+  const ctx={detaineeForm:{elements:{namedItem:name=>fields[name]}}};
+  vm.createContext(ctx);vm.runInContext(source.slice(source.indexOf('function syncDetaineePublicEntity'),source.indexOf("detaineeForm.elements.namedItem('esFuncionario').addEventListener")),ctx);
+  ctx.syncDetaineePublicEntity();assert.equal(fields.entidadPublica.disabled,true);assert.equal(fields.entidadPublica.value,'');assert.equal(fields.detalleEntidad.value,'');
+  fields.esFuncionario.value='true';ctx.syncDetaineePublicEntity();assert.equal(fields.entidadPublica.disabled,false);assert.equal(fields.detalleEntidad.disabled,false);
+  fields.entidadPublica.value='FICTICIA';fields.detalleEntidad.value='FICTICIO';fields.esFuncionario.value='false';ctx.syncDetaineePublicEntity();assert.equal(fields.entidadPublica.value,'');assert.equal(fields.detalleEntidad.value,'');
+});
 function setup() {
   const fields={apellidoPaterno:'FICTICIO',nombres:'PRUEBA',fecha:'2026-09-14',armaCategoria:'FICTICIA',armaCantidad:'1'};
   const elements = { detaineeStatus:{}, saveDetaineeButton:{ disabled:false } };
