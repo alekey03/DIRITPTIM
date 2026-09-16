@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260916-victimas-v1" />
+  <link rel="stylesheet" href="styles.css?v=20260916-prostitucion-v1" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
 </head>
 <body>
@@ -345,6 +345,13 @@
         <form id="vehicleForm" hidden><fieldset id="vehicleFields"><legend id="vehicleFormTitle">Registrar vehículo</legend><div id="vehicleInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveVehicle">Guardar registro</button><button type="button" class="secondary" id="cancelVehicle">Cerrar formulario</button></div></fieldset></form>
         <p id="vehicleStatus" role="status" aria-live="polite"></p><div id="vehicleRecords"></div><button type="button" class="secondary" id="moreVehicles" hidden>Ver más registros</button>
       </section>
+      <section id="prostitucionResultsPanel" class="card result-detail" hidden>
+        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Prostitución femenina y masculina</h3><p>Identificación y documento de cada persona registrada.</p></div><span class="drug-badge">Hoja 20</span></div>
+        <div id="prostitucionCards" class="material-cards" aria-label="Registrar persona"></div>
+        <p class="results-note">La ubicación, dependencia y nota informativa se toman del operativo. Este registro se cuenta por separado de Detenidos y Víctimas de trata.</p>
+        <form id="prostitucionForm" hidden><fieldset id="prostitucionFields"><legend id="prostitucionFormTitle">Registrar persona</legend><div id="prostitucionInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveProstitucion">Guardar registro</button></div></fieldset><button type="button" class="secondary" id="cancelProstitucion">Cerrar formulario</button></form>
+        <p id="prostitucionStatus" role="status" aria-live="polite"></p><div id="prostitucionRecords"></div><button type="button" class="secondary" id="moreProstitucion" hidden>Ver más registros</button>
+      </section>
       <section id="victimResultsPanel" class="card result-detail" hidden>
         <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Víctimas de trata</h3><p>Identificación, situación y entidad de puesta a disposición.</p></div><span class="drug-badge">Hoja 21 · Víctimas de trata</span></div>
         <div id="victimCards" class="material-cards" aria-label="Registrar víctima"></div>
@@ -474,9 +481,11 @@
   <script src="menores.js?v=20260915-menores-v1"></script>
   <script src="victimas-catalogo.js?v=20260916-victimas-v1"></script>
   <script src="victimas.js?v=20260916-victimas-v1"></script>
-  <script src="resultados.js?v=20260916-victimas-v1"></script>
+  <script src="prostitucion-catalogo.js?v=20260916-prostitucion-v1"></script>
+  <script src="prostitucion.js?v=20260916-prostitucion-v1"></script>
+  <script src="resultados.js?v=20260916-prostitucion-v1"></script>
   <script src="exportaciones.js?v=20260916-rq-ni-v1"></script>
-  <script src="consulta-modelo.js?v=20260916-victimas-v1"></script>
-  <script src="consulta.js?v=20260916-consulta-v2"></script>
+  <script src="consulta-modelo.js?v=20260916-prostitucion-v1"></script>
+  <script src="consulta.js?v=20260916-prostitucion-v1"></script>
 </body>
 </html>

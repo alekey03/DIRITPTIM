@@ -359,3 +359,5 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 @media(max-width:600px){#generalDashboardView,#consultaRecordsView{padding:16px}.consulta-filters{grid-template-columns:1fr}.consulta-category{grid-column:auto}.consulta-pagination{gap:10px;flex-wrap:wrap}.consulta-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 #victimFields{border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0;min-width:0}#victimFields legend{font-weight:700;color:var(--primary);padding:0 8px}#victimForm[hidden],#saveVictim[hidden],#moreVictims[hidden]{display:none}#victimInputs section{padding:12px 0}#victimInputs input:read-only{background:#edf3ef}
+
+#prostitucionFields{border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0;min-width:0}#prostitucionFields legend{font-weight:700;color:var(--primary);padding:0 8px}#prostitucionForm[hidden],#saveProstitucion[hidden],#moreProstitucion[hidden]{display:none}#prostitucionInputs section{padding:12px 0}#prostitucionInputs input:read-only{background:#edf3ef}
