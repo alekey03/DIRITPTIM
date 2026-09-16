@@ -64,6 +64,7 @@
       });s.charts.append(button);
       chart(s,'Por dependencia',r=>r.unit||'Sin dependencia');chart(s,'Evolución mensual',r=>r.date.slice(0,7)||'Sin fecha',true);
       if(c.table==='intervencion_drogas')chart(s,'Registros por sustancia',r=>r.data.sustancia);
+      else if(c.id==='prostitucion')chart(s,'Registros por género',r=>r.data.genero||'Sin registrar');
       else if(c.fields.some(f=>f.key==='situacion'))chart(s,'Registros por situación',r=>r.data.situacion||'Sin registrar');
     }else table(s);
   }

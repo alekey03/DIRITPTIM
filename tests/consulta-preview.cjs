@@ -2,7 +2,7 @@
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..');
 let html=fs.readFileSync(path.join(root,'index.html'),'utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<link[^>]+https:[^>]*>/gi,'');
-const scripts=['materiales-catalogo.js','vehiculos-catalogo.js','requisitoriados-catalogo.js','victimas-catalogo.js','menores-catalogo.js','consulta-modelo.js','consulta.js'];
+const scripts=['materiales-catalogo.js','vehiculos-catalogo.js','requisitoriados-catalogo.js','prostitucion-catalogo.js','victimas-catalogo.js','menores-catalogo.js','consulta-modelo.js','consulta.js'];
 const mock=`let currentProfile={id:'admin',activo:true,rol:'administrador',unidad:'A'};
 const parents=[{id:'op-a',tipo:'operativo',unidad:'A',fecha:'2026-09-15',departamento:'LIMA',nota_sicpip:'NI-DEMO-01'},{id:'op-b',tipo:'operativo',unidad:'B',fecha:'2026-08-12',departamento:'CUSCO'}];
 const records={intervenciones:parents,detenciones_reportables:Array.from({length:31},(_,i)=>({id:String(i).padStart(4,'0'),intervencion_id:i<28?'op-a':'op-b',fecha:'2026-09-15',unidad:i<28?'A':'B',personas:{apellido_paterno:'FICTICIO',nombres:'PRUEBA '+i,numero_documento:'DEMO-'+i}})),intervencion_drogas:[{id:'d1',intervencion_id:'op-a',tipo:'kg_pbc',cantidad:2.5},{id:'d2',intervencion_id:'op-a',tipo:'env_pbc',cantidad:120},{id:'d3',intervencion_id:'op-b',tipo:'kg_cc',cantidad:1}],intervencion_vehiculos:[{id:'v1',intervencion_id:'op-a',tipo:'mayor',datos:{placa:'DEMO-001',marca:'Demostración',situacion:'Incautado'}}]};
