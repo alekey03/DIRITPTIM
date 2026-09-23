@@ -72,7 +72,7 @@
       const symbol=document.createElement('span');symbol.className='material-record-icon';symbol.innerHTML=icon(record.tipo);
       const info=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('small');title.textContent=type.titulo;
       const d=record.datos;detail.textContent=[d.fecha,[d.apellido_paterno,d.apellido_materno,d.nombres].filter(Boolean).join(' '),d.marca,d.cantidad!=null?`Cantidad: ${d.cantidad}`:null,d.situacion,...(record.tipo==='dinero'?[d.soles!=null?`S/ ${d.soles}`:null,d.dolares!=null?`USD ${d.dolares}`:null,d.euros!=null?`EUR ${d.euros}`:null,d.dinero_otro]:[])].filter(Boolean).join(' · ');
-      info.append(title,detail);const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=readOnly?'Ver detalle':'Abrir / editar';button.addEventListener('click',()=>{if(!busy&&discard())open(type,record,readOnly);});row.append(symbol,info,button);list.append(row);
+      info.append(title,detail);const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=(readOnly||!puedeEditarUnidad(context.unidad))?'Ver detalle':'Abrir / editar';button.addEventListener('click',()=>{if(!busy&&discard())open(type,record,readOnly||!puedeEditarUnidad(context.unidad));});row.append(symbol,info,button);list.append(row);
     }
     $('moreComplements').hidden=data.length<=shown;show(visible);
   }

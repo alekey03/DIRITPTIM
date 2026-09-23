@@ -72,6 +72,7 @@
       if (result.error) throw result.error;
       if (!result.data?.id || !Number.isInteger(result.data.version)) throw new Error('No se recibió la confirmación del guardado. Reintente.');
       id = result.data.id; version = result.data.version; pending = null; dirty = false;
+      readOnly = !esGestorProduccion();
       message('Borrador guardado. Continúe a resultados para registrar lo obtenido en el operativo.');
     } catch (error) {
       if (turn !== epoch) return;
@@ -105,8 +106,7 @@
         field.value = value;
       }
       id = data.id; version = data.version; pending = null; dirty = false;
-      readOnly = !(currentProfile?.activo && (currentProfile.rol === 'administrador' ||
-        (data.creado_por === currentProfile.id && data.unidad === currentProfile.unidad)));
+      readOnly = !puedeEditarUnidad(data.unidad);
       lock(readOnly);
       document.querySelector('.nav-item[data-view="operativoView"]').click();
       document.getElementById('operativoScope').textContent = data.unidad;

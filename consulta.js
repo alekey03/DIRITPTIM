@@ -33,7 +33,7 @@
   async function load(s){
     const turn=++s.turn,epoch=session,profile=currentProfile?.id,c=category(s);clearOutput(s);s.page=0;s.loaded=false;
     const alive=()=>turn===s.turn&&epoch===session&&currentProfile?.id===profile&&currentProfile?.activo;
-    s.root.querySelector('.consulta-scope').textContent=currentProfile?.rol==='administrador'?'Ámbito nacional · Administrador general':currentProfile?.rol==='supervisor'?'Solo dependencias autorizadas para su cuenta':`Solo su área · ${currentProfile?.unidad||''}`;
+    s.root.querySelector('.consulta-scope').textContent=`${nombrePerfil(currentProfile?.rol)} · ${currentProfile?.unidad||''}`;
     s.status.textContent='Consultando los registros autorizados…';
     if(!alive()){s.status.textContent='Inicie sesión con una cuenta activa.';return;}
     try{

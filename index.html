@@ -44,7 +44,7 @@
         <button class="nav-group-toggle" type="button" aria-expanded="false"><span>▣</span><strong>Intervenciones</strong><i>⌄</i></button>
         <div class="nav-submenu"><button class="nav-item" data-view="operativoView"><span>＋</span>Registrar operativo</button><button class="nav-item" data-view="operativoRecordsView"><span>▤</span>Operativos</button></div>
       </div>
-      <button class="nav-item admin-only" data-view="usersView"><span>♙</span>Usuarios</button>
+      <button class="nav-item admin-only users-access" data-view="usersView"><span>♙</span>Usuarios</button>
       <button class="nav-item admin-only" data-view="auditView"><span>☷</span>Auditoría</button>
     </nav>
     <div class="security-note"><span>🔒</span><div><strong>Información protegida</strong><p>Acceso exclusivo para personal autorizado.</p></div></div>
@@ -428,11 +428,11 @@
       <div class="grid cols-2">
         <label>Nombres<input id="newUserNames" placeholder="Nombres del usuario" required></label>
         <label>Apellidos<input id="newUserSurnames" placeholder="Apellidos del usuario" required></label>
-        <label class="span-2">Nombre de usuario<input id="newUsername" type="text" placeholder="Ej. operador03" pattern="[a-z0-9._-]{3,30}" autocomplete="off" required></label>
-        <label>Rol<select id="newUserRole" required><option value="operador">Operador</option><option value="supervisor">Supervisor</option><option value="administrador">Administrador general</option></select></label>
+        <label class="span-2">Nombre de usuario<input id="newUsername" type="text" placeholder="Ej. estadistica.cusco" pattern="[a-z0-9._-]{3,30}" autocomplete="off" required></label>
+        <label>Perfil estadístico<select id="newUserRole" required><option value="estadistico_direccion">Estadístico de Dirección</option><option value="estadistico_division">Estadístico de División</option><option value="estadistico_jefatura">Estadístico de Jefatura · JEFDDITP</option><option value="estadistico_depitptim">Estadístico de DEPITPTIM</option></select></label>
         <label>Ámbito<select id="newUserScope" required><option value="DESCONCENTRADO">Desconcentrado</option><option value="SEDE_CENTRAL">Sede Central DIRITPTIM</option><option value="NACIONAL">Nacional</option></select></label>
         <label>Departamento<select id="newUserDepartment" required><option value="">Seleccionar departamento</option></select></label>
-        <label>Área o dependencia<select id="newUserUnit" required aria-describedby="userDependencyHint"><option value="">Seleccionar dependencia</option></select><small id="userDependencyHint">Seleccione primero el ámbito.</small></label>
+        <label>Dependencia asignada<select id="newUserUnit" required aria-describedby="userDependencyHint"><option value="">Seleccionar dependencia</option></select><small id="userDependencyHint">Seleccione primero el ámbito.</small></label>
         <label class="span-2">Contraseña temporal<input id="newUserPassword" type="password" minlength="8" autocomplete="new-password" required></label>
         <label class="user-active-control span-2"><span>Estado de la cuenta</span><select id="newUserActive"><option value="true">Activa</option><option value="false">Desactivada</option></select></label>
       </div>
@@ -471,34 +471,35 @@
   <script src="dependencias-flujo.js?v=20260923-flujo"></script>
 <script src="catalogos-ui.js?v=20260923-flujo"></script>
   <script src="mapa.js?v=20260910-map-v5"></script>
-  <script src="dependencias.js?v=20260915-dependencias-v1"></script>
-  <script src="app.js?v=20260916-consulta-v2"></script>
+  <script src="dependencias.js?v=20260923-roles"></script>
+  <script src="perfiles-estadisticos.js?v=20260923-roles"></script>
+  <script src="app.js?v=20260923-roles"></script>
   <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
-  <script src="detenidos.js?v=20260923-flujo"></script>
-  <script src="intervenciones.js?v=20260923-flujo"></script>
+  <script src="detenidos.js?v=20260923-roles"></script>
+  <script src="intervenciones.js?v=20260923-roles"></script>
   <script src="materiales-catalogo.js?v=20260915-materiales-v1"></script>
-  <script src="materiales.js?v=20260915-materiales-v1"></script>
+  <script src="materiales.js?v=20260923-roles"></script>
   <script src="vehiculos-catalogo.js?v=20260915-vehiculos-v1"></script>
-  <script src="vehiculos.js?v=20260915-vehiculos-v1"></script>
-  <script src="grupos.js?v=20260915-grupos-v1"></script>
+  <script src="vehiculos.js?v=20260923-roles"></script>
+  <script src="grupos.js?v=20260923-roles"></script>
   <script src="requisitoriados-catalogo.js?v=20260916-rq-ni-v1"></script>
   <script src="notas-catalogo.js?v=20260916-rq-ni-v1"></script>
-  <script src="notas.js?v=20260916-rq-ni-v1"></script>
-  <script src="requisitoriados.js?v=20260916-rq-ni-v1"></script>
+  <script src="notas.js?v=20260923-roles"></script>
+  <script src="requisitoriados.js?v=20260923-roles"></script>
   <script src="menores-catalogo.js?v=20260915-menores-v1"></script>
-  <script src="menores.js?v=20260923-flujo"></script>
+  <script src="menores.js?v=20260923-roles"></script>
   <script src="victimas-catalogo.js?v=20260923-flujo"></script>
-  <script src="victimas.js?v=20260923-flujo"></script>
+  <script src="victimas.js?v=20260923-roles"></script>
   <script src="prostitucion-catalogo.js?v=20260923-flujo"></script>
-  <script src="prostitucion.js?v=20260923-flujo"></script>
+  <script src="prostitucion.js?v=20260923-roles"></script>
   <script src="complementarios-catalogo.js?v=20260923-flujo"></script>
-  <script src="complementarios.js?v=20260923-flujo"></script>
-  <script src="resultados.js?v=20260923-flujo"></script>
+  <script src="complementarios.js?v=20260923-roles"></script>
+  <script src="resultados.js?v=20260923-roles"></script>
   <script src="exportaciones.js?v=20260916-rq-ni-v1"></script>
   <script src="consulta-modelo.js?v=20260923-flujo"></script>
-  <script src="consulta.js?v=20260923-flujo"></script>
+  <script src="consulta.js?v=20260923-roles"></script>
   <script src="produccion-catalogo.js?v=20260923-flujo"></script>
   <script src="produccion-modelo.js?v=20260923-flujo"></script>
-  <script src="produccion.js?v=20260923-flujo"></script>
+  <script src="produccion.js?v=20260923-roles"></script>
 </body>
 </html>

@@ -1,145 +1,7 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import { withSupabase } from 'jsr:@supabase/server@^1';
 
-// INICIO CATALOGO GENERADO
-const DEPENDENCIAS_INSTITUCIONALES = [
-  {
-    "unidad": "DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS",
-    "ambito": "SEDE_CENTRAL",
-    "departamento": "LIMA"
-  },
-  {
-    "unidad": "DIVISIÓN DE INVESTIGACIÓN DE TRÁFICO ILÍCITO DE MIGRANTES",
-    "ambito": "SEDE_CENTRAL",
-    "departamento": "LIMA"
-  },
-  {
-    "unidad": "DIVISIÓN DE INVESTIGACIÓN DE PERSONAS DESAPARECIDAS",
-    "ambito": "SEDE_CENTRAL",
-    "departamento": "LIMA"
-  },
-  {
-    "unidad": "DIVISIÓN DE INTELIGENCIA",
-    "ambito": "SEDE_CENTRAL",
-    "departamento": "LIMA"
-  },
-  {
-    "unidad": "DEPITPTIM ABANCAY",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "APURIMAC"
-  },
-  {
-    "unidad": "DEPITPTIM ANDAHUAYLAS",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "APURIMAC"
-  },
-  {
-    "unidad": "DEPITPTIM AREQUIPA",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "AREQUIPA"
-  },
-  {
-    "unidad": "DEPITPTIM AYACUCHO",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "AYACUCHO"
-  },
-  {
-    "unidad": "DEPITPTIM CAJAMARCA",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "CAJAMARCA"
-  },
-  {
-    "unidad": "DEPITPTIM CHIMBOTE",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "ANCASH"
-  },
-  {
-    "unidad": "DEPITPTIM CUSCO",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "CUSCO"
-  },
-  {
-    "unidad": "DEPITPTIM HUANCAVELICA",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "HUANCAVELICA"
-  },
-  {
-    "unidad": "DEPITPTIM HUARAZ",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "ANCASH"
-  },
-  {
-    "unidad": "DEPITPTIM HUANUCO",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "HUANUCO"
-  },
-  {
-    "unidad": "DEPITPTIM ICA",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "ICA"
-  },
-  {
-    "unidad": "DEPITPTIM JULIACA",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "PUNO"
-  },
-  {
-    "unidad": "DEPITPTIM JUNIN",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "JUNIN"
-  },
-  {
-    "unidad": "DEPITPTIM LA LIBERTAD",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "LA LIBERTAD"
-  },
-  {
-    "unidad": "DEPITPTIM LAMBAYEQUE",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "LAMBAYEQUE"
-  },
-  {
-    "unidad": "DEPITPTIM LORETO",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "LORETO"
-  },
-  {
-    "unidad": "DEPITPTIM MADRE DE DIOS",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "MADRE DE DIOS"
-  },
-  {
-    "unidad": "DEPITPTIM PIURA",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "PIURA"
-  },
-  {
-    "unidad": "DEPITPTIM PUNO",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "PUNO"
-  },
-  {
-    "unidad": "DEPITPTIM SAN MARTIN",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "SAN MARTIN"
-  },
-  {
-    "unidad": "DEPITPTIM TACNA",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "TACNA"
-  },
-  {
-    "unidad": "DEPITPTIM TUMBES",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "TUMBES"
-  },
-  {
-    "unidad": "DEPITPTIM UCAYALI",
-    "ambito": "DESCONCENTRADO",
-    "departamento": "UCAYALI"
-  }
-];
-// FIN CATALOGO GENERADO
+const DEPENDENCIAS_INSTITUCIONALES = [{"unidad": "DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS", "ambito": "SEDE_CENTRAL", "departamento": "LIMA"}, {"unidad": "DIVISIÓN DE INVESTIGACIÓN DE TRÁFICO ILÍCITO DE MIGRANTES", "ambito": "SEDE_CENTRAL", "departamento": "LIMA"}, {"unidad": "DIVISIÓN DE INVESTIGACIÓN Y BÚSQUEDA DE PERSONAS DESAPARECIDAS", "ambito": "SEDE_CENTRAL", "departamento": "LIMA"}, {"unidad": "DIVISIÓN DE EXTRANJERIA", "ambito": "SEDE_CENTRAL", "departamento": "LIMA"}, {"unidad": "DIVISIÓN DE INVESTIGACIÓN DE CRIMEN ORGANIZADO CONTRA LA TRATA DE PERSONAS", "ambito": "SEDE_CENTRAL", "departamento": "LIMA"}, {"unidad": "DEPITPTIM ABANCAY", "ambito": "DESCONCENTRADO", "departamento": "APURIMAC"}, {"unidad": "DEPITPTIM ANDAHUAYLAS", "ambito": "DESCONCENTRADO", "departamento": "APURIMAC"}, {"unidad": "DEPITPTIM AREQUIPA", "ambito": "DESCONCENTRADO", "departamento": "AREQUIPA"}, {"unidad": "DEPITPTIM AYACUCHO", "ambito": "DESCONCENTRADO", "departamento": "AYACUCHO"}, {"unidad": "DEPITPTIM CAJAMARCA", "ambito": "DESCONCENTRADO", "departamento": "CAJAMARCA"}, {"unidad": "DEPITPTIM CHIMBOTE", "ambito": "DESCONCENTRADO", "departamento": "ANCASH"}, {"unidad": "DEPITPTIM CUSCO", "ambito": "DESCONCENTRADO", "departamento": "CUSCO"}, {"unidad": "DEPITPTIM HUANCAVELICA", "ambito": "DESCONCENTRADO", "departamento": "HUANCAVELICA"}, {"unidad": "DEPITPTIM HUARAZ", "ambito": "DESCONCENTRADO", "departamento": "ANCASH"}, {"unidad": "DEPITPTIM HUANUCO", "ambito": "DESCONCENTRADO", "departamento": "HUANUCO"}, {"unidad": "DEPITPTIM ICA", "ambito": "DESCONCENTRADO", "departamento": "ICA"}, {"unidad": "DEPITPTIM JULIACA", "ambito": "DESCONCENTRADO", "departamento": "PUNO"}, {"unidad": "DEPITPTIM JUNIN", "ambito": "DESCONCENTRADO", "departamento": "JUNIN"}, {"unidad": "DEPITPTIM LA LIBERTAD", "ambito": "DESCONCENTRADO", "departamento": "LA LIBERTAD"}, {"unidad": "DEPITPTIM LAMBAYEQUE", "ambito": "DESCONCENTRADO", "departamento": "LAMBAYEQUE"}, {"unidad": "DEPITPTIM LORETO", "ambito": "DESCONCENTRADO", "departamento": "LORETO"}, {"unidad": "DEPITPTIM MADRE DE DIOS", "ambito": "DESCONCENTRADO", "departamento": "MADRE DE DIOS"}, {"unidad": "DEPITPTIM PIURA", "ambito": "DESCONCENTRADO", "departamento": "PIURA"}, {"unidad": "DEPITPTIM PUNO", "ambito": "DESCONCENTRADO", "departamento": "PUNO"}, {"unidad": "DEPITPTIM SAN MARTIN", "ambito": "DESCONCENTRADO", "departamento": "SAN MARTIN"}, {"unidad": "DEPITPTIM TACNA", "ambito": "DESCONCENTRADO", "departamento": "TACNA"}, {"unidad": "DEPITPTIM TUMBES", "ambito": "DESCONCENTRADO", "departamento": "TUMBES"}, {"unidad": "DEPITPTIM UCAYALI", "ambito": "DESCONCENTRADO", "departamento": "UCAYALI"}];
 
 export default {
   fetch: withSupabase({ auth: 'user' }, async (req, ctx) => {
@@ -147,11 +9,15 @@ export default {
       const userId = ctx.userClaims?.sub || ctx.userClaims?.id;
       if (!userId) throw new Error('Sesión no válida.');
       const { data: caller, error: callerError } = await ctx.supabaseAdmin
-        .from('perfiles').select('rol, activo').eq('id', userId).single();
+        .from('perfiles').select('rol, activo, usuario').eq('id', userId).single();
       if (callerError) throw callerError;
-      if (!caller?.activo || caller.rol !== 'administrador') throw new Error('Solo un administrador puede gestionar usuarios.');
+      if (!caller?.activo || !['administrador','estadistico_direccion'].includes(caller.rol)) throw new Error('Solo Dirección y el administrador general pueden crear usuarios.');
+      const isRoot=caller.rol==='administrador' && caller.usuario==='administrador';
 
       const body = await req.json();
+      if (!isRoot && body.accion!=='crear') throw new Error('Solo el administrador general puede modificar o eliminar cuentas.');
+      if (!isRoot && body.rol==='estadistico_direccion') throw new Error('Solo el administrador general asigna los dos estadísticos de Dirección.');
+      if (body.rol==='administrador' && (body.accion!=='actualizar' || body.id!==userId || !isRoot)) throw new Error('La administración general está reservada a la cuenta principal.');
       if (body.accion === 'eliminar') {
         if (!body.id) throw new Error('Usuario no identificado.');
         if (body.id === userId) throw new Error('No puede eliminar su propia cuenta.');
@@ -169,33 +35,25 @@ export default {
         ]);
         if (activityChecks.some(result => result.error)) throw activityChecks.find(result => result.error)?.error;
         if (activityChecks.some(result => (result.count || 0) > 0)) throw new Error('Este usuario tiene registros históricos. Por seguridad y auditoría, desactívelo en lugar de eliminarlo.');
+        // Eliminar accesos no debe eliminar producción ni su autoría.
+        const {data: fullProfile,error: fullError}=await ctx.supabaseAdmin.from('perfiles').select('*').eq('id',body.id).single();
+        if(fullError) throw fullError;
+        const {error: profileDeleteError}=await ctx.supabaseAdmin.from('perfiles').delete().eq('id',body.id);
+        if(profileDeleteError) throw new Error('La cuenta tiene historial vinculado. Desactívela para conservar la autoría.');
         const { error: deleteError } = await ctx.supabaseAdmin.auth.admin.deleteUser(body.id);
-        if (deleteError) throw deleteError;
-        await ctx.supabaseAdmin.from('perfiles').delete().eq('id', body.id);
+        if(deleteError){await ctx.supabaseAdmin.from('perfiles').insert(fullProfile);throw deleteError;}
         return Response.json({ ok: true });
       }
-      const roles = ['administrador', 'supervisor', 'operador'];
+      const roles = ['administrador','estadistico_direccion','estadistico_division','estadistico_jefatura','estadistico_depitptim'];
       if (!roles.includes(body.rol)) throw new Error('Rol no válido.');
       if (!body.nombres?.trim() || !body.apellidos?.trim() || !body.unidad?.trim()) throw new Error('Complete los datos obligatorios.');
-      const scopes = ['NACIONAL', 'SEDE_CENTRAL', 'DESCONCENTRADO'];
-      const ambito = body.rol === 'administrador' ? 'NACIONAL' : String(body.ambito || '').trim().toUpperCase();
-      if (!scopes.includes(ambito)) throw new Error('Ámbito no válido.');
-      const departamento = body.rol === 'administrador' ? 'NACIONAL' : String(body.departamento || '').trim().toUpperCase();
-      if (!departamento) throw new Error('Seleccione el departamento del usuario.');
-      if (ambito === 'SEDE_CENTRAL' && departamento !== 'LIMA') throw new Error('La Sede Central debe pertenecer a Lima.');
-      const unidad = body.rol === 'administrador' ? 'ADMINISTRACIÓN GENERAL DIRITPTIM' : body.unidad.trim().toUpperCase();
-      if (body.rol !== 'administrador') {
-        const dependency = DEPENDENCIAS_INSTITUCIONALES.find(item => item.unidad === unidad && item.ambito === ambito && item.departamento === departamento);
-        if (!dependency) {
-          let unchangedLegacy = false;
-          if (body.accion === 'actualizar' && body.id) {
-            const { data: previous, error: previousError } = await ctx.supabaseAdmin.from('perfiles').select('unidad,ambito,departamento,rol').eq('id',body.id).single();
-            if (previousError) throw previousError;
-            unchangedLegacy = previous?.unidad === unidad && previous?.ambito === ambito && previous?.departamento === departamento && previous?.rol === body.rol;
-          }
-          if (!unchangedLegacy) throw new Error('Seleccione una dependencia del catálogo correspondiente al ámbito y departamento.');
-        }
-      }
+      const national=['administrador','estadistico_direccion'].includes(body.rol);
+      const jef=body.rol==='estadistico_jefatura';
+      const ambito=national?'NACIONAL':body.rol==='estadistico_division'?'SEDE_CENTRAL':'DESCONCENTRADO';
+      const unidad=body.rol==='administrador'?'ADMINISTRACIÓN GENERAL DIRITPTIM':body.rol==='estadistico_direccion'?'ESTADÍSTICA DE DIRECCIÓN DIRITPTIM':jef?'JEFDDITP':String(body.unidad||'').trim().toUpperCase();
+      const dependency=DEPENDENCIAS_INSTITUCIONALES.find(d=>d.unidad===unidad && d.ambito===ambito);
+      if(!national && !jef && !dependency) throw new Error('Seleccione una dependencia válida para el perfil estadístico.');
+      const departamento=national||jef?'NACIONAL':dependency.departamento;
 
       if (body.accion === 'crear') {
         const usuario = String(body.usuario || '').trim().toLowerCase();

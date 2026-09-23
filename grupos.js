@@ -59,7 +59,7 @@
     for(const g of groups){
       const row=document.createElement('div');row.className='material-record';const info=document.createElement('div');
       info.append(text('strong',g.nombre),text('small',`${labels[g.tipo]} · ${g.intervencion_grupo_integrantes.length} integrantes · ${g.modalidad}`));
-      const button=text('button',readOnly?'Ver detalle':'Abrir / editar','secondary');button.type='button';button.addEventListener('click',()=>{if(!busy&&discard())open(g.tipo,g,readOnly);});row.append(info,button);list.append(row);
+      const button=text('button',(readOnly||!puedeEditarUnidad(context.unidad))?'Ver detalle':'Abrir / editar','secondary');button.type='button';button.addEventListener('click',()=>{if(!busy&&discard())open(g.tipo,g,readOnly||!puedeEditarUnidad(context.unidad));});row.append(info,button);list.append(row);
     }
     const unclassified=detainees.filter(d=>d.integra_organizacion&&!d.tipo_organizacion).length;
     $('groupLegacyNote').textContent=unclassified?`${unclassified} detenido(s) del operativo están pendientes de clasificar como banda u organización. Revise su ficha antes de vincularlos.`:'';
