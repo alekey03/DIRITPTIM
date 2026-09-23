@@ -786,6 +786,8 @@ function configureUserTerritory({ preserveArea = true, initialArea = null } = {}
  const national=['administrador','estadistico_direccion'].includes(role),jef=role==='estadistico_jefatura';
  scope.value=national?'NACIONAL':role==='estadistico_division'?'SEDE_CENTRAL':'DESCONCENTRADO';
  unit.disabled=national||jef;
+ document.getElementById('userUnitField').hidden=national||jef;
+ document.getElementById('userUnitLabel').textContent=role==='estadistico_division'?'División asignada':'DEPITPTIM asignado';
  if(national||jef){
   const value=role==='administrador'?'ADMINISTRACIÓN GENERAL DIRITPTIM':jef?'JEFDDITP':'ESTADÍSTICA DE DIRECCIÓN DIRITPTIM';
   unit.replaceChildren(new Option(jef?'JEFATURA · LOS 23 DEPITPTIM':value,value));dept.value='NACIONAL';
@@ -799,15 +801,7 @@ function configureUserTerritory({ preserveArea = true, initialArea = null } = {}
  }
 }
 
-function initializeUserDepartments() {
-  const departmentSelect = document.getElementById('newUserDepartment');
-  const departments = (window.CATALOGO_UBIGEO || []).map(item => item.value.replaceAll('_', ' '));
-  departmentSelect.insertAdjacentHTML('beforeend', `<option value="NACIONAL">Ámbito nacional</option>${departments.map(department => `<option value="${escapeHtml(department)}">${escapeHtml(department)}</option>`).join('')}`);
-}
-
-initializeUserDepartments();
 document.getElementById('newUserRole').addEventListener('change', () => configureUserTerritory({ preserveArea: false }));
-document.getElementById('newUserScope').addEventListener('change', () => configureUserTerritory({ preserveArea: false }));
 document.getElementById('newUserUnit').addEventListener('change', () => configureUserTerritory());
 
 function openUserForm(profile = null) {
