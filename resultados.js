@@ -118,7 +118,7 @@
       if (token !== generation) return;
       if (error) throw error;
       current = data;
-      readOnly = !(currentProfile?.activo && (currentProfile.rol === 'administrador' || (data.creado_por === currentProfile.id && data.unidad === currentProfile.unidad)));
+      readOnly = !puedeRegistrarUnidad(data.unidad);
       boxes.forEach(box => { box.checked = (data.resultados_previstos || []).includes(box.value); }); renderSelection();
       document.getElementById('resultsSummary').textContent = `${data.tipo === 'megaoperativo' ? 'Megaoperativo' : 'Operativo'} · ${data.fecha?.split('-').reverse().join('/') || 'Sin fecha'} · ${data.unidad}`;
       await loadLinked(token);
@@ -241,7 +241,7 @@
       title.textContent = [...drugType.options].find(option => option.value===record.tipo)?.textContent || record.tipo;
       detail.textContent = `${record.cantidad} ${record.tipo.startsWith('env_') ? 'unidades' : 'kg'}${record.nombre_sustancia ? ' · '+record.nombre_sustancia : ''}`;
       info.append(title,detail); row.append(info);
-      if (!readOnly) {
+      if (!readOnly && puedeEditarUnidad(current.unidad)) {
         const edit = document.createElement('button'); edit.type='button'; edit.className='secondary'; edit.textContent='Editar';
         edit.addEventListener('click',()=>{
           if (busy || readOnly || (drugDirty && !confirm('Hay una sustancia sin guardar. ¿Desea descartarla?'))) return;

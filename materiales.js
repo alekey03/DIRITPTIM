@@ -69,8 +69,8 @@
       const row=document.createElement('div');row.className='material-record';const symbol=document.createElement('span');symbol.className='material-record-icon';symbol.innerHTML=icon(type.tipo);
       const info=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('small');title.textContent=type.titulo;
       detail.textContent=[record.datos.tipo,record.datos.marca,record.datos.serie?`Serie: ${record.datos.serie}`:null,record.datos.cantidad!=null?`Cantidad: ${record.datos.cantidad}`:null,record.datos.situacion].filter(Boolean).join(' · ');
-      info.append(title,detail);const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=readOnly?'Ver detalle':'Abrir / editar';
-      button.addEventListener('click',()=>{if(!busy && discard())open(type,record,readOnly);});row.append(symbol,info,button);list.append(row);
+      info.append(title,detail);const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=(readOnly||!puedeEditarUnidad(context.unidad))?'Ver detalle':'Abrir / editar';
+      button.addEventListener('click',()=>{if(!busy && discard())open(type,record,readOnly||!puedeEditarUnidad(context.unidad));});row.append(symbol,info,button);list.append(row);
     }
     $('moreMaterials').hidden=data.length<=shown;
   }

@@ -26,7 +26,7 @@ function nullable(value) {
   return value === '' ? null : value;
 }
 
-function isDetaineeAdmin() { return currentProfile?.rol === 'administrador'; }
+function isDetaineeAdmin() { return esGestorProduccion(); }
 function setDetaineeField(name, value) {
   const field = detaineeForm.elements.namedItem(name);
   if (field) field.value = value ?? '';

@@ -248,10 +248,10 @@ async function openRecord(recordId) {
     : '<div class="print-evidence-empty">No se adjuntaron fotografías de tatuajes o cicatrices.</div>';
 
   selectedRecord = record;
-  document.getElementById('deleteRecordButton').classList.toggle('hidden-control', currentProfile?.rol !== 'administrador');
+  document.getElementById('deleteRecordButton').classList.toggle('hidden-control', !esGestorProduccion());
   document.getElementById('editRecordButton').classList.toggle(
     'hidden-control',
-    currentProfile?.rol !== 'administrador'
+    !esGestorProduccion()
   );
 
   document.getElementById('recordModalCode').textContent = record.codigo;
@@ -388,7 +388,7 @@ document.getElementById('editRecordButton').addEventListener('click', () => {
 document.getElementById('cancelEditButton').addEventListener('click', cancelEditing);
 
 document.getElementById('deleteRecordButton').addEventListener('click', async () => {
-  if (!selectedRecord || currentProfile?.rol !== 'administrador') return;
+  if (!selectedRecord || !esGestorProduccion()) return;
   const reason = prompt(`Indique el motivo de la eliminación de ${selectedRecord.codigo}:`);
   if (reason === null) return;
   if (!reason.trim()) return alert('El motivo de la eliminación es obligatorio.');
@@ -479,16 +479,16 @@ async function loadCurrentProfile(userId) {
     return false;
   }
   document.querySelectorAll('.admin-only').forEach(element => {
-    element.classList.toggle('visible', data.rol === 'administrador');
+    element.classList.toggle('visible', element.dataset.view === 'usersView' ? puedeCrearUsuarios() : data.rol === 'administrador');
   });
   const isAdministrator = data.rol === 'administrador';
-  const assignedScope = isAdministrator
+  const assignedScope = isAdministrator || data.rol === 'estadistico_direccion'
     ? 'Ámbito nacional'
     : (data.unidad || 'Dependencia no asignada');
   document.getElementById('institutionName').textContent = 'DIRITPTIM';
   document.getElementById('institutionScope').textContent = assignedScope;
   document.querySelector('.user strong').textContent = `${data.nombres} ${data.apellidos}`;
-  document.getElementById('userScope').textContent = isAdministrator ? 'Administrador general' : assignedScope;
+  document.getElementById('userScope').textContent = nombrePerfil(data.rol);
   document.querySelectorAll('.profile-registration-department').forEach(input => { input.defaultValue = input.value = data.departamento || 'SIN ASIGNAR'; });
   document.querySelectorAll('.profile-registration-area').forEach(input => { input.defaultValue = input.value = data.unidad || 'SIN ASIGNAR'; });
   document.querySelector('.avatar').textContent = data.nombres.slice(0, 1).toUpperCase() + data.apellidos.slice(0, 1).toUpperCase();
@@ -779,38 +779,24 @@ let editingUserId = null;
 let editingUserProfile = null;
 
 function configureUserTerritory({ preserveArea = true, initialArea = null } = {}) {
-  const role = document.getElementById('newUserRole').value;
-  const scopeSelect = document.getElementById('newUserScope');
-  const departmentSelect = document.getElementById('newUserDepartment');
-  const areaInput = document.getElementById('newUserUnit');
-  const isAdministrator = role === 'administrador';
-  scopeSelect.disabled = isAdministrator;
-  scopeSelect.value = isAdministrator ? 'NACIONAL' : (scopeSelect.value === 'NACIONAL' ? 'DESCONCENTRADO' : scopeSelect.value);
-  departmentSelect.disabled = true;
-  departmentSelect.required = false;
-  areaInput.disabled = isAdministrator;
-  const selectedArea = preserveArea ? (initialArea ?? areaInput.value) : '';
-  const hint = document.getElementById('userDependencyHint');
-  if (isAdministrator) {
-    departmentSelect.value = 'NACIONAL';
-    areaInput.innerHTML = '<option value="ADMINISTRACIÓN GENERAL DIRITPTIM">ADMINISTRACIÓN GENERAL DIRITPTIM</option>';
-    hint.textContent = 'Acceso nacional del administrador general.';
-  } else {
-    const choices = DEPENDENCIAS_INSTITUCIONALES.filter(item => item.ambito === scopeSelect.value);
-    areaInput.innerHTML = '<option value="">Seleccionar dependencia</option>' + choices.map(item => `<option value="${escapeHtml(item.unidad)}">${escapeHtml(item.unidad)}</option>`).join('');
-    const selected = choices.find(item => item.unidad === selectedArea);
-    const legacy = preserveArea && !selected && editingUserProfile?.unidad === selectedArea && editingUserProfile?.ambito === scopeSelect.value && editingUserProfile?.rol === role;
-    if (legacy) {
-      areaInput.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(selectedArea)}">${escapeHtml(selectedArea)} (asignación anterior)</option>`);
-      areaInput.value = selectedArea;
-      departmentSelect.value = editingUserProfile.departamento || '';
-      hint.textContent = 'Asignación anterior conservada. Seleccione una dependencia del catálogo para cambiarla; los registros históricos conservarán su área original.';
-    } else {
-      areaInput.value = selected?.unidad || '';
-      departmentSelect.value = selected?.departamento || (scopeSelect.value === 'SEDE_CENTRAL' ? 'LIMA' : '');
-      hint.textContent = 'El departamento se asigna automáticamente según la dependencia.';
-    }
-  }
+ const role=document.getElementById('newUserRole').value;
+ const scope=document.getElementById('newUserScope'),dept=document.getElementById('newUserDepartment'),unit=document.getElementById('newUserUnit'),hint=document.getElementById('userDependencyHint');
+ const selected=preserveArea?(initialArea??unit.value):'';
+ scope.disabled=true;dept.disabled=true;dept.required=false;
+ const national=['administrador','estadistico_direccion'].includes(role),jef=role==='estadistico_jefatura';
+ scope.value=national?'NACIONAL':role==='estadistico_division'?'SEDE_CENTRAL':'DESCONCENTRADO';
+ unit.disabled=national||jef;
+ if(national||jef){
+  const value=role==='administrador'?'ADMINISTRACIÓN GENERAL DIRITPTIM':jef?'JEFDDITP':'ESTADÍSTICA DE DIRECCIÓN DIRITPTIM';
+  unit.replaceChildren(new Option(jef?'JEFATURA · LOS 23 DEPITPTIM':value,value));dept.value='NACIONAL';
+  hint.textContent=role==='administrador'?'Cuenta única de administración general.':jef?'Registra, consulta, edita y elimina producción de los 23 DEPITPTIM. No crea usuarios.':'Alcance nacional: producción, reportes y dashboard. Puede crear usuarios. Máximo dos cuentas activas.';
+ }else{
+  const choices=DEPENDENCIAS_INSTITUCIONALES.filter(d=>d.ambito===scope.value);
+  unit.replaceChildren(new Option(role==='estadistico_division'?'Seleccionar división':'JEFDDITP · seleccionar DEPITPTIM',''),...choices.map(d=>new Option(d.unidad,d.unidad)));
+  unit.value=choices.some(d=>d.unidad===selected)?selected:'';
+  dept.value=choices.find(d=>d.unidad===unit.value)?.departamento||'';
+  hint.textContent=role==='estadistico_division'?'Registra y consulta únicamente la producción, reportes y dashboard de esta división. No edita ni elimina registros guardados.':'Registra y consulta este DEPITPTIM y todas sus áreas. No edita ni elimina registros guardados.';
+ }
 }
 
 function initializeUserDepartments() {
@@ -828,6 +814,10 @@ function openUserForm(profile = null) {
   editingUserId = profile?.id || null;
   editingUserProfile = profile;
   userForm.reset();
+  const roleSelect=document.getElementById('newUserRole');
+  roleSelect.replaceChildren(...Object.entries(PERFILES_ESTADISTICOS).filter(([role])=>currentProfile.rol==='administrador'||role!=='estadistico_direccion').map(([value,label])=>new Option(label,value)));
+  if(profile?.rol==='administrador' && profile.usuario==='administrador') roleSelect.replaceChildren(new Option('Administrador general · cuenta única','administrador'));
+  roleSelect.disabled=profile?.usuario==='administrador';
   document.getElementById('userModalTitle').textContent = profile ? 'Editar usuario' : 'Crear nuevo usuario';
   document.getElementById('saveUserButton').textContent = profile ? 'Guardar cambios' : 'Crear usuario';
   document.querySelector('.user-active-control').classList.toggle('visible', Boolean(profile));
@@ -853,7 +843,7 @@ function openUserForm(profile = null) {
 }
 
 async function loadUsers() {
-  if (currentProfile?.rol !== 'administrador') {
+  if (!puedeCrearUsuarios()) {
     resetMainView();
     return;
   }
@@ -870,17 +860,17 @@ async function loadUsers() {
   const users = search ? data.filter(profile => [profile.usuario, profile.nombres, profile.apellidos, profile.ambito, profile.departamento, profile.unidad, profile.rol]
     .some(value => String(value || '').toLocaleLowerCase('es').includes(search))) : data;
   document.getElementById('activeUsersCount').textContent = data.filter(profile => profile.activo).length;
-  document.getElementById('adminUsersCount').textContent = data.filter(profile => profile.rol === 'administrador').length;
-  document.getElementById('operatorUsersCount').textContent = data.filter(profile => profile.rol === 'operador').length;
+  document.getElementById('adminUsersCount').textContent = data.filter(profile => profile.activo && profile.rol === 'administrador').length;
+  document.getElementById('operatorUsersCount').textContent = data.filter(profile => profile.activo && profile.rol.startsWith('estadistico_')).length;
 
   const rows = users.map(profile => `<tr>
     <td><strong>${escapeHtml(`${profile.nombres} ${profile.apellidos}`)}</strong><small>Usuario: ${escapeHtml(profile.usuario === 'administrador' ? 'amejia' : profile.usuario)}</small></td>
-    <td><span class="role ${profile.rol === 'administrador' ? 'admin' : ''}">${escapeHtml(profile.rol === 'administrador' ? 'admin' : profile.rol)}</span></td>
+    <td><span class="role ${profile.rol === 'administrador' ? 'admin' : ''}">${escapeHtml(nombrePerfil(profile.rol))}</span></td>
     <td>${escapeHtml(profile.ambito === 'SEDE_CENTRAL' ? 'SEDE CENTRAL' : profile.ambito || '—')}</td>
     <td>${escapeHtml(profile.departamento || (profile.rol === 'administrador' ? 'NACIONAL' : '—'))}</td>
     <td>${escapeHtml(profile.unidad)}</td>
     <td><span class="state ${profile.activo ? '' : 'inactive'}">● ${profile.activo ? 'Activo' : 'Desactivado'}</span></td>
-    <td><div class="user-actions"><button class="table-action edit-user" data-user-id="${escapeHtml(profile.id)}" type="button">Editar</button><button class="table-action password-user" data-user-id="${escapeHtml(profile.id)}" type="button">Contraseña</button><button class="table-action toggle-user" data-user-id="${escapeHtml(profile.id)}" type="button">${profile.activo ? 'Desactivar' : 'Activar'}</button><button class="table-action delete-user" data-user-id="${escapeHtml(profile.id)}" type="button" ${profile.id === currentProfile.id ? 'disabled title="No puede eliminar su propia cuenta"' : ''}>Eliminar</button></div></td>
+    <td>${currentProfile.rol==='administrador'?`<div class="user-actions"><button class="table-action edit-user" data-user-id="${escapeHtml(profile.id)}" type="button">Editar</button><button class="table-action password-user" data-user-id="${escapeHtml(profile.id)}" type="button">Contraseña</button><button class="table-action toggle-user" data-user-id="${escapeHtml(profile.id)}" type="button">${profile.activo ? 'Desactivar' : 'Activar'}</button><button class="table-action delete-user" data-user-id="${escapeHtml(profile.id)}" type="button" ${profile.id === currentProfile.id ? 'disabled title="No puede eliminar su propia cuenta"' : ''}>Eliminar</button></div>`:'Creación de usuarios'}</td>
   </tr>`).join('');
   result.innerHTML = users.length
     ? `<div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Rol</th><th>Ámbito</th><th>Departamento</th><th>Área o dependencia</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>${rows}</tbody></table></div>`

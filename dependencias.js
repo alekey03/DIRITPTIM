@@ -1,4 +1,3 @@
-// Generado desde dependencias.json por scripts/generar-dependencias.cjs
 const DEPENDENCIAS_INSTITUCIONALES = [
   {
     "unidad": "DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS",
@@ -11,12 +10,17 @@ const DEPENDENCIAS_INSTITUCIONALES = [
     "departamento": "LIMA"
   },
   {
-    "unidad": "DIVISIÓN DE INVESTIGACIÓN DE PERSONAS DESAPARECIDAS",
+    "unidad": "DIVISIÓN DE INVESTIGACIÓN Y BÚSQUEDA DE PERSONAS DESAPARECIDAS",
     "ambito": "SEDE_CENTRAL",
     "departamento": "LIMA"
   },
   {
-    "unidad": "DIVISIÓN DE INTELIGENCIA",
+    "unidad": "DIVISIÓN DE EXTRANJERIA",
+    "ambito": "SEDE_CENTRAL",
+    "departamento": "LIMA"
+  },
+  {
+    "unidad": "DIVISIÓN DE INVESTIGACIÓN DE CRIMEN ORGANIZADO CONTRA LA TRATA DE PERSONAS",
     "ambito": "SEDE_CENTRAL",
     "departamento": "LIMA"
   },
