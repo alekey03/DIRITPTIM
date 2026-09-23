@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260923-formulario" />
-  <link rel="stylesheet" href="dashboard.css?v=20260923-aqua" />
+  <link rel="stylesheet" href="styles.css?v=20260923-captura" />
+  <link rel="stylesheet" href="dashboard.css?v=20260923-menta" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
   <link rel="stylesheet" href="registros.css?v=20260923-registros">
 </head>
@@ -32,22 +32,22 @@
     <button class="sidebar-collapse" id="sidebarCollapse" type="button" aria-label="Contraer menú lateral" aria-expanded="true" title="Contraer menú lateral"><span aria-hidden="true">☰</span></button>
     <div class="brand"><img class="institution-logo" src="assets/logo-diriptim.png" alt="Escudo DIRIPTIM PNP"><div><strong id="institutionName">DIRITPTIM</strong><small id="institutionScope">Sistema nacional</small></div></div>
     <nav aria-label="Navegación principal">
-      <button class="nav-item" data-view="generalDashboardView"><span>▥</span>Dashboard</button>
-      <button class="nav-item" data-view="consultaRecordsView"><span>▤</span>Registros</button>
+      <button class="nav-item" data-view="generalDashboardView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="11" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="18" width="7" height="3" rx="1"/></svg></span>Dashboard</button>
+      <button class="nav-item" data-view="consultaRecordsView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Registros</button>
       <div class="nav-group" data-nav-group="victims">
-        <button class="nav-group-toggle" type="button" aria-expanded="false"><span>♙</span><strong>Ficha de enrolamiento</strong><i>⌄</i></button>
+        <button class="nav-group-toggle" type="button" aria-expanded="false"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8" cy="10" r="2"/><path d="M5 16a3 3 0 0 1 6 0M14 9h4M14 13h4M14 17h3"/></svg></span><strong>Ficha de enrolamiento</strong><i>⌄</i></button>
         <div class="nav-submenu">
-          <button class="nav-item active" data-view="dashboardView"><span>⌂</span>Dashboard</button>
-          <button class="nav-item" data-view="formView"><span>＋</span>Nueva ficha</button>
-          <button class="nav-item" data-view="recordsView"><span>▤</span>Registros</button>
+          <button class="nav-item active" data-view="dashboardView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8M5 9v12h14V9M9 21v-7h6v7"/></svg></span>Dashboard</button>
+          <button class="nav-item" data-view="formView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span>Nueva ficha</button>
+          <button class="nav-item" data-view="recordsView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Registros</button>
         </div>
       </div>
       <div class="nav-group" data-nav-group="intervenciones">
-        <button class="nav-group-toggle" type="button" aria-expanded="false"><span>▣</span><strong>Intervenciones</strong><i>⌄</i></button>
-        <div class="nav-submenu"><button class="nav-item" data-view="operativoView"><span>＋</span>Registrar operativo</button><button class="nav-item" data-view="operativoRecordsView"><span>▤</span>Operativos</button></div>
+        <button class="nav-group-toggle" type="button" aria-expanded="false"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/></svg></span><strong>Intervenciones</strong><i>⌄</i></button>
+        <div class="nav-submenu"><button class="nav-item" data-view="operativoView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span>Registrar operativo</button><button class="nav-item" data-view="operativoRecordsView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Operativos</button></div>
       </div>
-      <button class="nav-item admin-only users-access" data-view="usersView"><span>♙</span>Usuarios</button>
-      <button class="nav-item admin-only" data-view="auditView"><span>☷</span>Auditoría</button>
+      <button class="nav-item admin-only users-access" data-view="usersView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2M17 4a3 3 0 0 1 0 6"/></svg></span>Usuarios</button>
+      <button class="nav-item admin-only" data-view="auditView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h10M9 12h10M9 19h10m-15-14 1 1 2-2m-3 8 1 1 2-2m-3 8 1 1 2-2"/></svg></span>Auditoría</button>
     </nav>
     <div class="security-note"><span>🔒</span><div><strong>Información protegida</strong><p>Acceso exclusivo para personal autorizado.</p></div></div>
   </aside>
@@ -321,7 +321,7 @@
       </section>
       <fieldset id="resultsSelection"><legend>Tipos de resultado</legend><div id="resultCards" class="result-cards"></div></fieldset>
       <div class="operativo-actions"><button type="button" class="primary" id="saveResults">Guardar selección</button><button type="button" class="secondary" id="refreshResults">Actualizar</button><span id="resultsSelectionStatus" role="status"></span></div>
-      <section id="linkedDetaineesPanel" class="card result-detail" hidden><div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Detenidos de este operativo</h3><p>Se guardan una sola vez y también aparecen en el módulo Detenidos.</p></div><button type="button" class="primary" id="addLinkedDetainee">＋ Registrar detenido</button></div><div id="linkedDetainees"></div><button type="button" class="secondary" id="moreLinkedDetainees" hidden>Ver más</button></section>
+      <section id="linkedDetaineesPanel" class="card result-detail" hidden><div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Detenidos de este operativo</h3><p>Regístrelos aquí y consúltelos también desde Registros.</p></div><button type="button" class="primary" id="addLinkedDetainee">＋ Registrar detenido</button></div><div id="linkedDetainees"></div><button type="button" class="secondary" id="moreLinkedDetainees" hidden>Ver más</button></section>
       <section id="drugResultsPanel" class="card result-detail" hidden>
         <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Drogas registradas</h3><p>Agregue cada sustancia y su cantidad. Las unidades y los kilogramos se registran por separado.</p></div><span class="drug-badge">8 hojas del detallado</span></div>
         <p class="results-note">La fecha, hora, ubicación, dependencia y nota SICPIP corresponden al operativo. Puede corregirlos en «Datos del operativo». Los insumos químicos se incorporarán en otra etapa.</p>
@@ -335,7 +335,7 @@
       <section id="materialResultsPanel" class="card result-detail" hidden>
         <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Armas, municiones y explosivos</h3><p>Elija una categoría para agregar su registro al operativo.</p></div><span class="drug-badge">5 tipos de registro</span></div>
         <div id="materialCards" class="material-cards" aria-label="Categorías de materiales"></div>
-        <p class="results-note">La fecha, ubicación, dependencia y nota informativa se toman del operativo. Registre cada arma o réplica individualmente. Los datos de persona y delitos se completan únicamente cuando correspondan.</p>
+        <p class="results-note">La fecha, ubicación, dependencia y nota informativa se toman del operativo. Cada arma conserva su tipo, marca y serie. Seleccione al detenido del operativo para reutilizar sus datos; use «Guardar y agregar otra» para continuar.</p>
         <form id="materialForm" hidden><fieldset id="materialFields"><legend id="materialFormTitle">Registrar material</legend><div id="materialInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveMaterial">Guardar registro</button><button type="button" class="secondary" id="cancelMaterial">Cerrar formulario</button></div></fieldset></form>
         <p id="materialStatus" role="status" aria-live="polite"></p><div id="materialRecords"></div><button type="button" class="secondary" id="moreMaterials" hidden>Ver más registros</button>
         <p class="results-note">Las armas registradas anteriormente en Detenidos no se trasladan automáticamente a esta lista. El Excel completo exporta cada módulo por separado para evitar duplicados.</p>
@@ -476,15 +476,15 @@
   <script src="mapa.js?v=20260910-map-v5"></script>
   <script src="dependencias.js?v=20260923-roles"></script>
   <script src="perfiles-estadisticos.js?v=20260923-roles"></script>
-  <script src="app.js?v=20260923-formulario"></script>
+  <script src="app.js?v=20260923-captura"></script>
   <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
-  <script src="detenidos.js?v=20260923-roles"></script>
+  <script src="detenidos.js?v=20260923-captura"></script>
   <script src="intervenciones.js?v=20260923-roles"></script>
   <script src="materiales-catalogo.js?v=20260915-materiales-v1"></script>
-  <script src="materiales.js?v=20260923-roles"></script>
+  <script src="materiales.js?v=20260923-captura"></script>
   <script src="vehiculos-catalogo.js?v=20260915-vehiculos-v1"></script>
   <script src="vehiculos.js?v=20260923-roles"></script>
-  <script src="grupos.js?v=20260923-roles"></script>
+  <script src="grupos.js?v=20260923-captura"></script>
   <script src="requisitoriados-catalogo.js?v=20260916-rq-ni-v1"></script>
   <script src="notas-catalogo.js?v=20260916-rq-ni-v1"></script>
   <script src="notas.js?v=20260923-roles"></script>
@@ -497,7 +497,7 @@
   <script src="prostitucion.js?v=20260923-roles"></script>
   <script src="complementarios-catalogo.js?v=20260923-flujo"></script>
   <script src="complementarios.js?v=20260923-roles"></script>
-  <script src="resultados.js?v=20260923-roles"></script>
+  <script src="resultados.js?v=20260923-captura"></script>
   <script src="vendor/fflate-0.8.3.js"></script>
   <script src="excel-estilo.js?v=20260923-executive"></script>
   <script src="exportaciones.js?v=20260923-executive"></script>
@@ -505,7 +505,7 @@
   <script src="dashboard-modelo.js?v=20260923-executive"></script>
   <script src="consulta.js?v=20260923-registros"></script>
 
-  <script src="dashboard.js?v=20260923-executive"></script>
+  <script src="dashboard.js?v=20260923-menta"></script>
   <script src="produccion-catalogo.js?v=20260923-flujo"></script>
   <script src="produccion-modelo.js?v=20260923-flujo"></script>
   <script src="produccion.js?v=20260923-executive"></script>

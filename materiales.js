@@ -2,7 +2,7 @@
   const catalog = window.MATERIALES_CATALOGO.tipos;
   const $ = id => document.getElementById(id);
   const form=$('materialForm'), inputs=$('materialInputs'), status=$('materialStatus'), list=$('materialRecords');
-  let context=null, bridge=null, readOnly=true, busy=false, dirty=false, epoch=0, shown=25, editing=null, selected=null, retry=null;
+  let context=null, bridge=null, readOnly=true, busy=false, dirty=false, epoch=0, shown=25, editing=null, selected=null, retry=null, detainees=[];
   const paths={
     fuego:'M4 7h15v5h-7l-2 8H5l2-9H4z M12 12v3h4v-3',
     blanca:'M17 3l4 4-9 9-4-4z M8 12l4 4 M9 15l-5 6-2-2 5-6',
@@ -23,13 +23,30 @@
     $('materialCards').querySelectorAll('button').forEach(b=>{b.disabled=busy || readOnly || !context;});
     $('moreMaterials').disabled=busy || !context;
   }
+  const personKeys=['apellido_paterno','apellido_materno','nombres','edad','genero','nacionalidad','tipo_documento','numero_documento'];
+  const personName=d=>[d.personas?.apellido_paterno,d.personas?.apellido_materno,d.personas?.nombres].filter(Boolean).join(' ');
+  async function loadPeople(token){
+    const result=[];for(let start=0;;start+=100){const {data,error}=await supabaseClient.from('detenciones_reportables').select('id,codigo,personas(apellido_paterno,apellido_materno,nombres,edad,genero,nacionalidad,tipo_documento,numero_documento)').eq('intervencion_id',context.id).order('id').range(start,start+99);if(token!==epoch)return;if(error)throw error;result.push(...data);if(data.length<100)break;}detainees=result;
+  }
+  function personSelector(record,view){
+    const section=document.createElement('section');section.className='material-person-link';const label=document.createElement('label');label.textContent='Detenido a quien se le incautó';const select=document.createElement('select');select.name='detenidoSeleccionado';select.append(new Option('Sin detenido asociado · hallazgo',''));
+    for(const d of detainees)select.append(new Option(`${personName(d)} · ${d.codigo||''}`,d.id));
+    const existing=record?.datos||{},hasPerson=personKeys.some(k=>existing[k]!=null&&existing[k]!=='');
+    const matches=hasPerson?detainees.filter(d=>personKeys.every(k=>String(d.personas?.[k]??'')===String(existing[k]??''))):[];
+    if(hasPerson){select.append(new Option('Datos conservados del registro anterior','__legacy__'));select.value=matches.length===1?matches[0].id:'__legacy__';}
+    select.disabled=view;label.append(select);const note=document.createElement('p');note.textContent='Seleccione un detenido de este operativo. Sus datos se incorporan automáticamente al registro del material.';section.append(label,note);
+    const summary=document.createElement('div');summary.className='material-person-data';section.append(summary);
+    const refresh=()=>{const d=detainees.find(d=>d.id===select.value),p=d?.personas||(select.value==='__legacy__'?existing:null);summary.textContent=p?[p.numero_documento,p.edad!=null?p.edad+' años':null,p.genero,p.nacionalidad].filter(Boolean).join(' · '):detainees.length?'Use «Sin detenido asociado» únicamente para un hallazgo sin persona.':'Aún no hay detenidos. Regístrelos en Detenidos de este operativo para poder seleccionarlos.';};select.addEventListener('change',refresh);refresh();inputs.append(section);
+  }
+  const another=document.createElement('button');another.id='saveAnotherMaterial';another.type='submit';another.className='secondary';another.textContent='Guardar y agregar otra';$('saveMaterial').after(another);
   function open(type,record=null,view=false){
     clear();selected=type;editing=record;form.hidden=false;
     $('materialFormTitle').textContent=`${view?'Consultar':record?'Editar':'Registrar'} · ${type.titulo}`;
-    $('saveMaterial').hidden=view;$('cancelMaterial').hidden=false;
+    $('saveMaterial').hidden=view;another.hidden=view||!!record;$('cancelMaterial').hidden=false;
     $('materialCards').querySelector(`[data-material="${type.tipo}"]`).classList.add('selected');
     const groups=[['material','Datos del material'],['persona','Persona relacionada · si corresponde'],['delito1','Primer delito · si corresponde'],['delito2','Segundo delito · si corresponde']];
     for(const [group,title] of groups){
+      if(group==='persona'){if(type.campos.some(f=>f.group==='persona'))personSelector(record,view);continue;}
       const fields=type.campos.filter(f=>f.group===group);if(!fields.length)continue;
       const section=document.createElement(group==='material'?'div':'details');
       const heading=document.createElement(group==='material'?'h4':'summary');heading.textContent=title;section.append(heading);
@@ -79,23 +96,28 @@
   form.addEventListener('submit',async event=>{
     event.preventDefault();if(busy||readOnly||!context||!selected||!form.reportValidity())return;
     const token=epoch;if(!(await bridge.prepare())||token!==epoch)return;
-    const datos={};for(const field of selected.campos){const value=form.elements.namedItem(field.key).value.trim();datos[field.key]=value===''?null:field.type==='number'?Number(value):value;}
+    const repeat=event.submitter===another,continueType=selected;const datos={};for(const field of selected.campos.filter(f=>f.group!=='persona')){const value=form.elements.namedItem(field.key).value.trim();datos[field.key]=value===''?null:field.type==='number'?Number(value):value;}
+    if(selected.campos.some(f=>f.group==='persona')){
+      const id=form.elements.detenidoSeleccionado.value,person=id==='__legacy__'?editing?.datos:detainees.find(d=>d.id===id)?.personas;
+      if(id&&!person){status.textContent='El detenido ya no está disponible. Actualice los resultados.';return;}
+      for(const key of personKeys)datos[key]=person?.[key]??null;
+    }
     const payload={p_id:editing?.id||retry?.p_id||crypto.randomUUID(),p_intervencion:context.id,p_version:editing?.version||0,p_tipo:selected.tipo,p_datos:datos};
     if(retry && JSON.stringify(retry)!==JSON.stringify(payload)){status.textContent='El guardado anterior no se confirmó. Reintente con los mismos datos o actualice la lista antes de cambiarlos.';return;}
     retry=payload;bridge.setBusy(true);status.textContent='Guardando material…';
     try{
       const {data,error}=await supabaseClient.rpc('guardar_material_operativo',payload);if(token!==epoch)return;
       if(error){if(error.code && /^\d/.test(error.code))retry=null;throw error;}
-      bridge.saved(data.operativo_version);clear();status.textContent='✓ Registro guardado. Puede agregar otro material.';
+      bridge.saved(data.operativo_version);clear();if(repeat)open(continueType);status.textContent=repeat?'✓ Registro guardado. Complete los datos del siguiente material.':'✓ Registro guardado. Puede agregar otro material.';
       try{await load(token);}catch{if(token===epoch)status.textContent='Registro guardado; no se pudo actualizar la lista. Pulse Actualizar.';}
     }catch(error){if(token===epoch)status.textContent=error.code==='40001'?'El registro cambió. Actualice y vuelva a abrirlo.':`No se confirmó el guardado: ${error.message||'Compruebe su conexión y reintente.'}`;}
     finally{if(token===epoch)bridge.setBusy(false);}
   });
   $('moreMaterials').addEventListener('click',async()=>{if(busy||!context)return;const token=epoch;bridge.setBusy(true);shown+=25;try{await load(token);}catch{if(token===epoch)status.textContent='No se pudo cargar la lista. Reintente.';}finally{if(token===epoch)bridge.setBusy(false);}});
   window.MaterialesUI={get dirty(){return dirty;},discard,clear,
-    reset(){epoch++;context=null;readOnly=true;busy=false;shown=25;clear();list.replaceChildren();status.textContent='';lock();},
+    reset(){epoch++;context=null;detainees=[];readOnly=true;busy=false;shown=25;clear();list.replaceChildren();status.textContent='';lock();},
     lock(value,readonly){busy=value;readOnly=readonly;lock();},
-    async load(parent,readonly,callbacks){epoch++;context=parent;readOnly=readonly;bridge=callbacks;clear();await load(epoch);lock();}
+    async load(parent,readonly,callbacks){epoch++;context=parent;readOnly=readonly;bridge=callbacks;clear();const token=epoch;await loadPeople(token);if(token!==epoch)return;await load(token);lock();}
   };
   window.MaterialesUI.reset();
 })();

@@ -261,7 +261,11 @@ window.initializeDetaineeForm();
     saving = value; detaineeForm.inert = value;
     document.getElementById('backToOperativoResults').disabled = value;
   };
-  window.clearDetaineeOperativo = () => { operativo = null; banner.hidden = true; };
+  const standalone=document.getElementById('detaineeFormView');
+  const inline=document.createElement('div');inline.id='inlineDetaineeHost';inline.className='detainee-view';inline.hidden=true;document.getElementById('linkedDetaineesPanel').append(inline);
+  function unmount(){if(!inline.hidden){standalone.append(...inline.childNodes);inline.hidden=true;}document.getElementById('addLinkedDetainee').hidden=false;}
+  window.clearDetaineeOperativo = () => { operativo = null; banner.hidden = true; unmount(); };
+  window.DetaineeInline={get dirty(){return !inline.hidden&&changed;},get busy(){return !inline.hidden&&saving;},discard(){return !this.busy&&(!this.dirty||confirm('Hay un detenido sin guardar. ¿Desea descartar sus cambios?'));},close(){if(!inline.hidden)window.resetDetaineeWorkflow();}};
   detaineeForm.addEventListener('input', () => { changed = true; });
   detaineeForm.addEventListener('change', () => { changed = true; });
   detaineeForm.addEventListener('reset', () => { changed = false; });
@@ -292,7 +296,7 @@ window.initializeDetaineeForm();
     detaineeForm.querySelectorAll('.profile-registration-department').forEach(input => { input.value = record.departamento_registro; });
     detaineeForm.querySelectorAll('.profile-registration-area').forEach(input => { input.value = record.unidad; });
     document.getElementById('detaineeStatus').textContent = 'Al guardar, este detenido quedará vinculado al operativo indicado.';
-    document.getElementById('openLinkedDetaineeView').click();
+    inline.append(...standalone.childNodes);inline.hidden=false;document.getElementById('addLinkedDetainee').hidden=true;document.getElementById('backToOperativoResults').textContent='Cerrar formulario';
     document.querySelector('[data-detainee-step-target]')?.click();
   };
   document.getElementById('backToOperativoResults').addEventListener('click', () => {
