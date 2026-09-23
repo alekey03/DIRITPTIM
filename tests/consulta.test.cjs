@@ -1,6 +1,6 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
 const context={window:{}};vm.createContext(context);
-for(const file of ['complementarios-catalogo.js','requisitoriados-catalogo.js','prostitucion-catalogo.js','victimas-catalogo.js','menores-catalogo.js','materiales-catalogo.js','vehiculos-catalogo.js','consulta-modelo.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),context);
+for(const file of ['frontend/js/complementarios-catalogo.js','frontend/js/requisitoriados-catalogo.js','frontend/js/prostitucion-catalogo.js','frontend/js/victimas-catalogo.js','frontend/js/menores-catalogo.js','frontend/js/materiales-catalogo.js','frontend/js/vehiculos-catalogo.js','frontend/js/consulta-modelo.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),context);
 const m=context.window.ConsultaModelo,cats=m.categories(),drug=cats.find(c=>c.id==='drogas');
 const parents=new Map([['op-a',{id:'op-a',fecha:'2026-09-15',unidad:'A',departamento:'LIMA',nota_sicpip:'NI-001'}],['op-b',{id:'op-b',fecha:'2026-08-10',unidad:'B',departamento:'CUSCO'}]]);
 const rows=[m.normalize({id:'1',intervencion_id:'op-a',tipo:'kg_pbc',cantidad:1.5},drug,parents),m.normalize({id:'2',intervencion_id:'op-a',tipo:'env_pbc',cantidad:100},drug,parents),m.normalize({id:'3',intervencion_id:'op-b',tipo:'kg_cc',cantidad:2},drug,parents)];

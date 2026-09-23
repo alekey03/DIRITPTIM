@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const source = fs.readFileSync(path.join(__dirname, '../exportaciones.js'), 'utf8');
+const source = fs.readFileSync(path.join(__dirname, '../frontend/js/exportaciones.js'), 'utf8');
 function setup(records = [], fail = false) {
   const elements = new Map(), calls = [], alerts = [], downloads = [];
   const context = { Date, Intl, console: { error() {} }, currentProfile: { unidad: 'UNIDAD FICTICIA' },

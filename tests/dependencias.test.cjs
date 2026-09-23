@@ -1,11 +1,11 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const {test}=require('node:test'),root=path.resolve(__dirname,'..');
-const catalog=JSON.parse(fs.readFileSync(path.join(root,'dependencias.json'),'utf8'));
-const app=fs.readFileSync(path.join(root,'app.js'),'utf8');
+const catalog=JSON.parse(fs.readFileSync(path.join(root,'datos/dependencias.json'),'utf8'));
+const app=fs.readFileSync(path.join(root,'frontend/js/app.js'),'utf8');
 test('cinco divisiones y 23 DEPITPTIM; catálogo idéntico en navegador y servidor',()=>{
  assert.equal(catalog.filter(d=>d.ambito==='SEDE_CENTRAL').length,5);assert.equal(catalog.filter(d=>d.ambito==='DESCONCENTRADO').length,23);
  assert.equal(new Set(catalog.map(d=>d.unidad)).size,28);
- for(const name of ['dependencias.js','supabase/functions/administrar-usuarios/index.ts'])assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,name),'utf8').match(/const DEPENDENCIAS_INSTITUCIONALES = ([\s\S]*?);/)[1]),catalog);
+ for(const name of ['frontend/js/dependencias.js','backend/supabase/functions/administrar-usuarios/index.ts'])assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,name),'utf8').match(/const DEPENDENCIAS_INSTITUCIONALES = ([\s\S]*?);/)[1]),catalog);
 });
 function form(role){const elements={};for(const id of ['newUserRole','newUserScope','newUserDepartment','newUserUnit','userDependencyHint','userUnitField','userUnitLabel'])elements[id]={value:'',textContent:'',replaceChildren(...items){this.options=items;this.value=items[0]?.value||'';}};elements.newUserRole.value=role;
  const context={document:{getElementById:id=>elements[id]},DEPENDENCIAS_INSTITUCIONALES:catalog,Option:function(label,value){this.label=label;this.value=value;}};

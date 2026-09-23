@@ -1,6 +1,6 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
 const fixture=require('./produccion-fixture.cjs'),root=path.resolve(__dirname,'..'),ctx={window:{}};vm.createContext(ctx);
-for(const f of ['produccion-catalogo.js','produccion-modelo.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),ctx);
+for(const f of ['frontend/js/produccion-catalogo.js','frontend/js/produccion-modelo.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),ctx);
 const m=ctx.window.ProduccionModelo,plain=x=>JSON.parse(JSON.stringify(x));
 const sheet=(r,n)=>r.sheets.find(s=>s.nombre.startsWith(n+'_'));
 const value=(r,n,col,row=0)=>sheet(r,n).rows[row][sheet(r,n).columnas.findIndex(c=>c.columna===col)];

@@ -1,7 +1,7 @@
 const {PGlite}=require('@electric-sql/pglite');
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),db=new PGlite();
-const read=n=>fs.readFileSync(path.join(root,'supabase/migrations',n),'utf8');
+const read=n=>fs.readFileSync(path.join(root,'backend/supabase/migrations',n),'utf8');
 const id=n=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
 (async()=>{
  const schema=JSON.parse(fs.readFileSync(path.join(root,'datos/estructura-detallado-v1.json'),'utf8'));

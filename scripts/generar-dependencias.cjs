@@ -1,15 +1,15 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
-const catalog = JSON.parse(fs.readFileSync(path.join(root,'dependencias.json'),'utf8'));
+const catalog = JSON.parse(fs.readFileSync(path.join(root,'datos/dependencias.json'),'utf8'));
 const declaration = `const DEPENDENCIAS_INSTITUCIONALES = ${JSON.stringify(catalog,null,2)};`;
-fs.writeFileSync(path.join(root,'dependencias.js'), `// Generado desde dependencias.json por scripts/generar-dependencias.cjs\n${declaration}\n`);
-const edgePath = path.join(root,'supabase/functions/administrar-usuarios/index.ts');
+fs.writeFileSync(path.join(root,'frontend/js/dependencias.js'), `// Generado desde dependencias.json por scripts/generar-dependencias.cjs\n${declaration}\n`);
+const edgePath = path.join(root,'backend/supabase/functions/administrar-usuarios/index.ts');
 const edge = fs.readFileSync(edgePath,'utf8');
 const block = `// INICIO CATALOGO GENERADO\n${declaration}\n// FIN CATALOGO GENERADO`;
 fs.writeFileSync(edgePath, edge.includes('// INICIO CATALOGO GENERADO') ? edge.replace(/\/\/ INICIO CATALOGO GENERADO[\s\S]*?\/\/ FIN CATALOGO GENERADO/,block) : edge.replace('export default {',`${block}\n\nexport default {`));
 const tuples = catalog.map(d=>`('${d.unidad.replaceAll("'","''")}','${d.ambito}','${d.departamento}')`).join(',\n');
-fs.writeFileSync(path.join(root,'supabase/migrations/202609150001_dependencias_institucionales.sql'),`-- Generado desde dependencias.json. No reasigna usuarios ni registros históricos.
+fs.writeFileSync(path.join(root,'backend/supabase/migrations/202609150001_dependencias_institucionales.sql'),`-- Generado desde dependencias.json. No reasigna usuarios ni registros históricos.
 begin;
 create or replace function public.validar_dependencia_perfil()
 returns trigger language plpgsql set search_path = '' as $$
