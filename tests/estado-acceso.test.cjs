@@ -1,0 +1,12 @@
+const {PGlite}=require('@electric-sql/pglite');const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+(async()=>{const db=new PGlite();await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id integer primary key,banned_until timestamptz,updated_at timestamptz);create table public.perfiles(id integer primary key,activo boolean not null);insert into auth.users values(1,'infinity',now()),(2,'infinity',now()),(3,null,now());insert into public.perfiles values(1,false),(2,true);`);
+const file=process.argv[2]||path.join(__dirname,'../supabase/migrations/202609230021_estado_acceso_usuarios.sql');await db.exec(fs.readFileSync(file,'utf8'));
+let r=await db.query('select count(*)::int n from auth.users where not isfinite(banned_until)');assert.equal(r.rows[0].n,0);
+r=await db.query('select count(*)::int n from auth.users where banned_until>now()');assert.equal(r.rows[0].n,2,'repair does not activate anyone');
+await db.exec('update public.perfiles set activo=true where id=1');r=await db.query('select banned_until from auth.users where id=1');assert.equal(r.rows[0].banned_until,null);
+await db.exec('update public.perfiles set activo=false where id=1');r=await db.query('select isfinite(banned_until) and banned_until>now() blocked from auth.users where id=1');assert.equal(r.rows[0].blocked,true);
+await db.exec('update public.perfiles set activo=true where id=2');r=await db.query('select banned_until from auth.users where id=2');assert.equal(r.rows[0].banned_until,null,'reactivating an already-active profile fixes stale ban');
+await assert.rejects(db.exec('insert into public.perfiles values(4,true)'),/cuenta de acceso/);r=await db.query('select count(*)::int n from public.perfiles where id=4');assert.equal(r.rows[0].n,0);
+await db.exec('begin;update public.perfiles set activo=true where id=1;rollback');r=await db.query('select banned_until>now() blocked from auth.users where id=1');assert.equal(r.rows[0].blocked,true,'rollback keeps both states unchanged');
+await db.exec('insert into public.perfiles values(3,false)');r=await db.query('select banned_until>now() blocked from auth.users where id=3');assert.equal(r.rows[0].blocked,true);
+console.log('PASS: finite repair without activation; activate/deactivate; reactivation; missing Auth user rollback; transaction rollback; inactive creation.');await db.close();})().catch(e=>{console.error(e);process.exitCode=1});
