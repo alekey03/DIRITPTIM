@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260923-produccion-v2" />
+  <link rel="stylesheet" href="styles.css?v=20260923-excel-v2" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
 </head>
 <body>
@@ -300,8 +300,8 @@
 <label>Control de identidad de extranjeros<input name="operativo.control_identidad_extranjeros" id="op-control_identidad_extranjeros" type="text" maxlength="2000"></label>
 <label>Intervención a penales<input name="operativo.intervencion_penales" id="op-intervencion_penales" type="text" maxlength="2000"></label>
 <label>Especialidad del operativo<select name="operativo.operativo_especificar" id="op-operativo_especificar"><option value="">Seleccionar</option><option value="TRATA DE PERSONAS">Trata de personas</option><option value="UBICADOS">Ubicados</option><option value="TRAFICO ILICITO DE MIGRANTES">Tráfico ilícito de migrantes</option><option value="EXTRANJERIA">Extranjería</option></select></label>
-<label>Delito general<select name="operativo.delito_general" id="op-delito_general" data-op-catalog="crime"><option value="">Seleccionar</option></select></label>
-<label>Delito específico<select name="operativo.delito_especifico" id="op-delito_especifico" data-op-catalog="crime"><option value="">Seleccionar</option></select></label>
+<label hidden>Delito general<select name="operativo.delito_general" id="op-delito_general" data-op-catalog="crime"><option value="">Seleccionar</option></select></label>
+<label hidden>Delito específico<select name="operativo.delito_especifico" id="op-delito_especifico" data-op-catalog="crime"><option value="">Seleccionar</option></select></label>
 </div></fieldset>
         <div class="operativo-actions"><button type="submit" class="primary" id="saveOperativo">Guardar borrador</button><button type="button" class="primary" id="continueOperativo" disabled>Continuar a resultados →</button><button type="button" class="secondary" id="newOperativo">Nuevo operativo</button><p id="operativoStatus" role="status" aria-live="polite"></p></div>
       </form>
@@ -336,7 +336,7 @@
         <p class="results-note">La fecha, ubicación, dependencia y nota informativa se toman del operativo. Registre cada arma o réplica individualmente. Los datos de persona y delitos se completan únicamente cuando correspondan.</p>
         <form id="materialForm" hidden><fieldset id="materialFields"><legend id="materialFormTitle">Registrar material</legend><div id="materialInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveMaterial">Guardar registro</button><button type="button" class="secondary" id="cancelMaterial">Cerrar formulario</button></div></fieldset></form>
         <p id="materialStatus" role="status" aria-live="polite"></p><div id="materialRecords"></div><button type="button" class="secondary" id="moreMaterials" hidden>Ver más registros</button>
-        <p class="results-note">Las armas registradas anteriormente en Detenidos no se trasladan automáticamente a esta lista. La conciliación de esos registros y la exportación del detallado siguen pendientes.</p>
+        <p class="results-note">Las armas registradas anteriormente en Detenidos no se trasladan automáticamente a esta lista. El Excel completo exporta cada módulo por separado para evitar duplicados.</p>
       </section>
       <section id="vehicleResultsPanel" class="card result-detail" hidden>
         <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Vehículos y maquinaria</h3><p>Elija la categoría y registre cada vehículo o maquinaria individualmente.</p></div><span class="drug-badge">3 tipos de registro</span></div>
@@ -353,14 +353,14 @@
         <p id="complementStatus" role="status" aria-live="polite"></p><div id="complementRecords"></div><button type="button" class="secondary" id="moreComplements" hidden>Ver más registros</button>
       </section>
       <section id="prostitucionResultsPanel" class="card result-detail" hidden>
-        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Proxenetismo</h3><p>Identificación y documento de cada persona registrada.</p></div><span class="drug-badge">Hoja 20</span></div>
+        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Proxenetismo</h3><p>Edad, género y nacionalidad según el formato actualizado.</p></div><span class="drug-badge">Hoja 20</span></div>
         <div id="prostitucionCards" class="material-cards" aria-label="Registrar persona"></div>
         <p class="results-note">La ubicación, dependencia y nota informativa se toman del operativo. Este registro se cuenta por separado de Detenidos y Víctimas de trata.</p>
         <form id="prostitucionForm" hidden><fieldset id="prostitucionFields"><legend id="prostitucionFormTitle">Registrar persona</legend><div id="prostitucionInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveProstitucion">Guardar registro</button></div></fieldset><button type="button" class="secondary" id="cancelProstitucion">Cerrar formulario</button></form>
         <p id="prostitucionStatus" role="status" aria-live="polite"></p><div id="prostitucionRecords"></div><button type="button" class="secondary" id="moreProstitucion" hidden>Ver más registros</button>
       </section>
       <section id="victimResultsPanel" class="card result-detail" hidden>
-        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Víctimas de trata</h3><p>Identificación, situación y entidad de puesta a disposición.</p></div><span class="drug-badge">Hoja 21 · Víctimas de trata</span></div>
+        <div class="records-toolbar"><div><small>DETALLE DEL RESULTADO</small><h3>Víctimas de trata</h3><p>Edad, género y nacionalidad según el formato actualizado.</p></div><span class="drug-badge">Hoja 21 · Víctimas de trata</span></div>
         <div id="victimCards" class="material-cards" aria-label="Registrar víctima"></div>
         <p class="results-note">La ubicación, dependencia, NI principal y coordenadas se toman del operativo. La condición de mayor o menor se calcula con la edad al momento del hecho. Este registro es independiente de la Ficha de enrolamiento y no incluye fotografías.</p>
         <form id="victimForm" hidden><fieldset id="victimFields"><legend id="victimFormTitle">Registrar víctima</legend><div id="victimInputs"></div><div class="operativo-actions"><button type="submit" class="primary" id="saveVictim">Guardar víctima</button></div></fieldset><button type="button" class="secondary" id="cancelVictim">Cerrar formulario</button></form>
@@ -386,7 +386,7 @@
           <button type="button" class="material-card" data-group="banda"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="7" r="3"/><path d="M2 21v-5a6 6 0 0 1 12 0v5M16 4a3 3 0 0 1 0 6M17 12a5 5 0 0 1 5 5v4"/></svg><strong>Banda criminal</strong><small>Nombre, modalidad e integrantes</small><span>＋ Registrar banda</span></button>
           <button type="button" class="material-card" data-group="organizacion"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><path d="M12 8v5M5 16v-3h14v3"/></svg><strong>Organización criminal</strong><small>Estructura, integrantes y roles</small><span>＋ Registrar organización</span></button>
         </div>
-        <p class="results-note">Fecha, hora, ubicación, dependencia, coordenadas y nota informativa se toman del operativo. Los datos personales, delitos, fiscalía y situación se consultan desde Detenidos. El nombre y el rol de este grupo son los que se usarán en su hoja del detallado; el texto anterior de Detenidos se conserva como referencia.</p>
+        <p class="results-note">Fecha, hora, ubicación, dependencia, coordenadas y nota informativa se toman del operativo. Los datos personales, delitos, fiscalía y situación se consultan desde Detenidos. El Excel usa el nombre y rol de este grupo. En Bandas marca SI en un solo integrante para contar la banda una vez; el texto anterior de Detenidos se conserva como referencia.</p>
         <p id="groupLegacyNote" class="results-note"></p>
         <form id="groupForm" hidden><fieldset id="groupFields"><legend id="groupFormTitle">Registrar grupo</legend>
           <div class="material-fields"><label>Nombre del grupo *<input name="nombre" maxlength="200" required autocomplete="off"></label><label>Modalidad *<input name="modalidad" maxlength="2000" required autocomplete="off"></label><label>Referencia del lugar<input name="referencia" maxlength="2000" autocomplete="off"></label></div>
@@ -486,15 +486,18 @@
   <script src="requisitoriados.js?v=20260916-rq-ni-v1"></script>
   <script src="menores-catalogo.js?v=20260915-menores-v1"></script>
   <script src="menores.js?v=20260915-menores-v1"></script>
-  <script src="victimas-catalogo.js?v=20260916-victimas-v1"></script>
-  <script src="victimas.js?v=20260916-victimas-v1"></script>
-  <script src="prostitucion-catalogo.js?v=20260916-prostitucion-v1"></script>
-  <script src="prostitucion.js?v=20260916-prostitucion-v1"></script>
-  <script src="complementarios-catalogo.js?v=20260923-produccion-v2"></script>
-  <script src="complementarios.js?v=20260923-produccion-v2"></script>
-  <script src="resultados.js?v=20260923-produccion-v2"></script>
+  <script src="victimas-catalogo.js?v=20260923-excel-v2"></script>
+  <script src="victimas.js?v=20260923-excel-v2"></script>
+  <script src="prostitucion-catalogo.js?v=20260923-excel-v2"></script>
+  <script src="prostitucion.js?v=20260923-excel-v2"></script>
+  <script src="complementarios-catalogo.js?v=20260923-excel-v2"></script>
+  <script src="complementarios.js?v=20260923-excel-v2"></script>
+  <script src="resultados.js?v=20260923-excel-v2"></script>
   <script src="exportaciones.js?v=20260916-rq-ni-v1"></script>
-  <script src="consulta-modelo.js?v=20260923-produccion-v2"></script>
-  <script src="consulta.js?v=20260916-prostitucion-v1"></script>
+  <script src="consulta-modelo.js?v=20260923-excel-v2"></script>
+  <script src="consulta.js?v=20260923-excel-v2"></script>
+  <script src="produccion-catalogo.js?v=20260923-excel-v2"></script>
+  <script src="produccion-modelo.js?v=20260923-excel-v2"></script>
+  <script src="produccion.js?v=20260923-excel-v2"></script>
 </body>
 </html>

@@ -1,0 +1,74 @@
+-- Actualiza los campos exigidos por el formato de producción. Conserva los datos históricos.
+
+begin;
+
+create or replace function public.proteger_victima_operativo() returns trigger language plpgsql security invoker set search_path='' as $$
+declare i public.intervenciones%rowtype; allowed text[]; k text; v jsonb; n numeric;
+begin
+ select * into i from public.intervenciones where id=new.intervencion_id for update;
+ if not found or i.tipo not in ('operativo','megaoperativo') or not public.usuario_activo() or not(public.es_administrador() or (i.creado_por=auth.uid() and i.unidad=public.unidad_actual())) then raise exception 'No puede modificar víctimas de este operativo.' using errcode='42501'; end if;
+ if tg_op='UPDATE' then
+  if new.id is distinct from old.id or new.intervencion_id is distinct from old.intervencion_id or new.tipo is distinct from old.tipo or new.creado_por is distinct from old.creado_por or new.creado_en is distinct from old.creado_en then raise exception 'No se puede trasladar ni cambiar la identidad o categoría de la víctima.' using errcode='42501'; end if;
+  new.version:=old.version+1;
+ else new.version:=1;new.creado_por:=auth.uid();new.creado_en:=now(); end if;
+ if jsonb_typeof(new.datos) is distinct from 'object' or pg_column_size(new.datos)>60000 then raise exception 'Datos inválidos.' using errcode='22023';end if;
+ allowed:=array['fecha','hora','apellido_paterno','apellido_materno','nombres','edad','condicion_edad','situacion','entidad_disposicion','genero','nacionalidad','tipo_documento'];
+ if new.tipo<>'victima' then raise exception 'Categoría inválida.' using errcode='22023';end if;
+ for k,v in select * from jsonb_each(new.datos) loop
+  if not(k=any(allowed)) or jsonb_typeof(v) not in ('string','number','null') or length(new.datos->>k)>2000 then raise exception 'Campo inválido: %',k using errcode='22023';end if;
+  if k='edad' then
+   if jsonb_typeof(v)<>'number' then raise exception 'Edad inválida.' using errcode='22023';end if;
+   n:=(new.datos->>k)::numeric;
+   if n<0 or n>120 or trunc(n)<>n then raise exception 'La edad debe ser un entero entre 0 y 120 años.' using errcode='22023';end if;
+  elsif v<>'null'::jsonb and jsonb_typeof(v)<>'string' then raise exception 'Se esperaba texto en %',k using errcode='22023';end if;
+ end loop;
+ if new.datos->>'edad' is null or new.datos->>'fecha' is null then raise exception 'Complete edad y fecha.' using errcode='22023';end if;
+ if (new.datos->>'fecha') !~ '^\d{4}-\d{2}-\d{2}$' then raise exception 'Fecha inválida.' using errcode='22023';end if;
+ perform (new.datos->>'fecha')::date;
+ if new.datos->>'hora' is not null and (new.datos->>'hora') !~ '^([01][0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$' then raise exception 'Hora inválida.' using errcode='22023';end if;
+ if new.datos->>'situacion' not in ('VICTIMA RESCATADA','PRESUNTA VICTIMA') then raise exception 'Situación inválida.' using errcode='22023';end if;
+ if (new.datos->>'condicion_edad') is distinct from (case when (new.datos->>'edad')::numeric<18 then 'MENOR' else 'MAYOR' end) then raise exception 'La condición de edad no corresponde a la edad registrada.' using errcode='22023';end if;
+ if new.datos->>'genero' is not null and not((new.datos->>'genero')=any(array['MASCULINO','FEMENINO'])) then raise exception 'Valor de genero inválido.' using errcode='22023';end if;
+ if new.datos->>'tipo_documento' is not null and not((new.datos->>'tipo_documento')=any(array['DNI','CARNET DE EXTRANJERIA','CEDULA DE IDENTIDAD','SDPV','SALVO CONDUCTO','LAISER PASSER','PTP(PERMISO TEMPORAL PERMANENCIA)','PASAPORTE'])) then raise exception 'Valor de tipo_documento inválido.' using errcode='22023';end if;
+ if new.datos->>'nacionalidad' is not null and not((new.datos->>'nacionalidad')=any(array['AFGANISTAN','ALBANIA','ALEMANIA','ANDORRA','ANGOLA','ANGUILLA','ANTARTIDA','ANTIGUA Y BARBUDA','ANTILLAS HOLANDESAS','ARABIA SAUDITA','ARGELIA','ARGENTINA','ARMENIA','ARUBA','AUSTRALIA','AUSTRIA','AZERBAYAN','BAHAMAS','BAHREIN','BANGLADESH','BARBADOS','BELGICA','BELIZE','BENIN','BERMUDAS','BHUTAN','BIELORRUSIA','BOLIVIA','BOSNIA HERZEGOVINA','BOTSWANA','BOUVET, ISLA','BRASIL','BRUNEI','BULGARIA','BURKINA FASO','BURUNDI','CABO VERDE','CAIMAN, ISLAS','CAMBOYA','CAMERUN','CANADA','CANTON Y ENDERBURY, ISLAS','CHAD','CHILE','CHINA','CHIPRE','CHRISTMAS, ISLA','CISJORDANIA','COCOS, ISLAS','COLOMBIA','COMORES','CONGO','COOK, ISLAS','COREA DEL NORTE','COREA DEL SUR','COSTA DE MARFIL','COSTA RICA','CROACIA','CUBA','DINAMARCA','DJIBUTI','DOMINICA','ECUADOR','EGIPTO','EMIRATOS ARABES UNIDOS','ERITREA','ESLOVAQUIA (REPUBLICA DE ESLOVAQUIA)','ESLOVENIA','ESPAÑA','ESTADOS FEDERADOS DE MICRONESIA','ESTADOS UNIDOS DE AMERICA (USA)','ESTONIA','ETIOPIA','EX-REPUBLICA YUGOSLAVA DE MACEDONIA','FAEROES, ISLAS','FEDERACION RUSA','FIDJI, ISLAS','FILIPINAS','FINLANDIA','FRANCE, METROPOLITAN','FRANCIA','FRANJA DE GAZA','FRENCH SOUTHERN TERRITORIES','GABON','GAMBIA','GEORGIA','GHANA','GIBRALTAR','GRANADA','GRECIA','GROENLANDIA','GUADALUPE','GUAM','GUATEMALA','GUAYANA FRANCESA','GUINEA','GUINEA ECUATORIAL','GUINEA-BISSAU','GUYANA','HAITI','HEARD Y MCDONALD, ISLAS','HONDURAS','HONG KONG','HUNGRIA','INDIA','INDICO, OCEANO (TERITORIO BRITANICO DEL)','INDONESIA','IRAN','IRAQ','IRLANDA','ISLANDIA','ISRAEL','ITALIA','JAMAICA','JAPON','JERUSALEM','JOHNSTON, ISLA','JORDANIA','KAZAJSTAN','KENIA','KIRGUIZISTAN','KIRIBATI','KUWAIT','LAOS','LESOTO','LETONIA','LIBANO','LIBERIA','LIBIA','LIECHTENSTEIN','LITUANIA','LUXEMBURGO','MACAO','MADAGASCAR','MALASIA','MALAWI','MALDIVAS, ISLAS','MALI','MALTA','MALVINAS, ISLAS','MARRUECOS','MARSHALL, ISLAS','MARTINICA','MAURICIO','MAURITANIA','MAYOTTE','MEJICO','MIDWAY, ISLAS','MONACO','MONGOLIA','MONTENEGRO','MONTSERRAT','MOZAMBIQUE','MYANMAR','NAMIBIA','NAURU','NEPAL','NICARAGUA','NIGER, REPUBLICA DE','NIGERIA','NIUE','NORFOLK, ISLA','NORTHERN MARIANA ISLANDS','NORUEGA','NUEVA CALEDONIA','NUEVA ZELANDA','OMAN','PACIFICO, ISLAS','PACIFICO, ISLAS DEL (ESTADOS UNIDOS)','PAISES BAJOS','PAKISTAN','PALAU','PALESTINA','PANAMA','PAPUA NUEVA GUINEA','PARAGUAY','PERU','PITCAIRN, ISLA','POLINESIA FRANCESA','POLONIA','PORTUGAL','PUERTO RICO','QATAR','REINA MAUD, TIERRA DE LA','REINO UNIDO','REPUBLICA CENTROAFRICANA','REPUBLICA CHECA','REPUBLICA DE MOLDAVIA','REPUBLICA DEMOCRATICA DEL CONGO','REPUBLICA DOMINICANA','REPUBLICA SUDAFRICANA','REUNION','RUANDA','RUMANIA','SAHARA OCCIDENTAL','SAINT-CHISTOPHER Y NIEVES','SALOMON, ISLAS','SALVADOR, EL','SAMOA','SAMOA NORTEAMERICANA','SAN MARINO','SAN PEDRO Y MIQUELON','SAN VICENTE Y LAS GRANADINAS','SANTA ELENA','SANTA LUCIA','SANTO TOME Y PRINCIPE','SENEGAL','SERBIA','SEYCHELLES','SIERRA LEONA','SIKKIM','SINGAPUR','SIRIA','SOMALIA','SRILANKA','SUDAN','SUECIA','SUIZA','SURINAM','SVALBARD Y JAN MAYEN, ISLA','SWAZILANDIA','TADJIKISTAN','TAILANDIA','TAIWAN','TANZANIA','TIMOR','TOGO','TOKELAU','TONGA','TRINIDAD Y TOBAGO','TUNEZ','TURKMENISTAN','TURKS Y CAICOS, ISLAS','TURQUIA','TUVALU','UCRANIA','UGANDA','UNITED STATES MINOR OUTLING ISLANDS','URUGUAY','UZBEKISTAN','VANUATU','VATICANO','VENEZUELA','VIETNAM','VIRGENES, ISLAS (ESTADOS UNIDOS)','VIRGENES, ISLAS (REINO UNIDO)','WAKE, ISLA DE','WALLIS Y FUTUNA, ISLAS','YEMEN','ZAMBIA','ZIMBABWE'])) then raise exception 'Valor de nacionalidad inválido.' using errcode='22023';end if;
+ new.actualizado_en:=now();
+ update public.intervenciones set resultados_previstos=case when 'victimas'=any(resultados_previstos) then resultados_previstos else array_append(resultados_previstos,'victimas') end where id=i.id;
+ return new;
+end $$;
+
+create or replace function public.proteger_prostitucion_operativo() returns trigger language plpgsql security invoker set search_path='' as $$
+declare i public.intervenciones%rowtype; allowed text[]; k text; v jsonb; n numeric;
+begin
+ select * into i from public.intervenciones where id=new.intervencion_id for update;
+ if not found or i.tipo not in ('operativo','megaoperativo') or not public.usuario_activo() or not(public.es_administrador() or (i.creado_por=auth.uid() and i.unidad=public.unidad_actual())) then raise exception 'No puede modificar registros de proxenetismo de este operativo.' using errcode='42501'; end if;
+ if tg_op='UPDATE' then
+  if new.id is distinct from old.id or new.intervencion_id is distinct from old.intervencion_id or new.tipo is distinct from old.tipo or new.creado_por is distinct from old.creado_por or new.creado_en is distinct from old.creado_en then raise exception 'No se puede trasladar ni cambiar la identidad o categoría de este registro.' using errcode='42501'; end if;
+  new.version:=old.version+1;
+ else new.version:=1;new.creado_por:=auth.uid();new.creado_en:=now(); end if;
+ if jsonb_typeof(new.datos) is distinct from 'object' or pg_column_size(new.datos)>60000 then raise exception 'Datos inválidos.' using errcode='22023';end if;
+ allowed:=array['fecha','hora','apellido_paterno','apellido_materno','nombres','edad','genero','nacionalidad','tipo_documento','numero_documento'];
+ if new.tipo<>'prostitucion' then raise exception 'Categoría inválida.' using errcode='22023';end if;
+ for k,v in select * from jsonb_each(new.datos) loop
+  if not(k=any(allowed)) or jsonb_typeof(v) not in ('string','number','null') or length(new.datos->>k)>2000 then raise exception 'Campo inválido: %',k using errcode='22023';end if;
+  if k='edad' then
+   if jsonb_typeof(v)<>'number' then raise exception 'Edad inválida.' using errcode='22023';end if;
+   n:=(new.datos->>k)::numeric;
+   if n<0 or n>120 or trunc(n)<>n then raise exception 'La edad debe ser un entero entre 0 y 120 años.' using errcode='22023';end if;
+  elsif v<>'null'::jsonb and jsonb_typeof(v)<>'string' then raise exception 'Se esperaba texto en %',k using errcode='22023';end if;
+ end loop;
+ if new.datos->>'edad' is null or new.datos->>'fecha' is null then raise exception 'Complete edad y fecha.' using errcode='22023';end if;
+ if (new.datos->>'fecha') !~ '^\d{4}-\d{2}-\d{2}$' then raise exception 'Fecha inválida.' using errcode='22023';end if;
+ perform (new.datos->>'fecha')::date;
+ if new.datos->>'hora' is not null and (new.datos->>'hora') !~ '^([01][0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$' then raise exception 'Hora inválida.' using errcode='22023';end if;
+ if new.datos->>'genero' is not null and not((new.datos->>'genero')=any(array['MASCULINO','FEMENINO'])) then raise exception 'Valor de genero inválido.' using errcode='22023';end if;
+ if new.datos->>'tipo_documento' is not null and not((new.datos->>'tipo_documento')=any(array['DNI','CARNET DE EXTRANJERIA','CEDULA DE IDENTIDAD','SDPV','SALVO CONDUCTO','LAISER PASSER','PTP(PERMISO TEMPORAL PERMANENCIA)','PASAPORTE'])) then raise exception 'Valor de tipo_documento inválido.' using errcode='22023';end if;
+ if new.datos->>'nacionalidad' is not null and not((new.datos->>'nacionalidad')=any(array['AFGANISTAN','ALBANIA','ALEMANIA','ANDORRA','ANGOLA','ANGUILLA','ANTARTIDA','ANTIGUA Y BARBUDA','ANTILLAS HOLANDESAS','ARABIA SAUDITA','ARGELIA','ARGENTINA','ARMENIA','ARUBA','AUSTRALIA','AUSTRIA','AZERBAYAN','BAHAMAS','BAHREIN','BANGLADESH','BARBADOS','BELGICA','BELIZE','BENIN','BERMUDAS','BHUTAN','BIELORRUSIA','BOLIVIA','BOSNIA HERZEGOVINA','BOTSWANA','BOUVET, ISLA','BRASIL','BRUNEI','BULGARIA','BURKINA FASO','BURUNDI','CABO VERDE','CAIMAN, ISLAS','CAMBOYA','CAMERUN','CANADA','CANTON Y ENDERBURY, ISLAS','CHAD','CHILE','CHINA','CHIPRE','CHRISTMAS, ISLA','CISJORDANIA','COCOS, ISLAS','COLOMBIA','COMORES','CONGO','COOK, ISLAS','COREA DEL NORTE','COREA DEL SUR','COSTA DE MARFIL','COSTA RICA','CROACIA','CUBA','DINAMARCA','DJIBUTI','DOMINICA','ECUADOR','EGIPTO','EMIRATOS ARABES UNIDOS','ERITREA','ESLOVAQUIA (REPUBLICA DE ESLOVAQUIA)','ESLOVENIA','ESPAÑA','ESTADOS FEDERADOS DE MICRONESIA','ESTADOS UNIDOS DE AMERICA (USA)','ESTONIA','ETIOPIA','EX-REPUBLICA YUGOSLAVA DE MACEDONIA','FAEROES, ISLAS','FEDERACION RUSA','FIDJI, ISLAS','FILIPINAS','FINLANDIA','FRANCE, METROPOLITAN','FRANCIA','FRANJA DE GAZA','FRENCH SOUTHERN TERRITORIES','GABON','GAMBIA','GEORGIA','GHANA','GIBRALTAR','GRANADA','GRECIA','GROENLANDIA','GUADALUPE','GUAM','GUATEMALA','GUAYANA FRANCESA','GUINEA','GUINEA ECUATORIAL','GUINEA-BISSAU','GUYANA','HAITI','HEARD Y MCDONALD, ISLAS','HONDURAS','HONG KONG','HUNGRIA','INDIA','INDICO, OCEANO (TERITORIO BRITANICO DEL)','INDONESIA','IRAN','IRAQ','IRLANDA','ISLANDIA','ISRAEL','ITALIA','JAMAICA','JAPON','JERUSALEM','JOHNSTON, ISLA','JORDANIA','KAZAJSTAN','KENIA','KIRGUIZISTAN','KIRIBATI','KUWAIT','LAOS','LESOTO','LETONIA','LIBANO','LIBERIA','LIBIA','LIECHTENSTEIN','LITUANIA','LUXEMBURGO','MACAO','MADAGASCAR','MALASIA','MALAWI','MALDIVAS, ISLAS','MALI','MALTA','MALVINAS, ISLAS','MARRUECOS','MARSHALL, ISLAS','MARTINICA','MAURICIO','MAURITANIA','MAYOTTE','MEJICO','MIDWAY, ISLAS','MONACO','MONGOLIA','MONTENEGRO','MONTSERRAT','MOZAMBIQUE','MYANMAR','NAMIBIA','NAURU','NEPAL','NICARAGUA','NIGER, REPUBLICA DE','NIGERIA','NIUE','NORFOLK, ISLA','NORTHERN MARIANA ISLANDS','NORUEGA','NUEVA CALEDONIA','NUEVA ZELANDA','OMAN','PACIFICO, ISLAS','PACIFICO, ISLAS DEL (ESTADOS UNIDOS)','PAISES BAJOS','PAKISTAN','PALAU','PALESTINA','PANAMA','PAPUA NUEVA GUINEA','PARAGUAY','PERU','PITCAIRN, ISLA','POLINESIA FRANCESA','POLONIA','PORTUGAL','PUERTO RICO','QATAR','REINA MAUD, TIERRA DE LA','REINO UNIDO','REPUBLICA CENTROAFRICANA','REPUBLICA CHECA','REPUBLICA DE MOLDAVIA','REPUBLICA DEMOCRATICA DEL CONGO','REPUBLICA DOMINICANA','REPUBLICA SUDAFRICANA','REUNION','RUANDA','RUMANIA','SAHARA OCCIDENTAL','SAINT-CHISTOPHER Y NIEVES','SALOMON, ISLAS','SALVADOR, EL','SAMOA','SAMOA NORTEAMERICANA','SAN MARINO','SAN PEDRO Y MIQUELON','SAN VICENTE Y LAS GRANADINAS','SANTA ELENA','SANTA LUCIA','SANTO TOME Y PRINCIPE','SENEGAL','SERBIA','SEYCHELLES','SIERRA LEONA','SIKKIM','SINGAPUR','SIRIA','SOMALIA','SRILANKA','SUDAN','SUECIA','SUIZA','SURINAM','SVALBARD Y JAN MAYEN, ISLA','SWAZILANDIA','TADJIKISTAN','TAILANDIA','TAIWAN','TANZANIA','TIMOR','TOGO','TOKELAU','TONGA','TRINIDAD Y TOBAGO','TUNEZ','TURKMENISTAN','TURKS Y CAICOS, ISLAS','TURQUIA','TUVALU','UCRANIA','UGANDA','UNITED STATES MINOR OUTLING ISLANDS','URUGUAY','UZBEKISTAN','VANUATU','VATICANO','VENEZUELA','VIETNAM','VIRGENES, ISLAS (ESTADOS UNIDOS)','VIRGENES, ISLAS (REINO UNIDO)','WAKE, ISLA DE','WALLIS Y FUTUNA, ISLAS','YEMEN','ZAMBIA','ZIMBABWE'])) then raise exception 'Valor de nacionalidad inválido.' using errcode='22023';end if;
+ if nullif(btrim(new.datos->>'numero_documento'),'') is not null and nullif(btrim(new.datos->>'tipo_documento'),'') is null then raise exception 'Seleccione el tipo del documento registrado.' using errcode='22023';end if;
+ new.actualizado_en:=now();
+ update public.intervenciones set resultados_previstos=case when 'prostitucion'=any(resultados_previstos) then resultados_previstos else array_append(resultados_previstos,'prostitucion') end where id=i.id;
+ return new;
+end $$;
+
+notify pgrst, 'reload schema';
+
+commit;

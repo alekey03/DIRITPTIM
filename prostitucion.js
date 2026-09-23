@@ -1,5 +1,5 @@
 (() => {
-  const catalog = [{tipo:'prostitucion',titulo:'Persona registrada',descripcion:'Identificación y documento de identidad',campos:window.PROSTITUCION_CATALOGO.campos}];
+  const catalog = [{tipo:'prostitucion',titulo:'Persona registrada',descripcion:'Edad, género y nacionalidad según el formato actualizado',campos:window.PROSTITUCION_CATALOGO.campos}];
   const $ = id => document.getElementById(id);
   const form=$('prostitucionForm'), inputs=$('prostitucionInputs'), status=$('prostitucionStatus'), list=$('prostitucionRecords');
   let context=null, bridge=null, readOnly=true, busy=false, dirty=false, epoch=0, shown=25, editing=null, selected=null, retry=null;
@@ -22,7 +22,7 @@
     $('prostitucionFormTitle').textContent=`${view?'Consultar':record?'Editar':'Registrar'} · ${type.titulo}`;
     $('saveProstitucion').hidden=view;$('cancelProstitucion').hidden=false;
     $('prostitucionCards').querySelector(`[data-prostitucion="${type.tipo}"]`).classList.add('selected');
-    const groups=[['hecho','01 · Fecha y hora'],['identidad','02 · Identificación']];
+    const groups=[['hecho','01 · Fecha y hora'],['identidad','02 · Datos de la persona']];
     for(const [group,title] of groups){
       const section=document.createElement('section'),heading=document.createElement('h4');heading.textContent=title;section.append(heading);
       const grid=document.createElement('div');grid.className='material-fields';section.append(grid);
@@ -30,14 +30,18 @@
         const label=document.createElement('label'),caption=document.createElement('span');caption.textContent=field.label+(field.required?' *':'');label.append(caption);
         const control=document.createElement(field.options?'select':'input');control.name=field.key;
         if(field.options){control.append(new Option('Seleccionar',''));for(const v of field.options)control.append(new Option(v,v));}
-        else{control.type=field.type;control.maxLength=2000;control.autocomplete='off';if(field.type==='number'){control.min='2';control.max='100';control.step='1';}}
+        else{control.type=field.type;control.maxLength=2000;control.autocomplete='off';if(field.type==='number'){control.min='0';control.max='120';control.step='1';}}
         control.required=field.required;control.readOnly=!!field.computed;control.value=record?.datos[field.key]??(field.key==='fecha'?context.fecha:field.key==='hora'?context.hora:'');control.disabled=view;
         label.append(control);grid.append(label);
       }
       inputs.append(section);
     }
-    const number=form.elements.namedItem('numero_documento'),documentType=form.elements.namedItem('tipo_documento');
-    const syncDocument=()=>{documentType.required=number.value.trim()!=='';};number.addEventListener('input',syncDocument);syncDocument();
+    const historical=window.PROSTITUCION_CATALOGO.camposHistoricos.filter(f=>record?.datos[f.key]!=null&&record.datos[f.key]!=='');
+    if(historical.length){
+      const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Datos del formato anterior · conservados';details.append(summary);
+      for(const f of historical){const p=document.createElement('p');p.textContent=f.label+': '+record.datos[f.key];details.append(p);}inputs.append(details);
+    }
+    const shared=document.createElement('p');shared.className='results-note';shared.textContent='El lugar, la dirección policial, la división, el departamento policial, la unidad, la NI y las coordenadas se toman del operativo.';inputs.append(shared);
     status.textContent=view?'Consulta del registro.':'';lock();
     if(view){inputs.querySelectorAll('input,select').forEach(c=>c.disabled=true);}
     form.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -50,7 +54,7 @@
     for(const record of data.slice(0,shown)){
       const type=catalog.find(t=>t.tipo===record.tipo);if(!type)continue;
       const row=document.createElement('div');row.className='material-record';const symbol=document.createElement('span');symbol.className='material-record-icon';symbol.innerHTML=icon(type.tipo);
-      const info=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('small');title.textContent=[record.datos.apellido_paterno,record.datos.apellido_materno,record.datos.nombres].filter(Boolean).join(' ');
+      const info=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('small');title.textContent=[record.datos.apellido_paterno,record.datos.apellido_materno,record.datos.nombres].filter(Boolean).join(' ')||'Registro · '+(record.datos.genero||'Sin género consignado');
       detail.textContent=[record.datos.edad+' años',record.datos.fecha,record.datos.numero_documento].filter(Boolean).join(' · ');
       info.append(title,detail);const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=readOnly?'Ver detalle':'Abrir / editar';
       button.addEventListener('click',()=>{if(!busy && discard())open(type,record,readOnly);});row.append(symbol,info,button);list.append(row);
@@ -62,7 +66,7 @@
   form.addEventListener('submit',async event=>{
     event.preventDefault();if(busy||readOnly||!context||!selected||!form.reportValidity())return;
     const token=epoch;if(!(await bridge.prepare())||token!==epoch)return;
-    const datos={};for(const field of selected.campos){const value=form.elements.namedItem(field.key).value.trim();datos[field.key]=value===''?null:field.type==='number'?Number(value):value;}
+    const datos={...(editing?.datos||{})};for(const field of selected.campos){const value=form.elements.namedItem(field.key).value.trim();datos[field.key]=value===''?null:field.type==='number'?Number(value):value;}
     const payload={p_id:editing?.id||retry?.p_id||crypto.randomUUID(),p_intervencion:context.id,p_version:editing?.version||0,p_tipo:selected.tipo,p_datos:datos};
     if(retry && JSON.stringify(retry)!==JSON.stringify(payload)){status.textContent='El guardado anterior no se confirmó. Reintente con los mismos datos o actualice la lista antes de cambiarlos.';return;}
     retry=payload;bridge.setBusy(true);status.textContent='Guardando registro…';

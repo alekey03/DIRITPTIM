@@ -1,6 +1,6 @@
 window.PROSTITUCION_CATALOGO = {
-  "version": 1,
-  "hoja": "20_PROSTITUCION FEM Y MASC",
+  "version": 2,
+  "hoja": "20_PROXENETISMO",
   "campos": [
     {
       "key": "fecha",
@@ -11,38 +11,19 @@ window.PROSTITUCION_CATALOGO = {
     },
     {
       "key": "hora",
-      "label": "Hora",
+      "label": "Hora de intervención",
       "type": "time",
       "group": "hecho",
       "required": false
-    },
-    {
-      "key": "apellido_paterno",
-      "label": "Apellido paterno",
-      "type": "text",
-      "group": "identidad",
-      "required": true
-    },
-    {
-      "key": "apellido_materno",
-      "label": "Apellido materno",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    },
-    {
-      "key": "nombres",
-      "label": "Nombres",
-      "type": "text",
-      "group": "identidad",
-      "required": true
     },
     {
       "key": "edad",
       "label": "Edad al momento del hecho",
       "type": "number",
       "group": "identidad",
-      "required": true
+      "required": true,
+      "min": 0,
+      "max": 120
     },
     {
       "key": "genero",
@@ -314,30 +295,6 @@ window.PROSTITUCION_CATALOGO = {
         "ZAMBIA",
         "ZIMBABWE"
       ]
-    },
-    {
-      "key": "tipo_documento",
-      "label": "Tipo de documento",
-      "type": "text",
-      "group": "identidad",
-      "required": false,
-      "options": [
-        "DNI",
-        "CARNET DE EXTRANJERIA",
-        "CEDULA DE IDENTIDAD",
-        "SDPV",
-        "SALVO CONDUCTO",
-        "LAISER PASSER",
-        "PTP(PERMISO TEMPORAL PERMANENCIA)",
-        "PASAPORTE"
-      ]
-    },
-    {
-      "key": "numero_documento",
-      "label": "Número de documento",
-      "type": "text",
-      "group": "identidad",
-      "required": false
     }
   ],
   "columnas": {
@@ -374,5 +331,52 @@ window.PROSTITUCION_CATALOGO = {
     "Registro independiente: no crea detenidos, víctimas de trata ni fichas de enrolamiento.",
     "Número de documento conservado como texto, incluidos ceros iniciales.",
     "Sin fotografías. Edad según TOTAL_EDAD de la plantilla: 2 a 100."
+  ],
+  "camposHistoricos": [
+    {
+      "key": "apellido_paterno",
+      "label": "Apellido paterno",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "apellido_materno",
+      "label": "Apellido materno",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "nombres",
+      "label": "Nombres",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "tipo_documento",
+      "label": "Tipo de documento",
+      "type": "text",
+      "group": "identidad",
+      "required": false,
+      "options": [
+        "DNI",
+        "CARNET DE EXTRANJERIA",
+        "CEDULA DE IDENTIDAD",
+        "SDPV",
+        "SALVO CONDUCTO",
+        "LAISER PASSER",
+        "PTP(PERMISO TEMPORAL PERMANENCIA)",
+        "PASAPORTE"
+      ]
+    },
+    {
+      "key": "numero_documento",
+      "label": "Número de documento",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    }
   ]
 };
