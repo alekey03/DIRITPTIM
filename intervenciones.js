@@ -7,7 +7,7 @@
   const listStatus = document.getElementById('operativosListStatus');
   const catalogs = window.bindOperativoCatalogs(form);
   const unit = form.elements.namedItem('intervencion.unidad_area_equipo');
-  for (const item of DEPENDENCIAS_INSTITUCIONALES) unit.add(new Option(item.unidad, item.unidad));
+
   let id = crypto.randomUUID(), version = 0, pending = null, dirty = false, busy = false;
   let epoch = 0, listRequest = 0, page = 0, readOnly = false;
   const fields = [...form.querySelectorAll('[name]')];

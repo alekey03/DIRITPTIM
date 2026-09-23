@@ -35,7 +35,7 @@
         const baseKey=field.key.replace(/_2$/,'');const isCrime=group.startsWith('delito') && crimeMap[baseKey];
         const source=field.source?document.querySelector('#detaineeForm [name="'+field.source+'"]'):null;
         const options=field.options||(source?[...source.options].filter(o=>o.value).map(o=>o.value):null);
-        const dependent=['arma_categoria','arma_tipo','disposicion_direccion','disposicion_region','disposicion_division','disposicion_departamento'].includes(field.key);
+        const dependent=['arma_categoria','arma_tipo','disposicion_direccion','disposicion_region','disposicion_division','disposicion_departamento','disposicion_unidad'].includes(field.key);
         const control=document.createElement(options||isCrime||dependent?'select':'input');control.name=field.key;
         if(options||isCrime||dependent){const blank=new Option('Sin indicar','');control.append(blank);for(const value of options||[])control.append(new Option(value,value));if(isCrime)control.dataset.field=crimeMap[baseKey];}
         else{control.type=field.type;control.maxLength=2000;if(field.type==='number'){control.min='2';control.max='17';control.step='1';}control.autocomplete='off';}

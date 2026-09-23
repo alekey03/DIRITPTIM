@@ -92,6 +92,53 @@
     };
   }
 
+  // Every police form shares five levels; historical paths remain readable on edit.
+  function bindPolice(selects) {
+    selects.forEach(s => { if (s) s.dataset.uppercaseOptions = 'true'; });
+    const labels = ['Seleccionar dirección policial', 'Seleccionar dirección / región / frente', 'Seleccionar división / jefatura', 'Seleccionar departamento policial', 'Seleccionar unidad / área / equipo'];
+    let roots = POLICE;
+    const cascade = bindCascade(selects, roots, labels);
+    function pending() {
+      if (selects.length < 5) return;
+      const division = selects[2]?.value || '';
+      const central = (window.DEPENDENCIAS_FLUJO?.[0]?.children?.[0]?.children || []).some(n => n.value === division && !n.children.length);
+      for (const s of selects.slice(3)) if (central && !s.value) fillSelect(s, [], 'Pendiente de catálogo');
+    }
+    selects.forEach(s => s?.addEventListener('change', pending));
+    return {
+      reset() { cascade.setRoots(roots); pending(); },
+      setRoots(next) { roots = next; cascade.setRoots(roots); pending(); },
+      set(values = []) {
+        const copy = JSON.parse(JSON.stringify(roots));
+        let nodes = copy;
+        // Preserve exact stored names, without making retired paths available in new records.
+        for (const value of values) {
+          if (!value) break;
+          let node = nodes.find(n => n.value === value);
+          if (!node) { node = {value, children: []}; nodes.push(node); }
+          nodes = node.children || (node.children = []);
+        }
+        cascade.setRoots(copy); cascade.set(values);
+        selects.forEach((select, index) => {
+          const value = values[index];
+          if (value && select.value !== value) { select.add(new Option(value, value)); select.value = value; select.disabled = false; }
+        });
+        pending();
+      }
+    };
+  }
+
+  function policeCatalog(existing) {
+    const roots = JSON.parse(JSON.stringify(existing || []));
+    for (const incoming of window.DEPENDENCIAS_FLUJO || []) {
+      let root = roots.find(n => n.value === incoming.value);
+      if (!root) { root = {value: incoming.value, children: []}; roots.push(root); }
+      root.children = (root.children || []).filter(n => !/^DIRC?TPTIM$/i.test(n.value));
+      root.children.push(...incoming.children);
+    }
+    return roots;
+  }
+
   function bindLocation(prefix) {
     const selects = [
       document.getElementById(`${prefix}Department`),
@@ -104,11 +151,8 @@
 
   const victimLocation = bindLocation('victim');
   const detaineeLocation = bindLocation('detainee');
-  const policeDependency = bindCascade(
-    ['policeDirection', 'policeRegion', 'policeDivision', 'policeDepartment'].map(id => document.getElementById(id)),
-    POLICE,
-    ['Seleccionar dirección', 'Seleccionar región o dirección', 'Seleccionar división policial', 'Seleccionar departamento policial']
-  );
+  const policeDependency = bindPolice(['policeDirection', 'policeRegion', 'policeDivision', 'policeDepartment', 'policeUnit'].map(id => document.getElementById(id)));
+  const receiverDependency = bindPolice(['disposicionDireccion','disposicionRegion','disposicionDivision','disposicionDepartamento','disposicionUnidad'].map(name => document.querySelector('#detaineeForm [name="'+name+'"]')));
   const weaponDependency = bindCascade(
     ['weaponCategory', 'weaponType'].map(id => document.getElementById(id)),
     WEAPONS,
@@ -147,12 +191,14 @@
   window.resetDetaineeDependencies = () => {
     detaineeLocation?.reset();
     policeDependency?.reset();
+    receiverDependency?.reset();
     weaponDependency?.reset();
     updateOrganizationFields();
   };
   window.setDetaineeDependencies = function setDetaineeDependencies(values = {}) {
     detaineeLocation?.set([values.departamento, values.provincia, values.distrito]);
-    policeDependency?.set([values.direccion_policial, values.direccion_especializada_region, values.division_policial, values.departamento_policial]);
+    policeDependency?.set([values.direccion_policial, values.direccion_especializada_region, values.division_policial, values.departamento_policial, values.unidad_area_equipo]);
+    receiverDependency?.set([values.disposicion_direccion,values.disposicion_region,values.disposicion_division,values.disposicion_departamento,values.disposicion_unidad]);
     weaponDependency?.set([values.arma_categoria, values.arma_tipo]);
     if (organizationToggle) organizationToggle.value = values.integra_organizacion ? (values.tipo_organizacion || '') : 'false';
     updateOrganizationFields();
@@ -194,8 +240,8 @@
     const controls = keys => keys.map(k => container.querySelector('[name="'+k+'"]'));
     const weapon = bindCascade(controls(['arma_categoria','arma_tipo']), WEAPONS, ['Ninguna','Seleccionar tipo']);
     weapon.set([values.arma_categoria,values.arma_tipo]);
-    const keys=['disposicion_direccion','disposicion_region','disposicion_division','disposicion_departamento'];
-    const police=bindCascade(controls(keys),POLICE,['Seleccionar dirección','Seleccionar región / dirección','Seleccionar división','Seleccionar departamento']);
+    const keys=['disposicion_direccion','disposicion_region','disposicion_division','disposicion_departamento','disposicion_unidad'];
+    const police=bindPolice(controls(keys));
     police.set(keys.map(k=>values[k]));
     // Keep historical values readable if the source catalog changes.
     controls(['arma_categoria','arma_tipo',...keys]).forEach(control=>{const value=values[control.name];if(value&&!Array.from(control.options).some(o=>o.value===value)){control.append(new Option(value,value));control.value=value;control.disabled=false;}});
@@ -204,7 +250,7 @@
   window.bindOperativoCatalogs = function bindOperativoCatalogs(form) {
     const selects = kind => [...form.querySelectorAll(`[data-op-catalog="${kind}"]`)];
     const geo = bindCascade(selects('geo'), GEO, ['Seleccionar departamento', 'Seleccionar provincia', 'Seleccionar distrito']);
-    const police = bindCascade(selects('police'), POLICE, ['Seleccionar dirección', 'Seleccionar región o dirección', 'Seleccionar división', 'Seleccionar departamento policial']);
+    const police = bindPolice(selects('police'));
     const crime = bindCascade(selects('crime'), [], ['Seleccionar delito general', 'Seleccionar delito específico']);
     function refresh() {
       const generals = new Map();
@@ -219,7 +265,7 @@
     operativoCatalogs = { refresh, reset() { geo.reset(); police.reset(); crime.reset(); },
       set(i, o) {
         geo.set([i.departamento, i.provincia, i.distrito]);
-        police.set([i.direccion_policial, i.direccion_especializada_region, i.division_policial, i.departamento_policial]);
+        police.set([i.direccion_policial, i.direccion_especializada_region, i.division_policial, i.departamento_policial, i.unidad_area_equipo]);
         crime.set([o.delito_general, o.delito_especifico]);
       }
     };
@@ -229,10 +275,11 @@
 
   window.setProtectedCatalogs = function setProtectedCatalogs(catalogs) {
     CRIMES = Array.isArray(catalogs?.delitos) ? catalogs.delitos : [];
-    POLICE = Array.isArray(catalogs?.dependencias_policiales) ? catalogs.dependencias_policiales : [];
+    POLICE = policeCatalog(Array.isArray(catalogs?.dependencias_policiales) ? catalogs.dependencias_policiales : []);
     WEAPONS = Array.isArray(catalogs?.armas) ? catalogs.armas : [];
     operativoCatalogs?.refresh();
     policeDependency?.setRoots(POLICE);
+    receiverDependency?.setRoots(POLICE);
     weaponDependency?.setRoots(WEAPONS);
     document.querySelectorAll('.crime-row').forEach(row => {
       const values = {
@@ -251,6 +298,7 @@
     WEAPONS = [];
     operativoCatalogs?.refresh();
     policeDependency?.setRoots([]);
+    receiverDependency?.setRoots([]);
     weaponDependency?.setRoots([]);
     document.querySelectorAll('.crime-row').forEach(row => row._crimeCascade?.setRoots([]));
   };
