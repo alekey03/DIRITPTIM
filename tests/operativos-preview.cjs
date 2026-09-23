@@ -1,5 +1,5 @@
 // Local component harness: no Supabase session, credentials or production writes.
-// node tests/operativos-preview.cjs; open http://127.0.0.1:8766/
+// node tests/operativos-preview.cjs; open http://127.0.0.1:8773/
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -9,6 +9,7 @@ let html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
   .replace(/<link[^>]+(?:https:)[^>]*>/gi, '');
 const mock = `
 let currentProfile={id:'fixture-user',activo:true,rol:'operador',unidad:'DEPITPTIM ABANCAY',departamento:'APURIMAC'};
+let complements=[],complementFailOnce=true;
 let requests=[],records=new Map(),detained=[],drugs=[],materials=[],vehicles=[],groups=[],prostitucion=[],prostitucionFailOnce=true,victims=[],victimFailOnce=true,minors=[],minorFailOnce=true,notes=[],noteFailOnce=true,rqs=[],rqFailOnce=true,failOnce=true;
 function escapeHtml(value){return String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function formatDate(value){return value;}
@@ -16,6 +17,13 @@ function formatDate(value){return value;}
 const supabaseClient={
  async rpc(name,p){
   requests.push(structuredClone(p));
+  if(name==='guardar_complementarios_operativo'){
+   const old=complements.find(r=>r.id===p.p_id),parent=records.get(p.p_intervencion);
+   if(old&&old.version===p.p_version+1&&JSON.stringify(old.datos)===JSON.stringify(p.p_datos))return {data:{id:old.id,version:old.version,operativo_version:parent.version},error:null};
+   const row={id:p.p_id,intervencion_id:p.p_intervencion,tipo:p.p_tipo,datos:p.p_datos,version:p.p_version+1};if(old)Object.assign(old,row);else complements.push(row);parent.version++;
+   if(complementFailOnce){complementFailOnce=false;throw new Error('Respuesta perdida de complements');}
+   return {data:{id:row.id,version:row.version,operativo_version:parent.version},error:null};
+  }
   if(name==='guardar_prostitucion_operativo'){
    const old=prostitucion.find(r=>r.id===p.p_id),parent=records.get(p.p_intervencion);
    if(old&&old.version===p.p_version+1&&JSON.stringify(old.datos)===JSON.stringify(p.p_datos))return {data:{id:old.id,version:old.version,operativo_version:parent.version},error:null};
@@ -81,7 +89,7 @@ const supabaseClient={
   const saved={...p.p_intervencion,id:p.p_id,version:p.p_version+2,unidad:currentProfile.unidad,departamento_registro:currentProfile.departamento,creado_por:currentProfile.id,resultados_previstos:[],intervencion_operativos:p.p_operativo};
   records.set(saved.id,saved);return {data:{id:saved.id,version:saved.version},error:null};
  },
- from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_prostitucion'?prostitucion.filter(d=>d.intervencion_id===id):table==='intervencion_victimas'?victims.filter(d=>d.intervencion_id===id):table==='intervencion_notas'?notes.filter(d=>d.intervencion_id===id):table==='intervencion_menores'?minors.filter(d=>d.intervencion_id===id):table==='intervencion_requisitoriados'?rqs.filter(d=>d.intervencion_id===id):table==='intervencion_grupos'?groups.filter(d=>d.intervencion_id===id):table==='intervencion_vehiculos'?vehicles.filter(d=>d.intervencion_id===id):table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):['detenciones','detenciones_reportables'].includes(table)?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
+ from(table){let id=null;return {select(){return this},in(){return this},order(){return this},eq(k,v){id=v;return this},async single(){return {data:records.get(id),error:null}},async range(a,b){return {data:(table==='intervencion_complementarios'?complements.filter(d=>d.intervencion_id===id):table==='intervencion_prostitucion'?prostitucion.filter(d=>d.intervencion_id===id):table==='intervencion_victimas'?victims.filter(d=>d.intervencion_id===id):table==='intervencion_notas'?notes.filter(d=>d.intervencion_id===id):table==='intervencion_menores'?minors.filter(d=>d.intervencion_id===id):table==='intervencion_requisitoriados'?rqs.filter(d=>d.intervencion_id===id):table==='intervencion_grupos'?groups.filter(d=>d.intervencion_id===id):table==='intervencion_vehiculos'?vehicles.filter(d=>d.intervencion_id===id):table==='intervencion_materiales'?materials.filter(d=>d.intervencion_id===id):table==='intervencion_drogas'?drugs.filter(d=>d.intervencion_id===id):['detenciones','detenciones_reportables'].includes(table)?detained.filter(d=>d.intervencion_id===id):[...records.values()]).slice(a,b+1),error:null}}};}
 };
 document.getElementById('loginScreen').style.display='none';
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
@@ -127,7 +135,7 @@ const checks = `
   document.querySelector('[data-view="operativoView"]').click();
 
   await window.openOperativoResults([...records.keys()][0]);
-  assert(document.querySelectorAll('#resultCards input').length===12,'Deben existir doce tipos de resultado');
+  assert(document.querySelectorAll('#resultCards input').length===17,'Deben existir diecisiete tipos de resultado');
   document.querySelector('#resultCards input[value="detenidos"]').click();
   document.querySelector('#resultCards input[value="bandas"]').click();
   document.getElementById('saveResults').click();await tick();
@@ -250,22 +258,43 @@ const checks = `
   prostitucionCaptureForm.dispatchEvent(new Event('submit',{cancelable:true}));await wait(()=>document.getElementById('prostitucionStatus').textContent.includes('No se confirmó'));assert(prostitucion.length===1,'Alta con respuesta perdida');prostitucionCaptureForm.dispatchEvent(new Event('submit',{cancelable:true}));await wait(()=>prostitucionCaptureForm.hidden);assert(prostitucion.length===1,'Reintento sin duplicar');
   document.querySelector('#prostitucionRecords button').click();prostitucionCaptureForm.elements.nombres.value='PRUEBA EDITADA';prostitucionCaptureForm.elements.nombres.dispatchEvent(new Event('input',{bubbles:true}));prostitucionCaptureForm.dispatchEvent(new Event('submit',{cancelable:true}));await wait(()=>prostitucionCaptureForm.hidden);assert(prostitucion[0].datos.numero_documento==='00123456'&&prostitucion[0].datos.nombres==='PRUEBA EDITADA','Edición del registro');
   currentProfile={...currentProfile,id:'fixture-supervisor',rol:'supervisor'};await window.openOperativoResults([...records.keys()][0]);document.querySelector('#prostitucionRecords button').click();assert(document.getElementById('prostitucionFields').disabled&&document.getElementById('saveProstitucion').hidden,'Prostitución consulta por supervisor');document.getElementById('cancelProstitucion').click();assert(prostitucionCaptureForm.hidden,'Cerrar consulta');window.resetResultadosModule();assert(!document.getElementById('prostitucionRecords').textContent&&!document.getElementById('prostitucionInputs').textContent,'Limpieza de prostitución');
-  report.textContent='PASS: Prostitución: alta/edición, documento, reintentos, roles y limpieza. Víctimas: alta/edición, edad, sin fotos, reintentos y roles. Menores: 48 columnas, validación, grupos, alta, edición, reintentos, consulta por roles y limpieza. RQ independiente y ampliaciones NI: altas, ediciones, reintentos, conteos separados, roles y limpieza.  Bandas y organizaciones; alta, edición, vínculos, tipos, permisos y limpieza.  Operativos, detenidos, drogas, materiales y vehículos; alta y edición, permisos, iconos y limpieza de sesión.';
+
+  currentProfile={...currentProfile,id:'fixture-user',rol:'operador'};
+  await window.openOperativoResults([...records.keys()][0]);
+  const cases={dinero:{soles:'25.50',dolares:'10'},celulares:{cantidad:'1',imei_fisico:'000123456789012',situacion:'INCAUTADO'},chips:{tipo_chip:'SIM',cantidad:'3',situacion:'INCAUTADO'},migraciones:{apellido_paterno:'FICTICIO',nombres:'PRUEBA',edad:'25',ley_migraciones:'PRUEBA',subtipo_infraccion:'PRUEBA'},personas_ubicadas:{apellido_paterno:'FICTICIO',nombres:'PRUEBA',edad:'17',situacion:'UBICADO',lugar_ubicacion:'LUGAR FICTICIO'},expulsados:{apellido_paterno:'FICTICIO',nombres:'PRUEBA',edad:'25',condicion:'PRUEBA',ley_migraciones:'PRUEBA',subtipo_infraccion:'PRUEBA'}};
+  for(const [type,values]of Object.entries(cases)){
+    const box=document.querySelector('#resultCards input[value="'+type+'"]');box.checked=true;box.dispatchEvent(new Event('change',{bubbles:true}));
+    document.querySelector('[data-complement="'+type+'"]').click();
+    const f=document.getElementById('complementForm');assert(!f.hidden,'Formulario '+type+' visible');assert(!f.querySelector('input[type="file"]'),'Sin fotos '+type);
+    for(const [k,v]of Object.entries(values)){f.elements.namedItem(k).value=v;f.elements.namedItem(k).dispatchEvent(new Event('input',{bubbles:true}));}
+    if(type==='personas_ubicadas')assert(f.elements.condicion_edad.value==='MENOR','Condición de edad derivada');
+    f.dispatchEvent(new Event('submit',{cancelable:true}));
+    if(type==='dinero'){await wait(()=>document.getElementById('complementStatus').textContent.includes('No se confirmó'));assert(complements.length===1,'Respuesta perdida con alta confirmada');f.dispatchEvent(new Event('submit',{cancelable:true}));}
+    await wait(()=>f.hidden);assert(complements.filter(r=>r.tipo===type).length===1,'Alta sin duplicar '+type);
+    assert(document.querySelector('#complementRecords [data-type="'+type+'"]'),'Registro visible '+type);
+  }
+  assert(complements.find(r=>r.tipo==='celulares').datos.imei_fisico==='000123456789012','IMEI como texto');
+  document.querySelector('#complementRecords [data-type="dinero"] button').click();
+  const cf=document.getElementById('complementForm');cf.elements.soles.value='30';cf.elements.soles.dispatchEvent(new Event('input',{bubbles:true}));cf.dispatchEvent(new Event('submit',{cancelable:true}));await wait(()=>cf.hidden);assert(complements.find(r=>r.tipo==='dinero').datos.soles===30,'Edición de dinero');
+  currentProfile={...currentProfile,id:'fixture-supervisor',rol:'supervisor'};await window.openOperativoResults([...records.keys()][0]);document.querySelector('#complementRecords [data-type="dinero"] button').click();assert(document.getElementById('complementFields').disabled&&document.getElementById('saveComplement').hidden,'Consulta de supervisor');
+  window.resetResultadosModule();assert(!document.getElementById('complementRecords').textContent&&!document.getElementById('complementInputs').textContent,'Limpieza al cambiar sesión');
+  report.textContent='PASS: Seis categorías nuevas: alta, edición, reintentos, IMEI, edad, consulta y limpieza.  Prostitución: alta/edición, documento, reintentos, roles y limpieza. Víctimas: alta/edición, edad, sin fotos, reintentos y roles. Menores: 48 columnas, validación, grupos, alta, edición, reintentos, consulta por roles y limpieza. RQ independiente y ampliaciones NI: altas, ediciones, reintentos, conteos separados, roles y limpieza.  Bandas y organizaciones; alta, edición, vínculos, tipos, permisos y limpieza.  Operativos, detenidos, drogas, materiales y vehículos; alta y edición, permisos, iconos y limpieza de sesión.';
  }catch(error){report.textContent='FAIL: '+error.message;}
 })();
 `;
 html = html.replace('</body>', `<script>${mock}</script>
 <script src="/catalogos.js"></script><script src="/dependencias.js"></script><script src="/catalogos-ui.js"></script>
-<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/vehiculos-catalogo.js"></script><script src="/vehiculos.js"></script><script src="/grupos.js"></script><script src="/requisitoriados-catalogo.js"></script><script src="/notas-catalogo.js"></script><script src="/notas.js"></script><script src="/requisitoriados.js"></script><script src="/menores-catalogo.js"></script><script src="/menores.js"></script><script src="/prostitucion-catalogo.js"></script><script src="/prostitucion.js"></script><script src="/victimas-catalogo.js"></script><script src="/victimas.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
-const allowed = new Set(['prostitucion.js','prostitucion-catalogo.js','victimas.js','victimas-catalogo.js','notas.js','notas-catalogo.js','requisitoriados-catalogo.js','menores.js','menores-catalogo.js','styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','requisitoriados.js','grupos.js','materiales.js','materiales-catalogo.js','vehiculos.js','vehiculos-catalogo.js','assets/logo-diriptim.png']);
+<script src="/detenidos.js"></script><script src="/intervenciones.js"></script><script src="/materiales-catalogo.js"></script><script src="/materiales.js"></script><script src="/vehiculos-catalogo.js"></script><script src="/vehiculos.js"></script><script src="/grupos.js"></script><script src="/requisitoriados-catalogo.js"></script><script src="/notas-catalogo.js"></script><script src="/notas.js"></script><script src="/requisitoriados.js"></script><script src="/menores-catalogo.js"></script><script src="/menores.js"></script><script src="/prostitucion-catalogo.js"></script><script src="/prostitucion.js"></script><script src="/victimas-catalogo.js"></script><script src="/victimas.js"></script><script src="/complementarios-catalogo.js"></script><script src="/complementarios.js"></script><script src="/resultados.js"></script><script>${checks}</script></body>`);
+const allowed = new Set(['complementarios-catalogo.js','complementarios.js','prostitucion.js','prostitucion-catalogo.js','victimas.js','victimas-catalogo.js','notas.js','notas-catalogo.js','requisitoriados-catalogo.js','menores.js','menores-catalogo.js','styles.css','catalogos.js','dependencias.js','catalogos-ui.js','intervenciones.js','detenidos.js','resultados.js','requisitoriados.js','grupos.js','materiales.js','materiales-catalogo.js','vehiculos.js','vehiculos-catalogo.js','assets/logo-diriptim.png']);
 http.createServer((req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1);
   if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(html);}
+  if(name==='complementarios-migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609230017_produccion_complementarios.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(name==='prostitucion-migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609160015_prostitucion_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(name==='victims-migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,'supabase/migrations/202609160014_victimas_operativo.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(name==='migration'||name==='notes-migration'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end('<pre>'+fs.readFileSync(path.join(root,name==='notes-migration'?'supabase/migrations/202609160013_ampliaciones_ni.sql':'supabase/migrations/202609160012_requisitoriados_independientes.sql'),'utf8').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');}
   if(!allowed.has(name)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':'image/png');
   res.end(fs.readFileSync(path.join(root,name)));
-}).listen(8766,'127.0.0.1',()=>console.log('Component harness: http://127.0.0.1:8766/ (only fictional data)'));
+}).listen(8773,'127.0.0.1',()=>console.log('Component harness: http://127.0.0.1:8773/ (only fictional data)'));
 

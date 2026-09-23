@@ -1,0 +1,2285 @@
+{
+  "plantilla": "PRODUCCION DIRITPTIM.xlsx",
+  "sha256": "658eba7544e0ee8e1b0c12559e542604697087cbebafa0f6c00da814dea99c03",
+  "hojas": [
+    {
+      "nombre": "1_OPERATIVOS",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "SI ES \n OPERATIVO / MEGA OPERATIVO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "EL RESULTADO: POSITIVO - NEGATIVO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "ORDEN DE OPERACIONES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "PLAN DE OPERACIONES"
+        },
+        {
+          "columna": "I",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "J",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "L",
+          "encabezado": "PERSONAL A CARGO CANTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "VEHICULO MAYOR A CARGO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "VEHICULO MENOR A CARGO"
+        },
+        {
+          "columna": "O",
+          "encabezado": "PERSONAL PNP DE APOYO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "VEHICULO MAYOR DE APOYO"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "VEHICULO MENOR DE APOYO"
+        },
+        {
+          "columna": "R",
+          "encabezado": "PERSONAL FF.AA DE APOYO"
+        },
+        {
+          "columna": "S",
+          "encabezado": "VEHICULO MAYOR FF.AA DE APOYO"
+        },
+        {
+          "columna": "T",
+          "encabezado": "VEHICULO MENOR FF.AA DE APOYO"
+        },
+        {
+          "columna": "U",
+          "encabezado": "OTRAS ENTIDADES"
+        },
+        {
+          "columna": "V",
+          "encabezado": "VEHICULO MAYOR OTRAS ENTIDADES"
+        },
+        {
+          "columna": "W",
+          "encabezado": "VEHICULO MENOR OTRAS ENTIDADES"
+        },
+        {
+          "columna": "X",
+          "encabezado": "DIRECCION -DIRNIC DIRNOS"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "NOTA INFORMATIVA SICPIP"
+        },
+        {
+          "columna": "AD",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AE",
+          "encabezado": "LONGITUD"
+        },
+        {
+          "columna": "AF",
+          "encabezado": "DETALLE DE LA UBICACIÓN"
+        },
+        {
+          "columna": "AG",
+          "encabezado": "CANTIDAD DE PERSONAS QUE SE INTERVIENEN"
+        },
+        {
+          "columna": "AH",
+          "encabezado": "CANTIDAD DE VEHICULOS MAYORES INTERVENIDOS"
+        },
+        {
+          "columna": "AI",
+          "encabezado": "CANTIDAD DE VEHICULOS MENORES INTERVENIDOS"
+        },
+        {
+          "columna": "AJ",
+          "encabezado": "CONTROL DE IDENTIDAD DE PERSONAS EXTRANJERAS"
+        },
+        {
+          "columna": "AK",
+          "encabezado": "INTERVENCION A PENALES"
+        },
+        {
+          "columna": "AL",
+          "encabezado": "OPERATIVO A ESPECIFICAR"
+        }
+      ]
+    },
+    {
+      "nombre": "2_RQ",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA DETENCION"
+        },
+        {
+          "columna": "E",
+          "encabezado": "APELLIDO PATERNO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "APELLIDO MATERNO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NOMBRES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "I",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "J",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "K",
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "L",
+          "encabezado": "N° DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "TIPO DE REQUISITORIA"
+        },
+        {
+          "columna": "N",
+          "encabezado": "EL REQUISITORIADO PERTENECE A LOS MAS BUSCADOS"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "R",
+          "encabezado": "EL RQ ES FUNCIONARIO PUBLICO"
+        },
+        {
+          "columna": "S",
+          "encabezado": "ENTIDAD PUBLICA QUE PERTENECE"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DETALLAR LA ENTIDAD PUBLICA"
+        },
+        {
+          "columna": "U",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "V",
+          "encabezado": "DELITO FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "W",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "X",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "SUB TIPO"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "SI DET + DELITO FUERO/LEYES ESPECIALES 2"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "SI DET + DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "AD",
+          "encabezado": "SI DET + DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "AE",
+          "encabezado": "DIRECCION -DIRNIC DIRNOS"
+        },
+        {
+          "columna": "AF",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL"
+        },
+        {
+          "columna": "AG",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "AH",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "AI",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "AJ",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "AK",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AL",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "3_DETENIDOS",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA DETENCION"
+        },
+        {
+          "columna": "E",
+          "encabezado": "APELLIDO PATERNO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "APELLIDO MATERNO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NOMBRES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "I",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "J",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "K",
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "L",
+          "encabezado": "N° DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "EL DETENIDO ES FUNCIONARIO PUBLICO"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "ENTIDAD PUBLICA QUE PERTENECE"
+        },
+        {
+          "columna": "R",
+          "encabezado": "DETALLAR LA ENTIDAD PUBLICA"
+        },
+        {
+          "columna": "S",
+          "encabezado": "MOTIVO DE LA DETENCION"
+        },
+        {
+          "columna": "T",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "U",
+          "encabezado": "FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "V",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "W",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "X",
+          "encabezado": "SUB TIPO"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "SI DET + DELITO FUERO/LEYES ESPECIALES 2"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "SI DET + DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "SI DET + DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "AD",
+          "encabezado": "DIRNIC /DIRNOS"
+        },
+        {
+          "columna": "AE",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES"
+        },
+        {
+          "columna": "AF",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "AG",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "AH",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "AI",
+          "encabezado": "INDICAR SI ES INTEGRANTE DE UNA BBCC /OOCC"
+        },
+        {
+          "columna": "AJ",
+          "encabezado": "REGISTRAR EL NOMBRE DE LA BBCC /OOCC/NO ES INTEGRANTE"
+        },
+        {
+          "columna": "AK",
+          "encabezado": "ARMAS DE FUEGO - ARMA BLANCA -OTROS- NINGUNA"
+        },
+        {
+          "columna": "AL",
+          "encabezado": "TIPO ARMA"
+        },
+        {
+          "columna": "AM",
+          "encabezado": "SITUACION ACTUAL DEL DETENIDO"
+        },
+        {
+          "columna": "AN",
+          "encabezado": "REGISTRAR EL DOCUMENTO CON EL QUE LE DIERON LIBERTAD AL DETENIDO"
+        },
+        {
+          "columna": "AO",
+          "encabezado": "REGISTRAR EL DOCUMENTO CON EL QUE SE PONE A DISPOSICION AL DETENIDO"
+        },
+        {
+          "columna": "AP",
+          "encabezado": "NOMBRE DEL FISCAL A CARGO"
+        },
+        {
+          "columna": "AQ",
+          "encabezado": "FISCALIA A LA QUE PERTENECE EL FISCAL A CARGO"
+        },
+        {
+          "columna": "AR",
+          "encabezado": "PTO A DISP_DIRNIC /DIRNOS2"
+        },
+        {
+          "columna": "AS",
+          "encabezado": "PTO A DISP_DIRECCIONES /REGIONES /FRENTES2"
+        },
+        {
+          "columna": "AT",
+          "encabezado": "PTO A DISP_ DIVISION POLICIAL 2"
+        },
+        {
+          "columna": "AU",
+          "encabezado": "PTO A DISP_ DEPARTAMENTO POLICAL 2"
+        },
+        {
+          "columna": "AV",
+          "encabezado": "PTO A DISP_EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO 2"
+        },
+        {
+          "columna": "AW",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "AX",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AY",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "4_MENORES",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA DETENCION"
+        },
+        {
+          "columna": "E",
+          "encabezado": "APELLIDO PATERNO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "APELLIDO MATERNO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NOMBRES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "I",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "J",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "K",
+          "encabezado": "TIPO DE DOC. DE IDENTIDAD"
+        },
+        {
+          "columna": "L",
+          "encabezado": "N° DOC.DE IDENTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "MOTIVO DE LA DETENCION"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "R",
+          "encabezado": "FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "S",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "U",
+          "encabezado": "SUB TIPO DE DELITO"
+        },
+        {
+          "columna": "V",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "W",
+          "encabezado": "FUERO/LEYES ESPECIALES2"
+        },
+        {
+          "columna": "X",
+          "encabezado": "SI DET + DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "SI DET + DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "DIRECCION PNP"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "REGPOL/FP/ DD.EE"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "AD",
+          "encabezado": "DEPARTAMENTO /UNIDADES POLICIAL"
+        },
+        {
+          "columna": "AE",
+          "encabezado": "AREAS/SECCION"
+        },
+        {
+          "columna": "AF",
+          "encabezado": "INDICAR SI ES INTEGRANTE DE UNA BBCC /OOCC"
+        },
+        {
+          "columna": "AG",
+          "encabezado": "REGISTRAR EL NOMBRE DE LA BBCC /OOCC/NO ES INTEGRANTE"
+        },
+        {
+          "columna": "AH",
+          "encabezado": "ARMAS DE FUEGO - ARMA BLANCA -OTROS- NINGUNA"
+        },
+        {
+          "columna": "AI",
+          "encabezado": "TIPO ARMA"
+        },
+        {
+          "columna": "AJ",
+          "encabezado": "SITUACION ACTUAL DEL DETENIDO"
+        },
+        {
+          "columna": "AK",
+          "encabezado": "REGISTRAR EL DOCUMENTO CON EL QUE LE DIERON LIBERTAD AL DETENIDO"
+        },
+        {
+          "columna": "AL",
+          "encabezado": "REGISTRAR EL DOCUMENTO CON EL QUE SE PONE A DISPOSICION AL DETENIDO"
+        },
+        {
+          "columna": "AM",
+          "encabezado": "NOMBRE DEL FISCAL A CARGO"
+        },
+        {
+          "columna": "AN",
+          "encabezado": "FISCALIA A LA QUE PERTENECE EL FISCAL A CARGO"
+        },
+        {
+          "columna": "AO",
+          "encabezado": "PTO A DISP_DIRNIC /DIRNOS2"
+        },
+        {
+          "columna": "AP",
+          "encabezado": "PTO A DISP_DIRECCIONES /REGIONES /FRENTES2"
+        },
+        {
+          "columna": "AQ",
+          "encabezado": "PTO A DISP_ DIVISION POLICIAL 2"
+        },
+        {
+          "columna": "AR",
+          "encabezado": "PTO A DISP_ DEPARTAMENTO POLICAL 2"
+        },
+        {
+          "columna": "AS",
+          "encabezado": "PTO A DISP_EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO 2"
+        },
+        {
+          "columna": "AT",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "AU",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AV",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "5_ENV_PBC",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "CANTIDAD UNIDADES"
+        },
+        {
+          "columna": "F",
+          "encabezado": "DIRECCION PNP"
+        },
+        {
+          "columna": "G",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL"
+        },
+        {
+          "columna": "H",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "I",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "J",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "L",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "M",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "NOTA INFORMATIVA SICPIP"
+        },
+        {
+          "columna": "O",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "P",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "6_ENV_CC",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "CANTIDAD UNIDADES"
+        },
+        {
+          "columna": "F",
+          "encabezado": "DIRECCION PNP"
+        },
+        {
+          "columna": "G",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL"
+        },
+        {
+          "columna": "H",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "I",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "J",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "L",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "M",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "NOTA INFORMATIVA SICPIP"
+        },
+        {
+          "columna": "O",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "P",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "7_ENV_MARIHUANA",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "CANTIDAD UNIDADES"
+        },
+        {
+          "columna": "F",
+          "encabezado": "DIRECCION PNP"
+        },
+        {
+          "columna": "G",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL"
+        },
+        {
+          "columna": "H",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "I",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "J",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "L",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "M",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "NOTA INFORMATIVA SICPIP"
+        },
+        {
+          "columna": "O",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "P",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "13_ARMAS_FUEGO",
+      "campos": []
+    },
+    {
+      "nombre": "14_ARMAS_BLANCAS",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "APELLIDO PATERNO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "APELLIDO MATERNO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NOMBRES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "I",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "J",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "K",
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "L",
+          "encabezado": "N° DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "N",
+          "encabezado": "FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "P",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "SUB TIPO DE DELITO"
+        },
+        {
+          "columna": "R",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "S",
+          "encabezado": "SI DET + DELITO FUERO/LEYES ESPECIALES 2"
+        },
+        {
+          "columna": "T",
+          "encabezado": "SI DET + DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "U",
+          "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "V",
+          "encabezado": "SI DET + DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "W",
+          "encabezado": "SITUACION DEL ARMA BLANCA"
+        },
+        {
+          "columna": "X",
+          "encabezado": "TIPO ARMA BLANCA"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "SI SELECCIONO \"OTRO\"\n  ESPECIFICAR"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "DIRECCION PNP"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "AD",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "AE",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "AF",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "AG",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "AH",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "AI",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AJ",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "15_BANDAS",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "EL NOMBRE DE LA BANDA CRIMINAL  ( NO DEBE COMBINAR CELDA)"
+        },
+        {
+          "columna": "F",
+          "encabezado": "APELLIDO PATERNO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "APELLIDO MATERNO"
+        },
+        {
+          "columna": "H",
+          "encabezado": "NOMBRES"
+        },
+        {
+          "columna": "I",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "J",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "K",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "L",
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "N° DE DOCUEMNTO DE IDENTIDAD"
+        },
+        {
+          "columna": "N",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "O",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "P",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "REFERENCIA DEL LUGAR"
+        },
+        {
+          "columna": "R",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "S",
+          "encabezado": "FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "U",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "V",
+          "encabezado": "SUB TIPO"
+        },
+        {
+          "columna": "W",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "X",
+          "encabezado": "FUERO/LEYES ESPECIALES2"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "SI DET + DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "SI DET + DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "LA MODALIDAD DE LA BANDA CRIMINAL"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "EL MOTIVO DE LA DETENCION (FLAGRANCIA - DETENCION PRELIMINAR)"
+        },
+        {
+          "columna": "AD",
+          "encabezado": "NOMBRE DEL FISCAL"
+        },
+        {
+          "columna": "AE",
+          "encabezado": "FISCALIA A LA QUE PERTENECE2"
+        },
+        {
+          "columna": "AF",
+          "encabezado": "DIRNIC /DIRNOS"
+        },
+        {
+          "columna": "AG",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES"
+        },
+        {
+          "columna": "AH",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "AI",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "AJ",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "AK",
+          "encabezado": "SITUACION ACTUAL DEL DETENIDO"
+        },
+        {
+          "columna": "AL",
+          "encabezado": "N° DE NOTA INFOMATIVA REALIZADA"
+        },
+        {
+          "columna": "AM",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AN",
+          "encabezado": "LONGITUD"
+        },
+        {
+          "columna": "AO",
+          "encabezado": "(PONER SI, SÓLO A UNO DE LOS MIEMBROS DE LAS BANDAS)\n\n"
+        }
+      ]
+    },
+    {
+      "nombre": "16_OO.CC.",
+      "campos": []
+    },
+    {
+      "nombre": "17_VEH. MAYOR",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "PLACA"
+        },
+        {
+          "columna": "F",
+          "encabezado": "MARCA"
+        },
+        {
+          "columna": "G",
+          "encabezado": "SITUACION DEL VEHICULO"
+        },
+        {
+          "columna": "H",
+          "encabezado": "VALORIZACION DE LOS VEHICULOS INCAUTADOS"
+        },
+        {
+          "columna": "I",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "J",
+          "encabezado": "FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "L",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "M",
+          "encabezado": "SUB TIPO DE DELITO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "O",
+          "encabezado": "SI EL VEH + DE UN DELITO /FUERO/LEYES ESPECIALES 2"
+        },
+        {
+          "columna": "P",
+          "encabezado": "SI EL VEH + DE UN DELITO / DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "SI EL VEH + DE UN DELITO / DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "R",
+          "encabezado": "SI EL VEH + DE UN DELITO /DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "S",
+          "encabezado": "DIRECCION PNP"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL"
+        },
+        {
+          "columna": "U",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "V",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "W",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "X",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "18_VEH. MENOR",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "PLACA"
+        },
+        {
+          "columna": "F",
+          "encabezado": "MARCA"
+        },
+        {
+          "columna": "G",
+          "encabezado": "SITUACION DEL VEHICULO"
+        },
+        {
+          "columna": "H",
+          "encabezado": "VALORIZACION DE LOS VEHICULOS INCAUTADOS"
+        },
+        {
+          "columna": "I",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "J",
+          "encabezado": "FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "L",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "M",
+          "encabezado": "SUB TIPO DE DELITO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "O",
+          "encabezado": "SI EL VEH + DE UN DELITO /FUERO/LEYES ESPECIALES 2"
+        },
+        {
+          "columna": "P",
+          "encabezado": "SI EL VEH + DE UN DELITO / DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "SI EL VEH + DE UN DELITO / DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "R",
+          "encabezado": "SI EL VEH + DE UN DELITO /DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "S",
+          "encabezado": "DIRECCION PNP"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL"
+        },
+        {
+          "columna": "U",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "V",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "W",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "X",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "20_PROXENETISMO",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA INTERVENCION"
+        },
+        {
+          "columna": "E",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "F",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "H",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "I",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "J",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DIRNIC /DIRNOS"
+        },
+        {
+          "columna": "L",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES"
+        },
+        {
+          "columna": "M",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "N",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "O",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "N° DE NOTA INFOMATIVA REALIZADA"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "R",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "21_ VICTIMAS DE TRATA DE PERSON",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA INTERVENCION"
+        },
+        {
+          "columna": "E",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "F",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "H",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "I",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "J",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DIRNIC /DIRNOS"
+        },
+        {
+          "columna": "L",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES"
+        },
+        {
+          "columna": "M",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "N",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "O",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "N° DE NOTA INFOMATIVA REALIZADA"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "R",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "28_DINERO",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "G",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "H",
+          "encabezado": "SOLES"
+        },
+        {
+          "columna": "I",
+          "encabezado": "DOLARES"
+        },
+        {
+          "columna": "J",
+          "encabezado": "EUROS"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DINERO OTRO"
+        },
+        {
+          "columna": "L",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "M",
+          "encabezado": "FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "N",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "SUB TIPO"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "R",
+          "encabezado": "SI EL DINERO + DE UN DELITO /FUERO/LEYES ESPECIALES 2"
+        },
+        {
+          "columna": "S",
+          "encabezado": "SI EL DINERO + DE UN DELITO / DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "T",
+          "encabezado": "SI EL DINERO + DE UN DELITO / DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "U",
+          "encabezado": "SI EL DINERO + DE UN DELITO /DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "V",
+          "encabezado": "DIRNIC /DIRNOS"
+        },
+        {
+          "columna": "W",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES"
+        },
+        {
+          "columna": "X",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "N° DE NOTA INFOMATIVA REALIZADA"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "30_CELULAR",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "DIRNIC /DIRNOS"
+        },
+        {
+          "columna": "C",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES"
+        },
+        {
+          "columna": "D",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "E",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "F",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "I",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "J",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "L",
+          "encabezado": "CANTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "MARCA"
+        },
+        {
+          "columna": "N",
+          "encabezado": "MODELO"
+        },
+        {
+          "columna": "O",
+          "encabezado": "IMEI FÍSICO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "IMEI LÓGICO"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA"
+        },
+        {
+          "columna": "R",
+          "encabezado": "FUERO/LEYES ESPECIALES"
+        },
+        {
+          "columna": "S",
+          "encabezado": "DELITO GENERAL"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DELITO ESPECIFICO"
+        },
+        {
+          "columna": "U",
+          "encabezado": "SUB TIPO"
+        },
+        {
+          "columna": "V",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2"
+        },
+        {
+          "columna": "W",
+          "encabezado": "SI EL CELULAR + DE UN DELITO /FUERO/LEYES ESPECIALES 2"
+        },
+        {
+          "columna": "X",
+          "encabezado": "SI EL CELULAR + DE UN DELITO / DELITO/ DELITO GENERAL2"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "SI EL CELULAR + DE UN DELITO / DELITO/DELITO ESPECIFICO2"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "SI EL CELULAR + DE UN DELITO /DELITO/SUB TIPO2"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "OBSERVACIONES"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "SITUACION DEL EQUIPO MOVIL"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "N° NOTA INFORMATIVA (SICPIP)"
+        },
+        {
+          "columna": "AD",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "AE",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "32_MUNICIONES",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "G",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "H",
+          "encabezado": "CANTIDAD"
+        },
+        {
+          "columna": "I",
+          "encabezado": "DIRNIC /DIRNOS"
+        },
+        {
+          "columna": "J",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES"
+        },
+        {
+          "columna": "K",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "L",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "M",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "N° DE NOTA INFOMATIVA REALIZADA"
+        },
+        {
+          "columna": "O",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "P",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "38_INTERVENIDOS_ LEY_MIGRACIONE",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA DETENCION"
+        },
+        {
+          "columna": "E",
+          "encabezado": "APELLIDO PATERNO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "APELLIDO MATERNO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NOMBRES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "I",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "J",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "K",
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "L",
+          "encabezado": "N° DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "N",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "LEY DE MIGRACIONES SELECCIONAR"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "SUB TIPO DE INFRACCION"
+        },
+        {
+          "columna": "R",
+          "encabezado": "DIRNIC /DIRNOS"
+        },
+        {
+          "columna": "S",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DIVISION POLICIAL"
+        },
+        {
+          "columna": "U",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "V",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "W",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "X",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "52_CHIP",
+      "campos": []
+    },
+    {
+      "nombre": "53_PERSONAS UBICADAS",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "ENERO"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA"
+        },
+        {
+          "columna": "E",
+          "encabezado": "APELLIDO PATERNO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "APELLIDO MATERNO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NOMBRES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "I",
+          "encabezado": "CONDICION DE EDAD"
+        },
+        {
+          "columna": "J",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "K",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "L",
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "N° DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "N",
+          "encabezado": "SITUACION"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "P",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "R",
+          "encabezado": "ESPECIFICAR EL LUGAR DE LA UBICACIÓN"
+        },
+        {
+          "columna": "S",
+          "encabezado": "DIRECCION ESPECIALIZADA"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "U",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "V",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "W",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "X",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    },
+    {
+      "nombre": "54_EXTR. EXPULSADOS",
+      "campos": [
+        {
+          "columna": "A",
+          "encabezado": "N°"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA EXPULSIÓN"
+        },
+        {
+          "columna": "E",
+          "encabezado": "APELLIDO PATERNO"
+        },
+        {
+          "columna": "F",
+          "encabezado": "APELLIDO MATERNO"
+        },
+        {
+          "columna": "G",
+          "encabezado": "NOMBRES"
+        },
+        {
+          "columna": "H",
+          "encabezado": "EDAD"
+        },
+        {
+          "columna": "I",
+          "encabezado": "GENERO"
+        },
+        {
+          "columna": "J",
+          "encabezado": "NACIONALIDAD (PAIS)"
+        },
+        {
+          "columna": "K",
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "L",
+          "encabezado": "N° DOCUMENTO DE IDENTIDAD"
+        },
+        {
+          "columna": "M",
+          "encabezado": "CONDICIÓN"
+        },
+        {
+          "columna": "N",
+          "encabezado": "DEPARTAMENTO"
+        },
+        {
+          "columna": "O",
+          "encabezado": "PROVINCIA"
+        },
+        {
+          "columna": "P",
+          "encabezado": "DISTRITO"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "LEY DE MIGRACIONES SELECCIONAR"
+        },
+        {
+          "columna": "R",
+          "encabezado": "SUB TIPO DE INFRACCION"
+        },
+        {
+          "columna": "S",
+          "encabezado": "DIRECCION ESPECIALIZADA"
+        },
+        {
+          "columna": "T",
+          "encabezado": "DEPARTAMENTO POLICAL"
+        },
+        {
+          "columna": "U",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO"
+        },
+        {
+          "columna": "V",
+          "encabezado": "NOTA INFOMATIVA SICPIP"
+        },
+        {
+          "columna": "W",
+          "encabezado": "LATITUD"
+        },
+        {
+          "columna": "X",
+          "encabezado": "LONGITUD"
+        }
+      ]
+    }
+  ]
+}

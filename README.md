@@ -97,3 +97,11 @@ Migración `202609160014_victimas_operativo.sql`: RLS heredada del operativo, si
 ## Prostitución femenina y masculina
 
 La migración 015 añade `intervencion_prostitucion`, vinculada obligatoriamente a un operativo o megaoperativo. `datos/mapeo-prostitucion-v1.json` conserva las 21 columnas de `20_PROSTITUCION FEM Y MASC`: fecha/hora, identidad, edad, género, nacionalidad y documento; lugar, dependencia, NI y coordenadas proceden del operativo. Número de documento como texto; edad entera 2–100 según TOTAL_EDAD. No crea registros en Detenidos, Víctimas de trata ni Ficha de enrolamiento y no incluye fotografías. Se integra en Resultados, Registros y Dashboard con permisos del operativo, versiones y reintentos. La exportación completa del detallado permanece pendiente.
+
+## Producción DIRITPTIM · septiembre 2026
+
+El nombre visible de la hoja 20 es Proxenetismo. Se conservan sus identificadores históricos y los datos existentes; el cambio de nombre no reclasifica personas ni delitos.
+
+Migración 017: seis categorías en `intervencion_complementarios` (dinero, celulares, migraciones, chips, personas ubicadas, expulsados). Catálogo, contrato de columnas y formularios integrados en Resultados, Registros y Dashboard. Dinero separado por moneda; otra moneda conserva texto con nombre e importe y no se suma. IMEI/documentos como texto; un registro con IMEI corresponde a un equipo. Sin fotografías, sin altas automáticas en Detenidos. RLS por operativo, autores/admin, bloqueo de cuentas inactivas, versiones y reintentos. Aplicar 017 después de 015; no necesita el bloque 016 de Bienes pendiente.
+
+`datos/estructura-produccion-v2.json` conserva únicamente los encabezados de las 22 hojas nuevas. Chips usa la estructura anterior 52 CHIP porque la nueva hoja está vacía. Se mantienen los campos anteriores de armas de fuego y organizaciones por la misma razón. El campo ENERO de Personas ubicadas se interpreta como mes derivado de la fecha. El reporte completo con las 22 hojas y la adaptación de campos de módulos preexistentes son trabajos separados; esta entrega añade las categorías faltantes y el nombre solicitado, sin eliminar información histórica.
