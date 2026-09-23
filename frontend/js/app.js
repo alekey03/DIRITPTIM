@@ -481,6 +481,8 @@ async function loadCurrentProfile(userId) {
   document.querySelectorAll('.admin-only').forEach(element => {
     element.classList.toggle('visible', element.dataset.view === 'usersView' ? puedeCrearUsuarios() : data.rol === 'administrador');
   });
+  document.querySelectorAll('.seguimiento-access').forEach(el => { el.hidden = !['estadistico_direccion','estadistico_jefatura'].includes(data.rol); });
+  window.updateDeclaracionDiaria?.();
   const isAdministrator = data.rol === 'administrador';
   const assignedScope = isAdministrator || data.rol === 'estadistico_direccion'
     ? 'Ámbito nacional'
@@ -670,6 +672,7 @@ async function loadDashboard() {
 const pageTitles = {
   generalDashboardView: ['INDICADORES', 'Dashboard'],
   consultaRecordsView: ['CONSULTA GENERAL', 'Registros'],
+  seguimientoView: ['CONTROL DIARIO', 'Seguimiento'],
   dashboardView: ['RESUMEN', 'Dashboard de fichas de enrolamiento'],
   formView: ['NUEVO REGISTRO', 'Ficha voluntaria de identificación'],
   recordsView: ['CONSULTA', 'Registros de enrolamiento'],
@@ -689,6 +692,8 @@ function resetMainView() {
     group.querySelector('.nav-group-toggle')?.setAttribute('aria-expanded', 'false');
   });
   window.resetConsulta?.();
+  window.resetSeguimiento?.();
+  window.resetDeclaracionDiaria?.();
   window.resetOperativoModule?.();
   window.resetResultadosModule?.();
   window.resetDetaineeWorkflow?.();
@@ -958,6 +963,7 @@ userForm.addEventListener('submit', async event => {
 document.querySelectorAll('[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     const target = button.dataset.view;
+    if (target === 'seguimientoView' && (!currentProfile?.activo || !['estadistico_direccion','estadistico_jefatura'].includes(currentProfile.rol))) return;
     if (target === 'detaineeFormView' && !button.dataset.fromOperativo && window.prepareStandaloneDetainee?.() === false) return;
     const parentGroup = button.closest('.nav-group');
     if (parentGroup) {
@@ -969,7 +975,8 @@ document.querySelectorAll('[data-view]').forEach(button => {
     document.getElementById('pageEyebrow').textContent = pageTitles[target][0];
     document.getElementById('pageHeading').textContent = pageTitles[target][1];
     if (target === 'generalDashboardView') window.loadGeneralDashboard?.();
-    if (target === 'consultaRecordsView') window.loadConsultaRecords?.();
+    if (target === 'seguimientoView') window.loadSeguimiento?.();
+    if (target === 'consultaRecordsView') { window.loadConsultaRecords?.(); window.updateDeclaracionDiaria?.(); }
     if (target === 'dashboardView') loadDashboard();
     if (target === 'recordsView') loadRecords();
     if (target === 'detaineeDashboardView') window.loadDetaineeDashboard?.();
@@ -1020,7 +1027,7 @@ document.getElementById('exportDashboard').addEventListener('click', () => {
   report.querySelector('.dashboard-filters')?.remove();
   report.querySelector('.privacy-banner')?.remove();
   report.querySelector('#dashboardStatus')?.remove();
-  printSheet.innerHTML = `<div class="print-page dashboard-report"><header class="dashboard-report-header"><img src="assets/logo-diriptim.png" alt=""><div><h1>Dashboard de fichas de enrolamiento</h1><p>${escapeHtml(dashboardFilterDescription())}</p></div><small>Generado: ${escapeHtml(new Intl.DateTimeFormat('es-PE', { dateStyle: 'long', timeStyle: 'short' }).format(new Date()))}</small></header>${report.innerHTML}<footer>Reporte estadístico protegido · Uso exclusivo para personal autorizado</footer></div>`;
+  printSheet.innerHTML = `<div class="print-page dashboard-report"><header class="dashboard-report-header"><img src="frontend/assets/logo-diriptim.png" alt=""><div><h1>Dashboard de fichas de enrolamiento</h1><p>${escapeHtml(dashboardFilterDescription())}</p></div><small>Generado: ${escapeHtml(new Intl.DateTimeFormat('es-PE', { dateStyle: 'long', timeStyle: 'short' }).format(new Date()))}</small></header>${report.innerHTML}<footer>Reporte estadístico protegido · Uso exclusivo para personal autorizado</footer></div>`;
   window.print();
 });
 

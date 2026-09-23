@@ -15,4 +15,4 @@ for kind,pos,title,description in [('mayor',17,'Vehículos mayores','Placa, marc
     out.append(dict(tipo=kind,hoja=sheet['nombre'],titulo=title,descripcion=description,campos=fields,columnas={f['columna']:('intervencion.'+k[1:] if k.startswith('@') else 'derivado.'+k[1:] if k.startswith('#') else 'vehiculo.datos.'+k) for f,k in zip(sheet['campos'],keys)}))
 text=json.dumps(dict(version=1,tipos=out),ensure_ascii=False,indent=2)+'\n'
 (root/'datos/mapeo-vehiculos-v1.json').write_text(text,encoding='utf-8')
-(root/'vehiculos-catalogo.js').write_text('// Generado por scripts/generar-mapeo-vehiculos.py\nwindow.VEHICULOS_CATALOGO = '+text.strip()+';\n',encoding='utf-8')
+(root/'frontend/js/vehiculos-catalogo.js').write_text('// Generado por scripts/generar-mapeo-vehiculos.py\nwindow.VEHICULOS_CATALOGO = '+text.strip()+';\n',encoding='utf-8')

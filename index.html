@@ -8,14 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260923-captura" />
-  <link rel="stylesheet" href="dashboard.css?v=20260923-menta" />
+  <link rel="stylesheet" href="frontend/css/styles.css?v=20260923-captura" />
+  <link rel="stylesheet" href="frontend/css/dashboard.css?v=20260923-menta" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
-  <link rel="stylesheet" href="registros.css?v=20260923-registros">
+  <link rel="stylesheet" href="frontend/css/registros.css?v=20260923-registros">
+  <link rel="stylesheet" href="frontend/css/seguimiento.css?v=20260923" />
+  <link rel="stylesheet" href="frontend/css/tema-institucional.css?v=20260923" />
 </head>
 <body>
   <section class="login-screen" id="loginScreen">
-    <div class="login-brand"><img class="institution-logo" src="assets/logo-diriptim.png" alt="Escudo DIRIPTIM PNP"><strong>Dirección de Investigación de Trata de Personas y Tráfico Ilícito de Migrantes</strong><small>Acceso institucional seguro</small></div>
+    <div class="login-brand"><img class="institution-logo" src="frontend/assets/logo-diriptim.png" alt="Escudo DIRIPTIM PNP"><strong>Dirección de Investigación de Trata de Personas y Tráfico Ilícito de Migrantes</strong><small>Acceso institucional seguro</small></div>
     <form class="login-card" id="loginForm">
       <span class="login-lock">🔒</span>
       <h1>Iniciar sesión</h1>
@@ -30,10 +32,11 @@
   </section>
   <aside class="sidebar">
     <button class="sidebar-collapse" id="sidebarCollapse" type="button" aria-label="Contraer menú lateral" aria-expanded="true" title="Contraer menú lateral"><span aria-hidden="true">☰</span></button>
-    <div class="brand"><img class="institution-logo" src="assets/logo-diriptim.png" alt="Escudo DIRIPTIM PNP"><div><strong id="institutionName">DIRITPTIM</strong><small id="institutionScope">Sistema nacional</small></div></div>
+    <div class="brand"><img class="institution-logo" src="frontend/assets/logo-diriptim.png" alt="Escudo DIRIPTIM PNP"><div><strong id="institutionName">DIRITPTIM</strong><small id="institutionScope">Sistema nacional</small></div></div>
     <nav aria-label="Navegación principal">
       <button class="nav-item" data-view="generalDashboardView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="11" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="18" width="7" height="3" rx="1"/></svg></span>Dashboard</button>
       <button class="nav-item" data-view="consultaRecordsView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Registros</button>
+      <button class="nav-item seguimiento-access" data-view="seguimientoView" hidden><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4M17 3v4M3 10h18m-14 5 3 3 6-5"/></svg></span>Seguimiento</button>
       <div class="nav-group" data-nav-group="victims">
         <button class="nav-group-toggle" type="button" aria-expanded="false"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8" cy="10" r="2"/><path d="M5 16a3 3 0 0 1 6 0M14 9h4M14 13h4M14 17h3"/></svg></span><strong>Ficha de enrolamiento</strong><i>⌄</i></button>
         <div class="nav-submenu">
@@ -63,6 +66,7 @@
     <section id="generalDashboardView" class="view"></section>
     <section id="consultaRecordsView" class="view"></section>
     <button type="button" data-view="detaineeFormView" hidden aria-hidden="true"></button>
+    <section id="seguimientoView" class="view seguimiento-view"></section>
     <section id="dashboardView" class="view dashboard-view active">
       <div class="records-toolbar">
         <div><h2>Resumen de fichas de enrolamiento</h2><p>Indicadores consolidados de las fichas autorizadas para su unidad.</p></div>
@@ -470,44 +474,46 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="catalogos.js?v=20260910-secure-catalogs"></script>
-  <script src="dependencias-flujo.js?v=20260923-flujo"></script>
-<script src="catalogos-ui.js?v=20260923-flujo"></script>
-  <script src="mapa.js?v=20260910-map-v5"></script>
-  <script src="dependencias.js?v=20260923-roles"></script>
-  <script src="perfiles-estadisticos.js?v=20260923-roles"></script>
-  <script src="app.js?v=20260923-captura"></script>
-  <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
-  <script src="detenidos.js?v=20260923-captura"></script>
-  <script src="intervenciones.js?v=20260923-roles"></script>
-  <script src="materiales-catalogo.js?v=20260915-materiales-v1"></script>
-  <script src="materiales.js?v=20260923-captura"></script>
-  <script src="vehiculos-catalogo.js?v=20260915-vehiculos-v1"></script>
-  <script src="vehiculos.js?v=20260923-roles"></script>
-  <script src="grupos.js?v=20260923-captura"></script>
-  <script src="requisitoriados-catalogo.js?v=20260916-rq-ni-v1"></script>
-  <script src="notas-catalogo.js?v=20260916-rq-ni-v1"></script>
-  <script src="notas.js?v=20260923-roles"></script>
-  <script src="requisitoriados.js?v=20260923-roles"></script>
-  <script src="menores-catalogo.js?v=20260915-menores-v1"></script>
-  <script src="menores.js?v=20260923-roles"></script>
-  <script src="victimas-catalogo.js?v=20260923-flujo"></script>
-  <script src="victimas.js?v=20260923-roles"></script>
-  <script src="prostitucion-catalogo.js?v=20260923-flujo"></script>
-  <script src="prostitucion.js?v=20260923-roles"></script>
-  <script src="complementarios-catalogo.js?v=20260923-flujo"></script>
-  <script src="complementarios.js?v=20260923-roles"></script>
-  <script src="resultados.js?v=20260923-captura"></script>
-  <script src="vendor/fflate-0.8.3.js"></script>
-  <script src="excel-estilo.js?v=20260923-executive"></script>
-  <script src="exportaciones.js?v=20260923-executive"></script>
-  <script src="consulta-modelo.js?v=20260923-executive"></script>
-  <script src="dashboard-modelo.js?v=20260923-executive"></script>
-  <script src="consulta.js?v=20260923-registros"></script>
+  <script src="frontend/js/catalogos.js?v=20260910-secure-catalogs"></script>
+  <script src="frontend/js/dependencias-flujo.js?v=20260923-flujo"></script>
+<script src="frontend/js/catalogos-ui.js?v=20260923-flujo"></script>
+  <script src="frontend/js/mapa.js?v=20260910-map-v5"></script>
+  <script src="frontend/js/dependencias.js?v=20260923-roles"></script>
+  <script src="frontend/js/perfiles-estadisticos.js?v=20260923-roles"></script>
+  <script src="frontend/js/app.js?v=20260923-captura"></script>
+  <script src="frontend/js/auditoria.js?v=20260915-enrolamiento-v1"></script>
+  <script src="frontend/js/detenidos.js?v=20260923-captura"></script>
+  <script src="frontend/js/intervenciones.js?v=20260923-roles"></script>
+  <script src="frontend/js/materiales-catalogo.js?v=20260915-materiales-v1"></script>
+  <script src="frontend/js/materiales.js?v=20260923-captura"></script>
+  <script src="frontend/js/vehiculos-catalogo.js?v=20260915-vehiculos-v1"></script>
+  <script src="frontend/js/vehiculos.js?v=20260923-roles"></script>
+  <script src="frontend/js/grupos.js?v=20260923-captura"></script>
+  <script src="frontend/js/requisitoriados-catalogo.js?v=20260916-rq-ni-v1"></script>
+  <script src="frontend/js/notas-catalogo.js?v=20260916-rq-ni-v1"></script>
+  <script src="frontend/js/notas.js?v=20260923-roles"></script>
+  <script src="frontend/js/requisitoriados.js?v=20260923-roles"></script>
+  <script src="frontend/js/menores-catalogo.js?v=20260915-menores-v1"></script>
+  <script src="frontend/js/menores.js?v=20260923-roles"></script>
+  <script src="frontend/js/victimas-catalogo.js?v=20260923-flujo"></script>
+  <script src="frontend/js/victimas.js?v=20260923-roles"></script>
+  <script src="frontend/js/prostitucion-catalogo.js?v=20260923-flujo"></script>
+  <script src="frontend/js/prostitucion.js?v=20260923-roles"></script>
+  <script src="frontend/js/complementarios-catalogo.js?v=20260923-flujo"></script>
+  <script src="frontend/js/complementarios.js?v=20260923-roles"></script>
+  <script src="frontend/js/resultados.js?v=20260923-captura"></script>
+  <script src="frontend/vendor/fflate-0.8.3.js"></script>
+  <script src="frontend/js/excel-estilo.js?v=20260923-executive"></script>
+  <script src="frontend/js/exportaciones.js?v=20260923-executive"></script>
+  <script src="frontend/js/consulta-modelo.js?v=20260923-executive"></script>
+  <script src="frontend/js/dashboard-modelo.js?v=20260923-executive"></script>
+  <script src="frontend/js/consulta.js?v=20260923-registros"></script>
 
-  <script src="dashboard.js?v=20260923-menta"></script>
-  <script src="produccion-catalogo.js?v=20260923-flujo"></script>
-  <script src="produccion-modelo.js?v=20260923-flujo"></script>
-  <script src="produccion.js?v=20260923-executive"></script>
+  <script src="frontend/js/dashboard.js?v=20260923-menta"></script>
+  <script src="frontend/js/produccion-catalogo.js?v=20260923-flujo"></script>
+  <script src="frontend/js/produccion-modelo.js?v=20260923-flujo"></script>
+  <script src="frontend/js/produccion.js?v=20260923-executive"></script>
+  <script src="frontend/js/seguimiento.js?v=20260923"></script>
+  <script src="frontend/js/declaracion-diaria.js?v=20260923"></script>
 </body>
 </html>

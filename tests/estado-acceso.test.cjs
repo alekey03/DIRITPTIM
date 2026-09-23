@@ -1,6 +1,6 @@
 const {PGlite}=require('@electric-sql/pglite');const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 (async()=>{const db=new PGlite();await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id integer primary key,banned_until timestamptz,updated_at timestamptz);create table public.perfiles(id integer primary key,activo boolean not null);insert into auth.users values(1,'infinity',now()),(2,'infinity',now()),(3,null,now());insert into public.perfiles values(1,false),(2,true);`);
-const file=process.argv[2]||path.join(__dirname,'../supabase/migrations/202609230021_estado_acceso_usuarios.sql');await db.exec(fs.readFileSync(file,'utf8'));
+const file=process.argv[2]||path.join(__dirname,'../backend/supabase/migrations/202609230021_estado_acceso_usuarios.sql');await db.exec(fs.readFileSync(file,'utf8'));
 let r=await db.query('select count(*)::int n from auth.users where not isfinite(banned_until)');assert.equal(r.rows[0].n,0);
 r=await db.query('select count(*)::int n from auth.users where banned_until>now()');assert.equal(r.rows[0].n,2,'repair does not activate anyone');
 await db.exec('update public.perfiles set activo=true where id=1');r=await db.query('select banned_until from auth.users where id=1');assert.equal(r.rows[0].banned_until,null);

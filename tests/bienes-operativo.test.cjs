@@ -5,8 +5,8 @@ const read=n=>fs.readFileSync(path.join(root,'backend/supabase/migrations',n),'u
 const id=n=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
 (async()=>{
  const schema=JSON.parse(fs.readFileSync(path.join(root,'datos/estructura-detallado-v1.json'),'utf8'));
- const contract=JSON.parse(fs.readFileSync(path.join(root,'datos/mapeo-prostitucion-v1.json'),'utf8'));
- assert.deepEqual(Object.keys(contract.columnas),schema.hojas.find(h=>h.nombre==='20_PROSTITUCION FEM Y MASC').campos.map(c=>c.columna));
+ const contract=JSON.parse(fs.readFileSync(path.join(root,'datos/mapeo-bienes-v1.json'),'utf8'));
+ assert.deepEqual(Object.keys(contract.columnas),schema.hojas.find(h=>h.nombre==='20_BIENES FEM Y MASC').campos.map(c=>c.columna));
  assert.equal(Object.keys(contract.columnas).length,21);
  await db.exec(`create role authenticated;create role anon;create schema auth;
  create table perfiles(id uuid primary key,rol text,activo boolean,unidad text,departamento text);
@@ -19,27 +19,28 @@ const id=n=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
  for(const [n,rol,active,u] of [[1,'operador',true,'A'],[2,'operador',true,'B'],[3,'administrador',true,'C'],[4,'operador',false,'A'],[5,'supervisor',true,'A']])await db.query('insert into perfiles values($1,$2,$3,$4,$5)',[id(n),rol,active,u,'LIMA']);
  await db.exec(read('202609150002_base_intervenciones.sql'));
  await db.exec("alter table intervenciones add column resultados_previstos text[] not null default '{}'");
- const migration=read('202609160015_prostitucion_operativo.sql');await db.exec(migration);
+ const migration=read('202609160016_bienes_operativo.sql');await db.exec(migration);
  async function actor(n){await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[n?id(n):'']);await db.exec('set role authenticated');}
- const valid={apellido_paterno:'FICTICIO',nombres:'PRUEBA',edad:17,fecha:'2026-09-15',numero_documento:'00123456',genero:'MASCULINO',nacionalidad:'PERU',tipo_documento:'DNI'};
- const save=async(n,v=0,data=valid,parent=100)=>(await db.query('select guardar_prostitucion_operativo($1,$2,$3,$4,$5) r',[id(n),id(parent),v,'prostitucion',JSON.stringify(data)])).rows[0].r;
+ const valid={situacion:'INTERVENIDO',especies:'LOTE FICTICIO',valor_soles:10.25,apellido_paterno:'FICTICIO',nombres:'PRUEBA',edad:17,fecha:'2026-09-15',numero_documento:'00123456',genero:'MASCULINO',nacionalidad:'PERU',tipo_documento:'DNI'};
+ const save=async(n,v=0,data=valid,parent=100,tipo='contrabando')=>(await db.query('select guardar_bienes_operativo($1,$2,$3,$4,$5) r',[id(n),id(parent),v,tipo,JSON.stringify(data)])).rows[0].r;
  await actor(1);await db.query("insert into intervenciones(id,tipo,fecha) values($1,'operativo','2026-09-15')",[id(100)]);
  const first=await save(200);assert.equal(first.version,1);assert.deepEqual(await save(200),first);
  for(const age of [-1,0,1,101,17.5,'17',null])await assert.rejects(save(201,0,{...valid,edad:age}));
- for(const field of ['apellido_paterno','nombres','edad','fecha']){const d={...valid};delete d[field];await assert.rejects(save(201,0,d));}
- for(const data of [{fecha:'2026-02-30'},{fecha:'abc'},{hora:'25:00'},{numero_documento:12345678},{numero_documento:'00123456',tipo_documento:null},{genero:'inventado'},{tipo_documento:'inventado'},{nacionalidad:'inventada'},{foto:'imagen'},{unidad:'B'}])await assert.rejects(save(201,0,{...valid,...data}));
+ for(const field of ['apellido_paterno','nombres','edad','fecha','situacion','especies']){const d={...valid};delete d[field];await assert.rejects(save(201,0,d));}
+ for(const data of [{situacion:'INCAUTADO'},{especies:' '},{valor_soles:-1},{valor_soles:0.001},{valor_soles:'10.00'},{valor_soles:1000000000000},{fecha:'2026-02-30'},{fecha:'abc'},{hora:'25:00'},{numero_documento:12345678},{numero_documento:'00123456',tipo_documento:null},{genero:'inventado'},{tipo_documento:'inventado'},{nacionalidad:'inventada'},{foto:'imagen'},{unidad:'B'}])await assert.rejects(save(201,0,{...valid,...data}));
  for(const [n,age] of [[201,2],[202,18],[203,100]])await save(n,0,{...valid,edad:age});
  const updated={...valid,numero_documento:'AB000012'};const second=await save(200,1,updated);assert.equal(second.version,2);assert.deepEqual(await save(200,1,updated),second);await assert.rejects(save(200,1,valid));
  await assert.rejects(db.exec("update intervenciones set resultados_previstos='{}'"));await assert.rejects(db.exec("update intervenciones set tipo='directa'"));
- await actor(2);assert.equal((await db.query('select * from intervencion_prostitucion')).rows.length,0);await assert.rejects(save(210));
- await actor(5);assert.equal((await db.query('select * from intervencion_prostitucion')).rows.length,4);await assert.rejects(save(210));await assert.rejects(save(200,2));
- await actor(4);assert.equal((await db.query('select * from intervencion_prostitucion')).rows.length,0);await assert.rejects(save(210));
+ await actor(2);assert.equal((await db.query('select * from intervencion_bienes')).rows.length,0);await assert.rejects(save(210));
+ await actor(5);assert.equal((await db.query('select * from intervencion_bienes')).rows.length,4);await assert.rejects(save(210));await assert.rejects(save(200,2));
+ await actor(4);assert.equal((await db.query('select * from intervencion_bienes')).rows.length,0);await assert.rejects(save(210));
  await actor(null);await assert.rejects(save(210));
- await actor(3);await save(200,2,valid);await assert.rejects(db.exec('delete from intervencion_prostitucion'));
+ await actor(3);await save(200,2,valid);await assert.rejects(db.exec('delete from intervencion_bienes'));
  await db.query("insert into intervenciones(id,tipo) values($1,'operativo')",[id(101)]);
- await assert.rejects(db.query('update intervencion_prostitucion set intervencion_id=$1 where id=$2',[id(101),id(200)]));
- await assert.rejects(db.query('update intervencion_prostitucion set creado_por=$1 where id=$2',[id(3),id(200)]));
- await db.exec('reset role');await db.exec(migration);await db.exec('set role anon');await assert.rejects(db.exec('select * from intervencion_prostitucion'));
- await db.exec('reset role');assert.equal((await db.query('select count(*)::int n from intervencion_prostitucion')).rows[0].n,4);
- console.log('OK: 21 columnas; documento como texto, edad, fechas y catálogos; alta/edición, reintentos, conflictos, RLS, inmutabilidad y reaplicación.');
+ await assert.rejects(db.query('update intervencion_bienes set intervencion_id=$1 where id=$2',[id(101),id(200)]));
+ await assert.rejects(db.query('update intervencion_bienes set creado_por=$1 where id=$2',[id(3),id(200)]));
+ await db.exec('reset role');await db.exec(migration);await db.exec('set role anon');await assert.rejects(db.exec('select * from intervencion_bienes'));
+ await db.exec('reset role');assert.equal((await db.query('select count(*)::int n from intervencion_bienes')).rows[0].n,4);
+ await actor(1);for(const [i,type] of contract.tipos.entries())await save(300+i,0,{...valid,valor_soles:i===0?null:0},100,type.tipo);assert.equal((await db.query('select count(*)::int n from intervencion_bienes')).rows[0].n,9);await assert.rejects(save(400,0,valid,999));await assert.rejects(save(400,0,valid,100,'otra'));await assert.rejects(db.query('update intervencion_bienes set tipo=$1 where id=$2',['salud',id(200)]));
+ console.log('OK: cinco hojas de 27 columnas; soles, nulos y ceros, categorías, validación, RLS, versiones, reintentos y vínculos obligatorios.');
 })().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>db.close());

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { webcrypto } = require('node:crypto');
-const source = fs.readFileSync(path.join(__dirname,'../detenidos.js'),'utf8');
+const source = fs.readFileSync(path.join(__dirname,'../frontend/js/detenidos.js'),'utf8');
 const handler = source.slice(source.indexOf('async function saveDetainee('),source.indexOf('window.loadDetaineeRecords ='));
 test('entidad pública se habilita solo con Sí y se limpia con No',()=>{
   const fields={esFuncionario:{value:'false'},entidadPublica:{value:'ANTERIOR'},detalleEntidad:{value:'DETALLE'}};

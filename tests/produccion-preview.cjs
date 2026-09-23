@@ -1,7 +1,7 @@
 // Local-only export harness. Never connects to Supabase; all records are fictional.
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),fixture=require('./produccion-fixture.cjs');
 const root=path.resolve(__dirname,'..');
-const files=['catalogos.js','complementarios-catalogo.js','requisitoriados-catalogo.js','prostitucion-catalogo.js','victimas-catalogo.js','menores-catalogo.js','materiales-catalogo.js','vehiculos-catalogo.js','consulta-modelo.js','consulta.js','produccion-catalogo.js','produccion-modelo.js','produccion.js'];
+const files=['frontend/js/catalogos.js','frontend/js/complementarios-catalogo.js','frontend/js/requisitoriados-catalogo.js','frontend/js/prostitucion-catalogo.js','frontend/js/victimas-catalogo.js','frontend/js/menores-catalogo.js','frontend/js/materiales-catalogo.js','frontend/js/vehiculos-catalogo.js','frontend/js/consulta-modelo.js','frontend/js/consulta.js','frontend/js/produccion-catalogo.js','frontend/js/produccion-modelo.js','frontend/js/produccion.js'];
 const mock=`let currentProfile={id:'fixture-user',activo:true,rol:'administrador',unidad:'UNIDAD A'};
 let fixtureData=${JSON.stringify(fixture())};
 fixtureData.intervencion_grupo_integrantes=fixtureData.intervencion_grupos.flatMap(g=>g.intervencion_grupo_integrantes);
@@ -31,13 +31,13 @@ async function run(){try{
  testStatus.textContent='PASS: exportación real XLSX, 22 hojas, filtros, ceros, tipos, bandas, conflicto, cambio de cuenta y limpieza.';
 }catch(e){testStatus.textContent='FAIL: '+e.message;console.error(e);}}
 run();`;
-const html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prueba de exportación DIRITPTIM</title><link rel="stylesheet" href="/styles.css"></head><body style="display:block;padding:24px"><p id="browserTest" role="status">Probando…</p><section id="consultaRecordsView"></section><section id="generalDashboardView" hidden></section><script>${mock}</script><script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>${files.map(f=>`<script src="/${f}"></script>`).join('')}<script>${checks}</script></body></html>`;
+const html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prueba de exportación DIRITPTIM</title><link rel="stylesheet" href="/frontend/css/styles.css"></head><body style="display:block;padding:24px"><p id="browserTest" role="status">Probando…</p><section id="consultaRecordsView"></section><section id="generalDashboardView" hidden></section><script>${mock}</script><script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>${files.map(f=>`<script src="/${f}"></script>`).join('')}<script>${checks}</script></body></html>`;
 http.createServer((req,res)=>{
  const name=new URL(req.url,'http://localhost').pathname.slice(1);
  if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(html);}
  if(name==='fixture.xlsx'&&req.method==='POST'){
   let size=0;const chunks=[];req.on('data',b=>{size+=b.length;if(size>2000000){req.destroy();return;}chunks.push(b);});req.on('end',()=>{fs.writeFileSync(path.join(root,'tests/produccion-fixture.xlsx'),Buffer.concat(chunks));res.end('OK');});return;
  }
- if(![...files,'styles.css'].includes(name)){res.writeHead(404);return res.end();}
+ if(![...files,'frontend/css/styles.css'].includes(name)){res.writeHead(404);return res.end();}
  res.setHeader('Content-Type',name.endsWith('.css')?'text/css; charset=utf-8':'text/javascript; charset=utf-8');res.end(fs.readFileSync(path.join(root,name)));
 }).listen(8774,'127.0.0.1',()=>console.log('Export harness: http://127.0.0.1:8774/ (fictional data only)'));

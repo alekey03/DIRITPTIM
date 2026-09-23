@@ -4,7 +4,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const db = new PGlite();
 const root = process.env.PROJECT_ROOT || path.resolve(__dirname,'..');
-const migration = name => fs.readFileSync(path.join(root,'supabase/migrations',name),'utf8');
+const migration = name => fs.readFileSync(path.join(root,'backend/supabase/migrations',name),'utf8');
 const uid=n=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
 (async()=>{
  await db.exec(`

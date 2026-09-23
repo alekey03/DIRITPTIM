@@ -6,7 +6,7 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const schema = JSON.parse(read('datos/estructura-detallado-v1.json'));
 const mapping = JSON.parse(read('datos/mapeo-operativo-v1.json'));
-const migration = read('supabase/migrations/202609150002_base_intervenciones.sql');
+const migration = read('backend/supabase/migrations/202609150002_base_intervenciones.sql');
 const db = new PGlite();
 const uid = n => `00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
 
@@ -81,7 +81,7 @@ const uid = n => `00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
   assert.equal((await db.query('select count(*)::int as n from public.intervenciones')).rows[0].n,2);
   console.log('OK administrador, bloqueo de inactivos, conservación de borradores y reaplicación');
 
-  const rpcMigration = read('supabase/migrations/202609150003_guardar_operativo_borrador.sql');
+  const rpcMigration = read('backend/supabase/migrations/202609150003_guardar_operativo_borrador.sql');
   await db.exec(rpcMigration);
   const input = { tipo:'operativo', fecha:'2026-09-15', departamento:'LIMA' };
   async function save(request, id, version, i=input, o={personal_cargo:3}) {

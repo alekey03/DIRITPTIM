@@ -1,0 +1,19 @@
+/* Color tomado de la referencia del usuario: RGB(6,75,42). */
+:root{--primary:#087442;--blue:#087442;--blue-soft:#e6f7eb}
+.sidebar{background:#064b2a!important;color:#eefbf2!important}
+.sidebar .brand strong,.sidebar .brand small,.sidebar .nav-item,.sidebar .nav-group-toggle,.sidebar .security-note,.sidebar .security-note p{color:#edf9f0!important}
+.sidebar .nav-item.active{background:#23905a!important;color:#fff!important;box-shadow:inset 3px 0 #b9ee94}
+.sidebar .nav-item:hover,.sidebar .nav-group-toggle:hover{background:#126439!important}
+.sidebar .security-note{border-color:#ffffff30}.sidebar-collapse{background:#ffffff12!important;color:white!important;border-color:#ffffff40!important}
+.primary:hover{background:#096039;border-color:#096039}
+.dash-hero{background:linear-gradient(115deg,#e0f6d9,#baebcc)!important;border-color:#a6d8b8}
+.dash-hero h2{color:#064b2a}.dash-hero p,.dash-hero .dash-eyebrow,.dash-access{color:#236545}
+.dash-bar-track>i,.dash-bar-fill{background:linear-gradient(90deg,#22a766,#92db76)!important}
+.dash-card{border-top-color:#55bd79;background:linear-gradient(145deg,#f2fbef,#fff 72%)}
+.dash-kpis article{background:linear-gradient(130deg,#d5f3c4,#edfae9);border-color:#bce2bb}
+.dash-filter-footer .primary{background:#087442;border-color:#087442}
+.dash-brief{background:linear-gradient(130deg,#e0f5d4,#edf9e8);border-color:#bfdfbd}
+.dash-badge,.dash-chip{background:#e2f4d9;color:#216d3e;border-color:#c0dfb8}
+.dash-map{background:radial-gradient(ellipse at center,#edf8e8,#fbfdf8)}
+
+.sidebar .seguimiento-access[hidden]{display:none!important}

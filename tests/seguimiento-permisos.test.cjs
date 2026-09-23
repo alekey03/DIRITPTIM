@@ -47,6 +47,12 @@ const actor=async n=>{await db.exec('reset role');await db.query("select set_con
  await actor(6);assert.equal((await db.query('select puede_crear_usuarios() ok')).rows[0].ok,false);await assert.rejects(db.exec("update perfiles set rol='administrador' where id=auth.uid()"));
  await actor(2);assert.equal((await db.query('select puede_crear_usuarios() ok')).rows[0].ok,true);await assert.rejects(db.exec("update perfiles set rol='administrador' where id=auth.uid()"));
  await actor(4);assert.equal((await db.query('select puede_crear_usuarios() ok')).rows[0].ok,false);
+ await db.exec('reset role');
+ await db.exec(read('202609230022_seguimiento_diario.sql'));await db.exec(read('202609230023_seguimiento_resumen.sql'));
+ for(const [n,expected] of [[2,28],[4,23]]){await actor(n);const rows=(await db.query("select consultar_seguimiento('2026-09-23') datos")).rows[0].datos;assert.equal(rows.length,expected);if(n===4)assert(rows.every(r=>r.ambito==='DESCONCENTRADO'));}
+ for(const n of [1,5,6,7]){await actor(n);await assert.rejects(db.query("select consultar_seguimiento('2026-09-23')"),/reservado/);}
+ await actor(5);await db.query("select declarar_seguimiento('2026-09-20','DEPITPTIM CUSCO',true)");await assert.rejects(db.query("select declarar_seguimiento('2026-09-20','DEPITPTIM PIURA',true)"),/acceso/);
+ console.log('PASS: real role policies: Dirección 28, Jefatura exactly 23 and no central divisions, no access for other roles; own-unit zero declarations only.');
  console.log('PASS: four profiles, two direction seats, protected root, national/division/23 department scope, new result registration, denied local editing/deletion, manager edits, denied cross-scope writes and direct profile escalation.');
 })().catch(e=>{console.error(e.message,e.code,e.where,e.internalQuery);process.exitCode=1}).finally(()=>db.close());
 

@@ -31,4 +31,4 @@ for kind,pos,title,description,keys in specs:
     out.append(dict(tipo=kind,hoja=sheet['nombre'],titulo=title,descripcion=description,campos=fields,columnas={f['columna']:('intervencion.'+k[1:] if k.startswith('@') else 'derivado.'+k[1:] if k.startswith('#') else 'material.datos.'+k) for f,k in zip(sheet['campos'],keys)}))
 text=json.dumps(dict(version=1,tipos=out),ensure_ascii=False,indent=2)+'\n'
 (root/'datos/mapeo-materiales-v1.json').write_text(text,encoding='utf-8')
-(root/'materiales-catalogo.js').write_text('// Generado por scripts/generar-mapeo-materiales.py\nwindow.MATERIALES_CATALOGO = '+text.strip()+';\n',encoding='utf-8')
+(root/'frontend/js/materiales-catalogo.js').write_text('// Generado por scripts/generar-mapeo-materiales.py\nwindow.MATERIALES_CATALOGO = '+text.strip()+';\n',encoding='utf-8')

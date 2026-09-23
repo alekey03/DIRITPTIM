@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const db = new PGlite();
 const uid = n => `00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
-const read = name => fs.readFileSync(path.join(root, 'supabase/migrations', name), 'utf8');
+const read = name => fs.readFileSync(path.join(root, 'backend/supabase/migrations', name), 'utf8');
 let passed = 0;
 async function check(name, work) { await work(); passed++; console.log('OK ' + name); }
 async function identity(n) { await db.exec(`reset role; set role authenticated; set request.jwt.claim.sub = '${uid(n)}';`); }
