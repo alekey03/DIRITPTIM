@@ -379,3 +379,17 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 @media(max-width:650px){.produccion-filters,.produccion-counts{grid-template-columns:1fr}.produccion-modal .modal-card{padding:18px}.produccion-header{align-items:flex-start}.produccion-header h2{font-size:22px}}
 
 #userUnitField[hidden]{display:none!important}
+
+/* Visibilidad de categorías y captura de detenidos dentro del operativo. */
+#groupCards [hidden],#saveAnotherMaterial[hidden],#inlineDetaineeHost[hidden]{display:none!important}
+#groupCards.single-category{grid-template-columns:minmax(0,1fr);max-width:650px}
+#inlineDetaineeHost{margin-top:24px;padding-top:20px;border-top:1px solid #d9e5e0}
+#inlineDetaineeHost .detainee-progress-wrap{position:static;padding:12px 0}
+#inlineDetaineeHost .card{box-shadow:none;margin:16px 0}
+#inlineDetaineeHost .linked-operativo-banner{margin:12px 0}
+.material-person-link{padding:18px;background:#eff7f4;border:1px solid #cfdfd8;border-radius:12px;margin:18px 0}
+.material-person-link select{width:100%;margin:8px 0;padding:12px;border:1px solid #cadbd3;border-radius:8px;background:white}
+.material-person-link p{margin:8px 0;color:#446358;font-size:13px}
+.material-person-data{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:#526878}
+
+.sidebar .nav-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:27px;margin-right:8px}.sidebar .nav-icon svg{width:21px;height:21px;display:block}.sidebar .nav-submenu .nav-icon svg{width:18px;height:18px}

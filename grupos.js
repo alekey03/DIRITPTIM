@@ -11,7 +11,16 @@
     $('groupCards').querySelectorAll('button').forEach(b=>b.disabled=busy||readOnly||!context);
     list.querySelectorAll('button').forEach(b=>b.disabled=busy||!context);
   }
-  function show(categories){showTypes=categories;for(const b of $('groupCards').querySelectorAll('button'))b.hidden=!categories.includes(b.dataset.group==='banda'?'bandas':'organizaciones');}
+  function show(categories){
+    showTypes=categories;
+    for(const b of $('groupCards').querySelectorAll('button'))b.hidden=!categories.includes(b.dataset.group==='banda'?'bandas':'organizaciones');
+    const active=['bandas','organizaciones'].filter(c=>categories.includes(c));
+    $('groupCards').classList.toggle('single-category',active.length===1);
+    $('groupResultsPanel').querySelector('h3').textContent=active.length===1?(active[0]==='bandas'?'Bandas criminales':'Organizaciones criminales'):'Bandas y organizaciones criminales';
+    $('groupResultsPanel').querySelector('.drug-badge').textContent=active.length===1?'1 hoja del detallado':'2 hojas del detallado';
+    form.hidden=!type||!categories.includes(type==='banda'?'bandas':'organizaciones');
+    render();
+  }
   async function all(table,columns,token){
     let rows=[];
     for(let start=0;;start+=100){
@@ -55,15 +64,16 @@
   }
   function render(){
     list.replaceChildren();
-    if(!groups.length)list.textContent='Aún no hay bandas ni organizaciones registradas en este operativo.';
-    for(const g of groups){
+    const visible=groups.filter(g=>showTypes.includes(g.tipo==='banda'?'bandas':'organizaciones'));
+    if(!visible.length)list.textContent='Aún no hay registros para las categorías seleccionadas.';
+    for(const g of visible){
       const row=document.createElement('div');row.className='material-record';const info=document.createElement('div');
       info.append(text('strong',g.nombre),text('small',`${labels[g.tipo]} · ${g.intervencion_grupo_integrantes.length} integrantes · ${g.modalidad}`));
       const button=text('button',(readOnly||!puedeEditarUnidad(context.unidad))?'Ver detalle':'Abrir / editar','secondary');button.type='button';button.addEventListener('click',()=>{if(!busy&&discard())open(g.tipo,g,readOnly||!puedeEditarUnidad(context.unidad));});row.append(info,button);list.append(row);
     }
     const unclassified=detainees.filter(d=>d.integra_organizacion&&!d.tipo_organizacion).length;
     $('groupLegacyNote').textContent=unclassified?`${unclassified} detenido(s) del operativo están pendientes de clasificar como banda u organización. Revise su ficha antes de vincularlos.`:'';
-    $('groupTotals').textContent=`${groups.filter(g=>g.tipo==='banda').length} bandas · ${groups.filter(g=>g.tipo==='organizacion').length} organizaciones · ${groups.reduce((n,g)=>n+g.intervencion_grupo_integrantes.length,0)} integrantes`;
+    $('groupTotals').textContent=`${showTypes.includes('bandas')?visible.filter(g=>g.tipo==='banda').length+' bandas':''}${showTypes.includes('bandas')&&showTypes.includes('organizaciones')?' · ':''}${showTypes.includes('organizaciones')?visible.filter(g=>g.tipo==='organizacion').length+' organizaciones':''} · ${visible.reduce((n,g)=>n+g.intervencion_grupo_integrantes.length,0)} integrantes`;
   }
   async function load(token=epoch){
     const gs=await all('intervencion_grupos','*,intervencion_grupo_integrantes(detencion_id,rol)',token);if(token!==epoch)return;

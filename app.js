@@ -1065,7 +1065,7 @@ function setActiveDetaineeStep(stepNumber) {
 }
 
 function updateDetaineeStepFromScroll() {
-  if (!document.getElementById('detaineeFormView').classList.contains('active')) return;
+  if (!document.getElementById('detaineeFormView').classList.contains('active') && !document.querySelector('#operativoResultsView.active #inlineDetaineeHost:not([hidden])')) return;
   const threshold = window.innerWidth <= 900 ? 150 : 180;
   let activeStep = 1;
   detaineeFormSteps.forEach((section, index) => {
