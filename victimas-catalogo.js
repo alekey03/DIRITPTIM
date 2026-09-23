@@ -1,6 +1,6 @@
 window.VICTIMAS_CATALOGO = {
-  "version": 1,
-  "hoja": "21_VICTIMAS_DE_TRATA",
+  "version": 2,
+  "hoja": "21_ VICTIMAS DE TRATA DE PERSON",
   "campos": [
     {
       "key": "fecha",
@@ -11,64 +11,19 @@ window.VICTIMAS_CATALOGO = {
     },
     {
       "key": "hora",
-      "label": "Hora",
+      "label": "Hora de intervención",
       "type": "time",
       "group": "hecho",
       "required": false
-    },
-    {
-      "key": "apellido_paterno",
-      "label": "Apellido paterno",
-      "type": "text",
-      "group": "identidad",
-      "required": true
-    },
-    {
-      "key": "apellido_materno",
-      "label": "Apellido materno",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    },
-    {
-      "key": "nombres",
-      "label": "Nombres",
-      "type": "text",
-      "group": "identidad",
-      "required": true
     },
     {
       "key": "edad",
       "label": "Edad al momento del hecho",
       "type": "number",
       "group": "identidad",
-      "required": true
-    },
-    {
-      "key": "condicion_edad",
-      "label": "Condición de edad",
-      "type": "text",
-      "group": "identidad",
       "required": true,
-      "computed": true
-    },
-    {
-      "key": "situacion",
-      "label": "Situación de la víctima",
-      "type": "text",
-      "group": "proteccion",
-      "required": true,
-      "options": [
-        "VICTIMA RESCATADA",
-        "PRESUNTA VICTIMA"
-      ]
-    },
-    {
-      "key": "entidad_disposicion",
-      "label": "Puesta a disposición de UPE / UDAVIT u otra entidad",
-      "type": "text",
-      "group": "proteccion",
-      "required": false
+      "min": 0,
+      "max": 120
     },
     {
       "key": "genero",
@@ -340,23 +295,6 @@ window.VICTIMAS_CATALOGO = {
         "ZAMBIA",
         "ZIMBABWE"
       ]
-    },
-    {
-      "key": "tipo_documento",
-      "label": "Tipo de documento",
-      "type": "text",
-      "group": "identidad",
-      "required": false,
-      "options": [
-        "DNI",
-        "CARNET DE EXTRANJERIA",
-        "CEDULA DE IDENTIDAD",
-        "SDPV",
-        "SALVO CONDUCTO",
-        "LAISER PASSER",
-        "PTP(PERMISO TEMPORAL PERMANENCIA)",
-        "PASAPORTE"
-      ]
     }
   ],
   "columnas": {
@@ -394,5 +332,71 @@ window.VICTIMAS_CATALOGO = {
   "notas": [
     "La plantilla no contiene número de documento ni fotografías.",
     "Condición de edad calculada: MENOR para edades menores a 18; MAYOR desde 18."
+  ],
+  "camposHistoricos": [
+    {
+      "key": "apellido_paterno",
+      "label": "Apellido paterno",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "apellido_materno",
+      "label": "Apellido materno",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "nombres",
+      "label": "Nombres",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "condicion_edad",
+      "label": "Condición de edad",
+      "type": "text",
+      "group": "identidad",
+      "required": false,
+      "computed": true
+    },
+    {
+      "key": "situacion",
+      "label": "Situación de la víctima",
+      "type": "text",
+      "group": "proteccion",
+      "required": false,
+      "options": [
+        "VICTIMA RESCATADA",
+        "PRESUNTA VICTIMA"
+      ]
+    },
+    {
+      "key": "entidad_disposicion",
+      "label": "Puesta a disposición de UPE / UDAVIT u otra entidad",
+      "type": "text",
+      "group": "proteccion",
+      "required": false
+    },
+    {
+      "key": "tipo_documento",
+      "label": "Tipo de documento",
+      "type": "text",
+      "group": "identidad",
+      "required": false,
+      "options": [
+        "DNI",
+        "CARNET DE EXTRANJERIA",
+        "CEDULA DE IDENTIDAD",
+        "SDPV",
+        "SALVO CONDUCTO",
+        "LAISER PASSER",
+        "PTP(PERMISO TEMPORAL PERMANENCIA)",
+        "PASAPORTE"
+      ]
+    }
   ]
 };

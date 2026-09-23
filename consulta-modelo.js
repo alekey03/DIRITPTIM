@@ -3,7 +3,7 @@
   const drugs = {env_pbc:'PBC · envoltorios',env_cc:'Clorhidrato de cocaína · envoltorios',env_marihuana:'Marihuana · envoltorios',kg_pbc:'PBC · kg',kg_cc:'Clorhidrato de cocaína · kg',kg_marihuana:'Marihuana · kg',kg_opio:'Opio · kg',kg_sintetica:'Drogas sintéticas · kg'};
   const fields = pairs => pairs.map(([key,label]) => ({key,label}));
   function categories() {
-    const operativeFields=typeof document==='undefined'?[]:[...document.querySelectorAll('#operativoForm [name^="operativo."]')].map(input=>({key:input.name.split('.')[1],label:input.closest('label')?.firstChild?.textContent?.trim()||input.name}));
+    const operativeFields=typeof document==='undefined'?[]:[...document.querySelectorAll('#operativoForm [name^="operativo."]')].filter(input=>!input.closest('[hidden]')).map(input=>({key:input.name.split('.')[1],label:input.closest('label')?.firstChild?.textContent?.trim()||input.name}));
     const result = [
       {id:'operativos',title:'Operativos',table:'intervenciones',type:'operativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
       {id:'megaoperativos',title:'Megaoperativos',table:'intervenciones',type:'megaoperativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
@@ -43,7 +43,7 @@
     if(category.table==='intervencion_vehiculos') out[0][0]='Vehículos / maquinaria registrados';
     if(category.table==='intervencion_grupos')out.push(['Vínculos de integrantes',rows.reduce((n,r)=>n+Number(r.data.integrantes||0),0)]);
     if(category.id==='prostitucion')out.push(['Femenino',rows.filter(r=>r.data.genero==='FEMENINO').length],['Masculino',rows.filter(r=>r.data.genero==='MASCULINO').length],['Género sin registrar',rows.filter(r=>!r.data.genero).length]);
-    if(category.id==='victimas')out.push(['Víctimas rescatadas',rows.filter(r=>r.data.situacion==='VICTIMA RESCATADA').length],['Presuntas víctimas',rows.filter(r=>r.data.situacion==='PRESUNTA VICTIMA').length],['Menores de edad',rows.filter(r=>r.data.condicion_edad==='MENOR').length]);
+    if(category.id==='victimas')out.push(['Menores de edad',rows.filter(r=>r.data.edad!=null&&Number(r.data.edad)<18).length],['Mayores de edad',rows.filter(r=>r.data.edad!=null&&Number(r.data.edad)>=18).length]);
     return out;
   }
   async function readAll(client, category, alive=()=>true) {

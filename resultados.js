@@ -3,7 +3,7 @@
     ['detenidos', '⚖', 'Detenidos', 'Personas detenidas y sus delitos.'],
     ['requisitoriados', '⌕', 'Requisitoriados', 'Orden de captura o requisitoria internacional.'],
     ['menores', '♙', 'Menores', 'Intervenciones que involucren menores.'],
-    ['prostitucion', '♙', 'Proxenetismo', 'Identificación y documento de cada persona.'],
+    ['prostitucion', '♙', 'Proxenetismo', 'Edad, género y nacionalidad del formato actualizado.'],
     ['victimas', '♡', 'Víctimas', 'Datos del detallado; la ficha de enrolamiento sigue independiente.'],
     ['bandas', '♧', 'Bandas', 'Registro específico de la banda intervenida.'],
     ['organizaciones', '◎', 'Organizaciones criminales', 'Registro específico de la organización.'],

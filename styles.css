@@ -361,3 +361,19 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 #victimFields{border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0;min-width:0}#victimFields legend{font-weight:700;color:var(--primary);padding:0 8px}#victimForm[hidden],#saveVictim[hidden],#moreVictims[hidden]{display:none}#victimInputs section{padding:12px 0}#victimInputs input:read-only{background:#edf3ef}
 
 #prostitucionFields{border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0;min-width:0}#prostitucionFields legend{font-weight:700;color:var(--primary);padding:0 8px}#prostitucionForm[hidden],#saveProstitucion[hidden],#moreProstitucion[hidden]{display:none}#prostitucionInputs section{padding:12px 0}#prostitucionInputs input:read-only{background:#edf3ef}
+#bienesFields{border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0;min-width:0}#bienesFields legend{font-weight:700;color:var(--primary);padding:0 8px}#bienesForm[hidden],#saveBienes[hidden],#moreBienes[hidden]{display:none}#bienesInputs section{padding:12px 0}#bienesInputs input:read-only{background:#edf3ef}
+#bienesInputs .bien-description{grid-column:1/-1}#bienesInputs textarea{min-height:96px;resize:vertical}#bienesRecords small{white-space:normal;overflow-wrap:anywhere}
+
+/* Reporte consolidado, independiente de los filtros de una categoría. */
+.produccion-modal{width:min(980px,94vw);max-height:92vh;padding:0;border:0;border-radius:18px}
+.produccion-modal .modal-card{max-width:none;width:100%;box-sizing:border-box;padding:28px}
+.produccion-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.produccion-header small{color:var(--primary);font-weight:700;letter-spacing:.08em}.produccion-header h2{margin:8px 0}
+.produccion-modal p{line-height:1.55}.produccion-filters{display:grid;grid-template-columns:1fr 1fr 2fr;gap:16px;border:1px solid var(--line);border-radius:12px;padding:20px;margin:20px 0}
+.produccion-filters legend{font-weight:700;padding:0 8px}.produccion-filters button{justify-self:start;grid-column:1/-1}
+.produccion-modal [data-status]{white-space:pre-line}.produccion-counts{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;background:#f5f8f6;border-radius:12px;padding:14px 20px}
+.produccion-counts>div{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid #dce5df}.produccion-counts dt{font-size:13px;overflow-wrap:anywhere}.produccion-counts dd{font-weight:700;color:var(--primary);margin:0}
+.produccion-footer{border-top:1px solid var(--line);margin-top:20px;padding-top:12px}.produccion-footer p{font-size:13px;color:var(--muted)}
+.produccion-modal [hidden],#operativoForm label[hidden]{display:none!important}
+#victimInputs details,#prostitucionInputs details{margin:18px 0;padding:16px;border:1px solid var(--line);border-radius:10px}#victimInputs summary,#prostitucionInputs summary{cursor:pointer;font-weight:600}
+@media(max-width:650px){.produccion-filters,.produccion-counts{grid-template-columns:1fr}.produccion-modal .modal-card{padding:18px}.produccion-header{align-items:flex-start}.produccion-header h2{font-size:22px}}
