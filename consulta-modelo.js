@@ -8,8 +8,9 @@
       {id:'operativos',title:'Operativos',table:'intervenciones',type:'operativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
       {id:'megaoperativos',title:'Megaoperativos',table:'intervenciones',type:'megaoperativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
       {id:'detenidos',title:'Detenidos',table:'detenciones_reportables',select:'*,personas(*),detencion_delitos(*)',fields:fields([['nombre','Apellidos y nombres'],['numero_documento','Documento'],['edad','Edad'],['genero','Género'],['nacionalidad','Nacionalidad'],['motivo_detencion','Motivo'],['situacion_actual','Situación'],['delitos','Delitos'],['nombre_organizacion','Banda / organización'],['codigo','Código']])},
+      ...window.COMPLEMENTARIOS_CATALOGO.tipos.map(t=>({id:t.tipo,title:t.titulo,table:'intervencion_complementarios',type:t.tipo,fields:t.campos})),
       {id:'rq',title:'Requisitoriados',table:'intervencion_requisitoriados',fields:window.REQUISITORIADOS_CATALOGO.campos},
-      {id:'prostitucion',title:'Prostitución femenina y masculina',table:'intervencion_prostitucion',fields:window.PROSTITUCION_CATALOGO.campos},
+      {id:'prostitucion',title:'Proxenetismo',table:'intervencion_prostitucion',fields:window.PROSTITUCION_CATALOGO.campos},
       {id:'victimas',title:'Víctimas de trata',table:'intervencion_victimas',fields:window.VICTIMAS_CATALOGO.campos},
       {id:'menores',title:'Menores',table:'intervencion_menores',fields:window.MENORES_CATALOGO.campos},
       ...[['banda','Bandas criminales'],['organizacion','Organizaciones criminales']].map(([type,title])=>({id:type,title,table:'intervencion_grupos',type,select:'*,intervencion_grupo_integrantes(*)',fields:fields([['nombre','Nombre'],['modalidad','Modalidad'],['referencia_lugar','Referencia'],['integrantes','Integrantes registrados']])})),
@@ -37,6 +38,8 @@
   function metrics(rows, category) {
     const out=[['Registros',rows.length],['Operativos vinculados',new Set(rows.map(r=>r.parentId).filter(Boolean)).size],['Dependencias',new Set(rows.map(r=>r.unit).filter(Boolean)).size]];
     if(category.table==='intervencion_drogas') for(const unit of ['kg','envoltorios']) {const relevant=rows.filter(r=>r.data.medida===unit);if(relevant.length)out.push([unit==='kg'?'Cantidad (kg)':'Cantidad (envoltorios)',relevant.reduce((sum,r)=>sum+Number(r.data.cantidad||0),0)]);}
+    if(category.id==='dinero')for(const [key,label]of [['soles','Soles (S/)'],['dolares','Dólares (USD)'],['euros','Euros (EUR)']])out.push([label,rows.reduce((sum,r)=>sum+Math.round(Number(r.data[key]||0)*100),0)/100]);
+    if(['celulares','chips'].includes(category.id))out.push(['Cantidad total',rows.reduce((sum,r)=>sum+Number(r.data.cantidad||0),0)]);
     if(category.table==='intervencion_vehiculos') out[0][0]='Vehículos / maquinaria registrados';
     if(category.table==='intervencion_grupos')out.push(['Vínculos de integrantes',rows.reduce((n,r)=>n+Number(r.data.integrantes||0),0)]);
     if(category.id==='prostitucion')out.push(['Femenino',rows.filter(r=>r.data.genero==='FEMENINO').length],['Masculino',rows.filter(r=>r.data.genero==='MASCULINO').length],['Género sin registrar',rows.filter(r=>!r.data.genero).length]);
