@@ -1,0 +1,27 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
+const stage=path.resolve(__dirname,'..'),base=stage;
+const ctx={window:{}};vm.createContext(ctx);for(const n of ['materiales-catalogo.js','vehiculos-catalogo.js','complementarios-catalogo.js','requisitoriados-catalogo.js','prostitucion-catalogo.js','victimas-catalogo.js','menores-catalogo.js','consulta-modelo.js','dashboard-modelo.js'])vm.runInContext(fs.readFileSync(path.join(fs.existsSync(path.join(stage,n))?stage:base,n),'utf8'),ctx);
+const M=ctx.window.DashboardModelo,Q=ctx.window.ConsultaModelo,cs=Q.categories(),row=(id,edad,nacionalidad,date,place,data={})=>({id,unit:'A',parentId:'p'+id,data:{edad,nacionalidad,...data},date,place});
+const rows=[row('1',null,'Perú','2026-01-01','LIMA / LIMA / LINCE'),row('2',0,'Perú','2026-03-31','LIMA / LIMA / LINCE'),row('3',25,'Venezuela','2026-03-31','AREQUIPA / AREQUIPA / AREQUIPA')];
+assert.equal(M.filter(rows,{ageMax:'17'}).length,1,'Edad vacía no se convierte en cero');
+assert.equal(M.filter(rows,{from:'2026-03-31',to:'2026-03-31',department:'AREQUIPA',ageMin:18,facets:{nacionalidad:'venezuela'}}).length,1);
+assert.equal(M.filter(rows,{facets:{nacionalidad:'Perú'}}).length,2);
+assert.equal(M.filter(rows,{facets:{genero:'__missing__'}}).length,3);
+assert.deepEqual(Array.from(M.timeline(rows).map(x=>x.count)),[1,0,2]);
+assert.equal(M.timeline(rows,'year')[0].count,3);
+const money=[row('a',null,'','','',{soles:10.15,dolares:0}),row('b',null,'','','',{soles:0,dolares:20,euros:5}),row('c',null,'','','',{soles:0,dinero_otro:'YEN 100'})];
+assert.equal(M.filter(money,{currency:'soles'}).length,1);assert.equal(M.filter(money,{currency:'dinero_otro'}).length,1);
+assert.equal(M.totals(M.filter(money,{currency:'dolares'}),cs.find(c=>c.id==='dinero'),{currency:'dolares'}).find(x=>x[0]==='Dólares (USD)')[1],20);
+assert.ok(!M.totals(money,cs.find(c=>c.id==='dinero'),{currency:'dolares'}).some(x=>x[0]==='Soles (S/)'));
+assert.ok(M.facets(cs.find(c=>c.id==='detenidos')).some(x=>x.key==='nacionalidad'));
+assert.ok(!M.facets(cs.find(c=>c.id==='dinero')).some(x=>x.key==='nacionalidad'));
+const r=Q.normalize({id:'a',intervencion_id:'p',datos:{}},{id:'dinero'},new Map([['p',{id:'p',provincia:'LIMA',distrito:'LINCE'}]]));assert.equal(M.geo(r).department,'','No desplazar provincia al lugar de departamento');
+vm.runInContext(fs.readFileSync(path.join(stage,'excel-estilo.js'),'utf8'),ctx);
+const zip=require('../vendor/fflate-0.8.3.js');
+const fixture={'xl/styles.xml':zip.strToU8('<styleSheet><fonts count="1"><font/></fonts><fills count="2"><fill/><fill/></fills><cellXfs count="1"><xf/></cellXfs></styleSheet>')};
+for(let i=1;i<=22;i++)fixture[`xl/worksheets/sheet${i}.xml`]=zip.strToU8('<worksheet><sheetData><row r="1"><c r="A1" t="str"><v>ENCABEZADO</v></c></row><row r="2"><c r="A2" s="0"><v>125.5</v></c></row></sheetData></worksheet>');
+const source=zip.zipSync(fixture);
+const result=ctx.window.ExcelEstilo.colorHeaders(source,zip),before=zip.unzipSync(source),after=zip.unzipSync(result);
+let count=0;for(const name of Object.keys(before).filter(n=>/^xl\/worksheets\/sheet\d+\.xml$/.test(n))){count++;const a=zip.strFromU8(after[name]),b=zip.strFromU8(before[name]);assert.equal(a.replace(/<row\b[^>]*\br="1"[^>]*>[\s\S]*?<\/row>/,''),b.replace(/<row\b[^>]*\br="1"[^>]*>[\s\S]*?<\/row>/,''),'Datos bajo encabezado intactos');assert.match(a,/<c[^>]* r="A1"[^>]* s="\d+"/);}
+assert.equal(count,22);assert.match(zip.strFromU8(after['xl/styles.xml']),/FFCCE8F6/);
+console.log('PASS: filtros combinados, edades vacías/cero, moneda sin mezclar, meses vacíos, categorías y 22 hojas con encabezado celeste sin alterar datos.');

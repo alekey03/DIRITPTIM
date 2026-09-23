@@ -57,12 +57,12 @@
       const workbook=model.workbook(report,window.XLSX);
       if(!alive())return;
       const dates=[report.filters.from||'inicio',report.filters.to||'actual'].join('_');
-      XLSX.writeFile(workbook,`PRODUCCION_DIRITPTIM_${dates}.xlsx`,{compression:true});
+      downloadStyledWorkbook(workbook,`PRODUCCION_DIRITPTIM_${dates}.xlsx`,{compression:true});
       status.textContent='Descarga iniciada. El archivo contiene las 22 pestañas y los registros autorizados del alcance elegido.';
     }catch(error){if(alive())status.textContent=error.message;}
     finally{if(alive()){download.disabled=false;fields.disabled=false;}}
   });
-  for(const id of ['consultaRecordsView','generalDashboardView']){
+  for(const id of ['consultaRecordsView']){
     const toolbar=document.querySelector(`#${id} .records-toolbar`);if(!toolbar)continue;
     const button=document.createElement('button');button.type='button';button.className='primary';button.textContent='⇩ Excel completo · 22 pestañas';button.addEventListener('click',open);toolbar.append(button);
   }
