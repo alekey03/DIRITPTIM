@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260923-flujo" />
+  <link rel="stylesheet" href="styles.css?v=20260923-formulario" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynh17kVEKGgmoZJOZ5OlMZ13uZqk=" crossorigin="">
 </head>
 <body>
@@ -429,10 +429,11 @@
         <label>Nombres<input id="newUserNames" placeholder="Nombres del usuario" required></label>
         <label>Apellidos<input id="newUserSurnames" placeholder="Apellidos del usuario" required></label>
         <label class="span-2">Nombre de usuario<input id="newUsername" type="text" placeholder="Ej. estadistica.cusco" pattern="[a-z0-9._-]{3,30}" autocomplete="off" required></label>
-        <label>Perfil estadístico<select id="newUserRole" required><option value="estadistico_direccion">Estadístico de Dirección</option><option value="estadistico_division">Estadístico de División</option><option value="estadistico_jefatura">Estadístico de Jefatura · JEFDDITP</option><option value="estadistico_depitptim">Estadístico de DEPITPTIM</option></select></label>
-        <label>Ámbito<select id="newUserScope" required><option value="DESCONCENTRADO">Desconcentrado</option><option value="SEDE_CENTRAL">Sede Central DIRITPTIM</option><option value="NACIONAL">Nacional</option></select></label>
-        <label>Departamento<select id="newUserDepartment" required><option value="">Seleccionar departamento</option></select></label>
-        <label>Dependencia asignada<select id="newUserUnit" required aria-describedby="userDependencyHint"><option value="">Seleccionar dependencia</option></select><small id="userDependencyHint">Seleccione primero el ámbito.</small></label>
+        <label class="span-2">Perfil estadístico<select id="newUserRole" required><option value="estadistico_direccion">Estadístico de Dirección</option><option value="estadistico_division">Estadístico de División</option><option value="estadistico_jefatura">Estadístico de Jefatura · JEFDDITP</option><option value="estadistico_depitptim">Estadístico de DEPITPTIM</option></select></label>
+        <input type="hidden" id="newUserScope">
+        <input type="hidden" id="newUserDepartment">
+        <label class="span-2" id="userUnitField"><span id="userUnitLabel">Dependencia asignada</span><select id="newUserUnit" required aria-describedby="userDependencyHint"><option value="">Seleccionar dependencia</option></select></label>
+        <div class="span-2 modal-help" role="status" aria-live="polite"><strong>Alcance de la cuenta</strong><p id="userDependencyHint">Seleccione el perfil y su dependencia.</p></div>
         <label class="span-2">Contraseña temporal<input id="newUserPassword" type="password" minlength="8" autocomplete="new-password" required></label>
         <label class="user-active-control span-2"><span>Estado de la cuenta</span><select id="newUserActive"><option value="true">Activa</option><option value="false">Desactivada</option></select></label>
       </div>
@@ -473,7 +474,7 @@
   <script src="mapa.js?v=20260910-map-v5"></script>
   <script src="dependencias.js?v=20260923-roles"></script>
   <script src="perfiles-estadisticos.js?v=20260923-roles"></script>
-  <script src="app.js?v=20260923-roles"></script>
+  <script src="app.js?v=20260923-formulario"></script>
   <script src="auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="detenidos.js?v=20260923-roles"></script>
   <script src="intervenciones.js?v=20260923-roles"></script>

@@ -7,13 +7,13 @@ test('cinco divisiones y 23 DEPITPTIM; catálogo idéntico en navegador y servid
  assert.equal(new Set(catalog.map(d=>d.unidad)).size,28);
  for(const name of ['dependencias.js','supabase/functions/administrar-usuarios/index.ts'])assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,name),'utf8').match(/const DEPENDENCIAS_INSTITUCIONALES = ([\s\S]*?);/)[1]),catalog);
 });
-function form(role){const elements={};for(const id of ['newUserRole','newUserScope','newUserDepartment','newUserUnit','userDependencyHint'])elements[id]={value:'',textContent:'',replaceChildren(...items){this.options=items;this.value=items[0]?.value||'';}};elements.newUserRole.value=role;
+function form(role){const elements={};for(const id of ['newUserRole','newUserScope','newUserDepartment','newUserUnit','userDependencyHint','userUnitField','userUnitLabel'])elements[id]={value:'',textContent:'',replaceChildren(...items){this.options=items;this.value=items[0]?.value||'';}};elements.newUserRole.value=role;
  const context={document:{getElementById:id=>elements[id]},DEPENDENCIAS_INSTITUCIONALES:catalog,Option:function(label,value){this.label=label;this.value=value;}};
- vm.createContext(context);vm.runInContext(app.slice(app.indexOf('function configureUserTerritory('),app.indexOf('function initializeUserDepartments(')),context);return{e:elements,configure:context.configureUserTerritory};}
+ vm.createContext(context);vm.runInContext(app.slice(app.indexOf('function configureUserTerritory('),app.indexOf("document.getElementById('newUserRole').addEventListener")),context);return{e:elements,configure:context.configureUserTerritory};}
 test('seleccionar división o DEPITPTIM filtra y deriva el territorio',()=>{
- const f=form('estadistico_division');f.configure();assert.equal(f.e.newUserUnit.options.length,6);f.e.newUserUnit.value='DIVISIÓN DE EXTRANJERIA';f.configure();assert.equal(f.e.newUserDepartment.value,'LIMA');
+ const f=form('estadistico_division');f.configure();assert.equal(f.e.newUserUnit.options.length,6);assert.equal(f.e.userUnitField.hidden,false);assert.equal(f.e.userUnitLabel.textContent,'División asignada');f.e.newUserUnit.value='DIVISIÓN DE EXTRANJERIA';f.configure();assert.equal(f.e.newUserDepartment.value,'LIMA');
  f.e.newUserRole.value='estadistico_depitptim';f.configure({preserveArea:false});assert.equal(f.e.newUserUnit.options.length,24);assert.equal(f.e.newUserUnit.value,'');f.e.newUserUnit.value='DEPITPTIM CUSCO';f.configure();assert.equal(f.e.newUserDepartment.value,'CUSCO');
 });
 test('dirección y jefatura fijan su ámbito sin campos libres',()=>{
- for(const [role,unit] of [['estadistico_direccion','ESTADÍSTICA DE DIRECCIÓN DIRITPTIM'],['estadistico_jefatura','JEFDDITP'],['administrador','ADMINISTRACIÓN GENERAL DIRITPTIM']]){const f=form(role);f.configure();assert.equal(f.e.newUserUnit.value,unit);assert.equal(f.e.newUserUnit.disabled,true);assert.equal(f.e.newUserScope.disabled,true);assert.equal(f.e.newUserDepartment.value,'NACIONAL');}
+ for(const [role,unit] of [['estadistico_direccion','ESTADÍSTICA DE DIRECCIÓN DIRITPTIM'],['estadistico_jefatura','JEFDDITP'],['administrador','ADMINISTRACIÓN GENERAL DIRITPTIM']]){const f=form(role);f.configure();assert.equal(f.e.newUserUnit.value,unit);assert.equal(f.e.newUserUnit.disabled,true);assert.equal(f.e.userUnitField.hidden,true);assert.equal(f.e.newUserScope.disabled,true);assert.equal(f.e.newUserDepartment.value,'NACIONAL');}
 });
