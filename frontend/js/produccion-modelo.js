@@ -51,8 +51,10 @@
     const selected=(data[sheet.tabla]||[]).filter(r=>!sheet.tipo||r.tipo===sheet.tipo);
     const rows=[];
     for (const r of selected) {
-      const parent=sheet.tabla==='intervenciones'?r:parents.get(r.intervencion_id);
-      if (!parent || !isOperative(parent)) { if (sheet.tabla==='detenciones_reportables') issues.orphans++; continue; }
+      const independent=sheet.tabla==='desapariciones';
+      if(independent) r.mes_ubicacion=r.datos?.fecha_ubicacion?months[Number(r.datos.fecha_ubicacion.slice(5,7))-1]:'';
+      const parent=independent?r:sheet.tabla==='intervenciones'?r:parents.get(r.intervencion_id);
+      if (!parent || (!independent && !isOperative(parent))) { if (sheet.tabla==='detenciones_reportables') issues.orphans++; continue; }
       const date=dateOf(r,parent);
       if (!matches(date,parent,filters)) continue;
       const context={intervencion:parent,operativo:detail(parent)||{},[sheet.raiz]:r,datos:r.datos||{},fecha:date,recordId:r.id};
@@ -127,7 +129,7 @@
   }
   function workbook(report, XLSX) {
     const book=XLSX.utils.book_new();
-    book.Props={Title:'Producción DIRITPTIM',Subject:'Detallado de producción — 22 hojas',Author:'DIRITPTIM',Comments:'Datos autorizados según la cuenta y filtros indicados al descargar. Incluye registros guardados de operativos. NI principal del operativo.'};
+    book.Props={Title:'Producción DIRITPTIM',Subject:'Detallado de producción y denuncias — 24 hojas',Author:'DIRITPTIM',Comments:'Datos autorizados según la cuenta y filtros indicados al descargar. Incluye registros guardados de operativos. NI principal del operativo.'};
     for (const sheet of report.sheets) {
       const ws={};
       sheet.columnas.forEach((c,j)=>{ws[XLSX.utils.encode_cell({r:0,c:j})]={t:'s',v:c.encabezado};});

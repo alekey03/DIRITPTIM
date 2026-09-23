@@ -2,7 +2,7 @@
   const catalog=window.COMPLEMENTARIOS_CATALOGO.tipos, $=id=>document.getElementById(id);
   const form=$('complementForm'),inputs=$('complementInputs'),status=$('complementStatus'),list=$('complementRecords');
   let context=null,bridge=null,readOnly=true,busy=false,dirty=false,epoch=0,shown=25,editing=null,selected=null,retry=null,visible=[];
-  const paths={dinero:'M3 6h18v12H3z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6',celulares:'M7 2h10v20H7z M10 18h4',chips:'M8 3h9v18H5V6z M8 9h6v7H8z',migraciones:'M3 4h18v16H3z M7 8h4v4H7z M14 8h4 M14 12h4 M7 16h11',personas_ubicadas:'M12 22s8-8 8-13a8 8 0 0 0-16 0c0 5 8 13 8 13z M12 6a3 3 0 1 0 0 6 3 3 0 0 0 0-6',expulsados:'M3 3h10v18H3z M8 12h13 M17 8l4 4-4 4'};
+  const paths={locales:'M3 21h18M5 21V5l7-3 7 3v16M9 21v-6h6v6M8 7h2m4 0h2M8 11h2m4 0h2',dinero:'M3 6h18v12H3z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6',celulares:'M7 2h10v20H7z M10 18h4',chips:'M8 3h9v18H5V6z M8 9h6v7H8z',migraciones:'M3 4h18v16H3z M7 8h4v4H7z M14 8h4 M14 12h4 M7 16h11',personas_ubicadas:'M12 22s8-8 8-13a8 8 0 0 0-16 0c0 5 8 13 8 13z M12 6a3 3 0 1 0 0 6 3 3 0 0 0 0-6',expulsados:'M3 3h10v18H3z M8 12h13 M17 8l4 4-4 4'};
   function icon(type){return `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="${paths[type]}"></path></svg>`;}
   for(const type of catalog){
     const button=document.createElement('button');button.type='button';button.className='material-card';button.dataset.complement=type.tipo;

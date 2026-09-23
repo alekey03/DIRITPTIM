@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="frontend/css/registros.css?v=20260923-registros">
   <link rel="stylesheet" href="frontend/css/seguimiento.css?v=20260923" />
   <link rel="stylesheet" href="frontend/css/tema-institucional.css?v=20260923" />
+<link rel="stylesheet" href="frontend/css/desaparecidos.css?v=20260923" />
 </head>
 <body>
   <section class="login-screen" id="loginScreen">
@@ -36,6 +37,7 @@
     <nav aria-label="Navegación principal">
       <button class="nav-item" data-view="generalDashboardView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="11" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="18" width="7" height="3" rx="1"/></svg></span>Dashboard</button>
       <button class="nav-item" data-view="consultaRecordsView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Registros</button>
+<button class="nav-item" data-view="desaparecidosView"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="8" r="3"/><path d="M3 20v-2a7 7 0 0 1 10-6"/><circle cx="17" cy="16" r="4"/><path d="m20 19 3 3"/></svg></span>Desaparecidos</button>
       <button class="nav-item seguimiento-access" data-view="seguimientoView" hidden><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4M17 3v4M3 10h18m-14 5 3 3 6-5"/></svg></span>Seguimiento</button>
       <div class="nav-group" data-nav-group="victims">
         <button class="nav-group-toggle" type="button" aria-expanded="false"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8" cy="10" r="2"/><path d="M5 16a3 3 0 0 1 6 0M14 9h4M14 13h4M14 17h3"/></svg></span><strong>Ficha de enrolamiento</strong><i>⌄</i></button>
@@ -66,6 +68,7 @@
     <section id="generalDashboardView" class="view"></section>
     <section id="consultaRecordsView" class="view"></section>
     <button type="button" data-view="detaineeFormView" hidden aria-hidden="true"></button>
+    <section id="desaparecidosView" class="view"></section>
     <section id="seguimientoView" class="view seguimiento-view"></section>
     <section id="dashboardView" class="view dashboard-view active">
       <div class="records-toolbar">
@@ -480,7 +483,7 @@
   <script src="frontend/js/mapa.js?v=20260910-map-v5"></script>
   <script src="frontend/js/dependencias.js?v=20260923-roles"></script>
   <script src="frontend/js/perfiles-estadisticos.js?v=20260923-roles"></script>
-  <script src="frontend/js/app.js?v=20260923-admin-seguimiento"></script>
+  <script src="frontend/js/app.js?v=20260923-locales-desaparecidos"></script>
   <script src="frontend/js/auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="frontend/js/detenidos.js?v=20260923-captura"></script>
   <script src="frontend/js/intervenciones.js?v=20260923-roles"></script>
@@ -499,21 +502,23 @@
   <script src="frontend/js/victimas.js?v=20260923-roles"></script>
   <script src="frontend/js/prostitucion-catalogo.js?v=20260923-flujo"></script>
   <script src="frontend/js/prostitucion.js?v=20260923-roles"></script>
-  <script src="frontend/js/complementarios-catalogo.js?v=20260923-flujo"></script>
-  <script src="frontend/js/complementarios.js?v=20260923-roles"></script>
-  <script src="frontend/js/resultados.js?v=20260923-captura"></script>
+  <script src="frontend/js/complementarios-catalogo.js?v=20260923-locales-desaparecidos"></script>
+  <script src="frontend/js/complementarios.js?v=20260923-locales-desaparecidos"></script>
+  <script src="frontend/js/resultados.js?v=20260923-locales-desaparecidos"></script>
   <script src="frontend/vendor/fflate-0.8.3.js"></script>
   <script src="frontend/js/excel-estilo.js?v=20260923-executive"></script>
   <script src="frontend/js/exportaciones.js?v=20260923-executive"></script>
-  <script src="frontend/js/consulta-modelo.js?v=20260923-executive"></script>
-  <script src="frontend/js/dashboard-modelo.js?v=20260923-executive"></script>
-  <script src="frontend/js/consulta.js?v=20260923-registros"></script>
+  <script src="frontend/js/desaparecidos-catalogo.js?v=20260923"></script>
+  <script src="frontend/js/consulta-modelo.js?v=20260923-locales-desaparecidos"></script>
+  <script src="frontend/js/dashboard-modelo.js?v=20260923-locales-desaparecidos"></script>
+  <script src="frontend/js/consulta.js?v=20260923-locales-desaparecidos"></script>
 
-  <script src="frontend/js/dashboard.js?v=20260923-menta"></script>
-  <script src="frontend/js/produccion-catalogo.js?v=20260923-flujo"></script>
-  <script src="frontend/js/produccion-modelo.js?v=20260923-flujo"></script>
-  <script src="frontend/js/produccion.js?v=20260923-executive"></script>
-  <script src="frontend/js/seguimiento.js?v=20260923-admin"></script>
+  <script src="frontend/js/dashboard.js?v=20260923-locales-desaparecidos"></script>
+  <script src="frontend/js/produccion-catalogo.js?v=20260923-locales-desaparecidos"></script>
+  <script src="frontend/js/produccion-modelo.js?v=20260923-locales-desaparecidos"></script>
+  <script src="frontend/js/produccion.js?v=20260923-locales-desaparecidos"></script>
+  <script src="frontend/js/seguimiento.js?v=20260923-denuncias"></script>
   <script src="frontend/js/declaracion-diaria.js?v=20260923"></script>
+<script src="frontend/js/desaparecidos.js?v=20260923"></script>
 </body>
 </html>

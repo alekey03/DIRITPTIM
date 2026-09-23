@@ -673,6 +673,7 @@ const pageTitles = {
   generalDashboardView: ['INDICADORES', 'Dashboard'],
   consultaRecordsView: ['CONSULTA GENERAL', 'Registros'],
   seguimientoView: ['CONTROL DIARIO', 'Seguimiento'],
+  desaparecidosView: ['DENUNCIAS Y BÚSQUEDA', 'Desaparecidos'],
   dashboardView: ['RESUMEN', 'Dashboard de fichas de enrolamiento'],
   formView: ['NUEVO REGISTRO', 'Ficha voluntaria de identificación'],
   recordsView: ['CONSULTA', 'Registros de enrolamiento'],
@@ -693,6 +694,7 @@ function resetMainView() {
   });
   window.resetConsulta?.();
   window.resetSeguimiento?.();
+  window.resetDesaparecidos?.();
   window.resetDeclaracionDiaria?.();
   window.resetOperativoModule?.();
   window.resetResultadosModule?.();
@@ -963,6 +965,7 @@ userForm.addEventListener('submit', async event => {
 document.querySelectorAll('[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     const target = button.dataset.view;
+    if (window.guardDesaparecidos && !window.guardDesaparecidos(target)) return;
     if (target === 'seguimientoView' && (!currentProfile?.activo || !['administrador','estadistico_direccion','estadistico_jefatura'].includes(currentProfile.rol))) return;
     if (target === 'detaineeFormView' && !button.dataset.fromOperativo && window.prepareStandaloneDetainee?.() === false) return;
     const parentGroup = button.closest('.nav-group');
@@ -975,6 +978,7 @@ document.querySelectorAll('[data-view]').forEach(button => {
     document.getElementById('pageEyebrow').textContent = pageTitles[target][0];
     document.getElementById('pageHeading').textContent = pageTitles[target][1];
     if (target === 'generalDashboardView') window.loadGeneralDashboard?.();
+    if (target === 'desaparecidosView') window.loadDesaparecidos?.();
     if (target === 'seguimientoView') window.loadSeguimiento?.();
     if (target === 'consultaRecordsView') { window.loadConsultaRecords?.(); window.updateDeclaracionDiaria?.(); }
     if (target === 'dashboardView') loadDashboard();

@@ -1689,6 +1689,137 @@ window.COMPLEMENTARIOS_CATALOGO = {
         "W": "intervencion.latitud",
         "X": "intervencion.longitud"
       }
+    },
+    {
+      "tipo": "locales",
+      "titulo": "Locales intervenidos",
+      "hoja": "33_LOCALES INTERVENIDOS",
+      "descripcion": "Situación, tipo y detalle del inmueble intervenido.",
+      "campos": [
+        {
+          "key": "fecha",
+          "label": "Fecha",
+          "type": "date",
+          "required": true,
+          "group": "registro"
+        },
+        {
+          "key": "hora",
+          "label": "Hora",
+          "type": "time",
+          "required": false,
+          "group": "registro"
+        },
+        {
+          "key": "situacion",
+          "label": "Situación del inmueble",
+          "type": "text",
+          "required": true,
+          "group": "registro"
+        },
+        {
+          "key": "tipo_inmueble",
+          "label": "Tipo de inmueble",
+          "type": "text",
+          "required": true,
+          "group": "registro"
+        },
+        {
+          "key": "detalle_inmueble",
+          "label": "Detalle del inmueble",
+          "type": "text",
+          "required": true,
+          "group": "registro"
+        },
+        {
+          "key": "valorizacion",
+          "label": "Valorización del inmueble incautado (S/)",
+          "type": "number",
+          "required": false,
+          "group": "registro",
+          "min": 0,
+          "max": 999999999999,
+          "step": 0.01
+        },
+        {
+          "key": "tentativa",
+          "label": "¿Fue tentativa?",
+          "type": "text",
+          "group": "delito1",
+          "required": false,
+          "options": [
+            "Sí",
+            "No"
+          ]
+        },
+        {
+          "key": "fuero",
+          "label": "Fuero / leyes especiales",
+          "type": "text",
+          "group": "delito1",
+          "required": false
+        },
+        {
+          "key": "delito_general",
+          "label": "Delito general",
+          "type": "text",
+          "group": "delito1",
+          "required": false
+        },
+        {
+          "key": "delito_especifico",
+          "label": "Delito específico",
+          "type": "text",
+          "group": "delito1",
+          "required": false
+        },
+        {
+          "key": "subtipo",
+          "label": "Subtipo de delito",
+          "type": "text",
+          "group": "delito1",
+          "required": false
+        },
+        {
+          "key": "tentativa_2",
+          "label": "¿Fue tentativa?",
+          "type": "text",
+          "group": "delito2",
+          "required": false,
+          "options": [
+            "Sí",
+            "No"
+          ]
+        },
+        {
+          "key": "fuero_2",
+          "label": "Fuero / leyes especiales",
+          "type": "text",
+          "group": "delito2",
+          "required": false
+        },
+        {
+          "key": "delito_general_2",
+          "label": "Delito general",
+          "type": "text",
+          "group": "delito2",
+          "required": false
+        },
+        {
+          "key": "delito_especifico_2",
+          "label": "Delito específico",
+          "type": "text",
+          "group": "delito2",
+          "required": false
+        },
+        {
+          "key": "subtipo_2",
+          "label": "Subtipo de delito",
+          "type": "text",
+          "group": "delito2",
+          "required": false
+        }
+      ]
     }
   ]
 };

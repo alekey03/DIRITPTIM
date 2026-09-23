@@ -5,6 +5,7 @@
   function categories() {
     const operativeFields=typeof document==='undefined'?[]:[...document.querySelectorAll('#operativoForm [name^="operativo."]')].filter(input=>!input.closest('[hidden]')).map(input=>({key:input.name.split('.')[1],label:input.closest('label')?.firstChild?.textContent?.trim()||input.name}));
     const result = [
+      {id:'desaparecidos',title:'Denuncias de desaparición',table:'desapariciones',fields:window.DESAPARECIDOS_CATALOGO||[]},
       {id:'operativos',title:'Operativos',table:'intervenciones',type:'operativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
       {id:'megaoperativos',title:'Megaoperativos',table:'intervenciones',type:'megaoperativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
       {id:'detenidos',title:'Detenidos',table:'detenciones_reportables',select:'*,personas(*),detencion_delitos(*)',fields:fields([['nombre','Apellidos y nombres'],['numero_documento','Documento'],['edad','Edad'],['genero','Género'],['nacionalidad','Nacionalidad'],['motivo_detencion','Motivo'],['situacion_actual','Situación'],['delitos','Delitos'],['nombre_organizacion','Banda / organización'],['codigo','Código']])},
@@ -28,6 +29,7 @@
       data.nombre=[data.apellido_paterno,data.apellido_materno,data.nombres].filter(Boolean).join(' ');
       data.delitos=(record.detencion_delitos||[]).map(c=>[c.delito_general,c.delito_especifico,c.subtipo].filter(Boolean).join(' / ')).join('; ');
     }
+    if(category.id==='desaparecidos')data.nombre=[data.apellido_paterno,data.apellido_materno,data.nombres].filter(Boolean).join(' ');
     if(category.table==='intervencion_drogas') {data.sustancia=drugs[record.tipo];data.medida=record.tipo.startsWith('kg_')?'kg':'envoltorios';}
     if(category.table==='intervencion_grupos') data.integrantes=(record.intervencion_grupo_integrantes||[]).length;
     return {geography:{department:parent?.departamento||data.departamento||'',province:parent?.provincia||data.provincia||'',district:parent?.distrito||data.distrito||''},id:record.id,parentId:parent?.id||null,data,date:record.datos?.fecha||record.fecha||parent?.fecha||'',unit:parent?.unidad||record.unidad||'',place:[parent?.departamento||data.departamento,parent?.provincia||data.provincia,parent?.distrito||data.distrito].filter(Boolean).join(' / '),ni:parent?.nota_sicpip||record.nota_sicpip||''};
@@ -37,7 +39,9 @@
   }
   function metrics(rows, category) {
     const out=[['Registros',rows.length],['Operativos vinculados',new Set(rows.map(r=>r.parentId).filter(Boolean)).size],['Dependencias',new Set(rows.map(r=>r.unit).filter(Boolean)).size]];
+    if(category.id==='desaparecidos')data.nombre=[data.apellido_paterno,data.apellido_materno,data.nombres].filter(Boolean).join(' ');
     if(category.table==='intervencion_drogas') for(const unit of ['kg','envoltorios']) {const relevant=rows.filter(r=>r.data.medida===unit);if(relevant.length)out.push([unit==='kg'?'Cantidad (kg)':'Cantidad (envoltorios)',relevant.reduce((sum,r)=>sum+Number(r.data.cantidad||0),0)]);}
+    if(category.id==='desaparecidos')out.splice(1,1,['Con fecha de ubicación',rows.filter(r=>r.data.fecha_ubicacion).length]);
     if(category.id==='dinero')for(const [key,label]of [['soles','Soles (S/)'],['dolares','Dólares (USD)'],['euros','Euros (EUR)']])out.push([label,rows.reduce((sum,r)=>sum+Math.round(Number(r.data[key]||0)*100),0)/100]);
     if(['celulares','chips'].includes(category.id))out.push(['Cantidad total',rows.reduce((sum,r)=>sum+Number(r.data.cantidad||0),0)]);
     if(category.table==='intervencion_vehiculos') out[0][0]='Vehículos / maquinaria registrados';

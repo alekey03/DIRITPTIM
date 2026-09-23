@@ -4159,6 +4159,354 @@ window.PRODUCCION_CATALOGO = {
           "tipo": "number"
         }
       ]
+    },
+    {
+      "nombre": "33_LOCALES INTERVENIDOS",
+      "tabla": "intervencion_complementarios",
+      "raiz": "complementario",
+      "tipo": "locales",
+      "encabezados_recuperados_de": null,
+      "columnas": [
+        {
+          "columna": "A",
+          "encabezado": "N°",
+          "origen": "derivado.numero_fila",
+          "tipo": "number"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES",
+          "origen": "derivado.mes_fecha",
+          "tipo": "text"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA",
+          "origen": "datos.fecha",
+          "tipo": "date"
+        },
+        {
+          "columna": "D",
+          "encabezado": "HORA",
+          "origen": "datos.hora",
+          "tipo": "time"
+        },
+        {
+          "columna": "E",
+          "encabezado": "DEPARTAMENTO",
+          "origen": "intervencion.departamento",
+          "tipo": "text"
+        },
+        {
+          "columna": "F",
+          "encabezado": "PROVINCIA",
+          "origen": "intervencion.provincia",
+          "tipo": "text"
+        },
+        {
+          "columna": "G",
+          "encabezado": "DISTRITO",
+          "origen": "intervencion.distrito",
+          "tipo": "text"
+        },
+        {
+          "columna": "H",
+          "encabezado": "SITUACION DE INMUEBLE",
+          "origen": "datos.situacion",
+          "tipo": "text"
+        },
+        {
+          "columna": "I",
+          "encabezado": "TIPO DE  INMUEBLE",
+          "origen": "datos.tipo_inmueble",
+          "tipo": "text"
+        },
+        {
+          "columna": "J",
+          "encabezado": "DETALLAR EL INMUEBLE",
+          "origen": "datos.detalle_inmueble",
+          "tipo": "text"
+        },
+        {
+          "columna": "K",
+          "encabezado": "VALORIZACION DEL INMUEBLE  INCAUTADO",
+          "origen": "datos.valorizacion",
+          "tipo": "number"
+        },
+        {
+          "columna": "L",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "origen": "datos.tentativa",
+          "tipo": "text"
+        },
+        {
+          "columna": "M",
+          "encabezado": "FUERO/LEYES ESPECIALES",
+          "origen": "datos.fuero",
+          "tipo": "text"
+        },
+        {
+          "columna": "N",
+          "encabezado": "DELITO GENERAL",
+          "origen": "datos.delito_general",
+          "tipo": "text"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DELITO ESPECIFICO",
+          "origen": "datos.delito_especifico",
+          "tipo": "text"
+        },
+        {
+          "columna": "P",
+          "encabezado": "SUB TIPO",
+          "origen": "datos.subtipo",
+          "tipo": "text"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "origen": "datos.tentativa_2",
+          "tipo": "text"
+        },
+        {
+          "columna": "R",
+          "encabezado": "SI  EL DINERO + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "origen": "datos.fuero_2",
+          "tipo": "text"
+        },
+        {
+          "columna": "S",
+          "encabezado": "SI  EL DINERO + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "origen": "datos.delito_general_2",
+          "tipo": "text"
+        },
+        {
+          "columna": "T",
+          "encabezado": "SI  EL DINERO + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "origen": "datos.delito_especifico_2",
+          "tipo": "text"
+        },
+        {
+          "columna": "U",
+          "encabezado": "SI  EL DINERO + DE UN DELITO /DELITO/SUB TIPO2",
+          "origen": "datos.subtipo_2",
+          "tipo": "text"
+        },
+        {
+          "columna": "V",
+          "encabezado": "DIRNIC /DIRNOS",
+          "origen": "intervencion.direccion_policial",
+          "tipo": "text"
+        },
+        {
+          "columna": "W",
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "origen": "intervencion.direccion_especializada_region",
+          "tipo": "text"
+        },
+        {
+          "columna": "X",
+          "encabezado": "DIVISION POLICIAL",
+          "origen": "intervencion.division_policial",
+          "tipo": "text"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "DEPARTAMENTO POLICAL",
+          "origen": "intervencion.departamento_policial",
+          "tipo": "text"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "origen": "intervencion.unidad_area_equipo",
+          "tipo": "text"
+        },
+        {
+          "columna": "AA",
+          "encabezado": "N° DE NOTA INFOMATIVA REALIZADA",
+          "origen": "intervencion.nota_sicpip",
+          "tipo": "text"
+        },
+        {
+          "columna": "AB",
+          "encabezado": "LATITUD",
+          "origen": "intervencion.latitud",
+          "tipo": "number"
+        },
+        {
+          "columna": "AC",
+          "encabezado": "LONGITUD",
+          "origen": "intervencion.longitud",
+          "tipo": "number"
+        }
+      ]
+    },
+    {
+      "nombre": "DESAPARECIDOS",
+      "tabla": "desapariciones",
+      "raiz": "desaparecido",
+      "tipo": null,
+      "encabezados_recuperados_de": null,
+      "columnas": [
+        {
+          "columna": "A",
+          "encabezado": "N°",
+          "origen": "derivado.numero_fila",
+          "tipo": "number"
+        },
+        {
+          "columna": "B",
+          "encabezado": "MES",
+          "origen": "derivado.mes_fecha",
+          "tipo": "text"
+        },
+        {
+          "columna": "C",
+          "encabezado": "FECHA DE LA DENUNCIA",
+          "origen": "datos.fecha",
+          "tipo": "date"
+        },
+        {
+          "columna": "D",
+          "encabezado": "TIPO DE DENUNCIA",
+          "origen": "datos.tipo_denuncia",
+          "tipo": "text"
+        },
+        {
+          "columna": "E",
+          "encabezado": "Nº DENUNCIA U ANTECEDENTE",
+          "origen": "datos.numero_denuncia",
+          "tipo": "text"
+        },
+        {
+          "columna": "F",
+          "encabezado": "PROCEDENCIA",
+          "origen": "datos.procedencia",
+          "tipo": "text"
+        },
+        {
+          "columna": "G",
+          "encabezado": "FECHA DE OCURRIDO EL HECHO",
+          "origen": "datos.fecha_hecho",
+          "tipo": "date"
+        },
+        {
+          "columna": "H",
+          "encabezado": "APELLIDO PATERNO",
+          "origen": "datos.apellido_paterno",
+          "tipo": "text"
+        },
+        {
+          "columna": "I",
+          "encabezado": "APELLIDO MATERNO",
+          "origen": "datos.apellido_materno",
+          "tipo": "text"
+        },
+        {
+          "columna": "J",
+          "encabezado": "NOMBRES",
+          "origen": "datos.nombres",
+          "tipo": "text"
+        },
+        {
+          "columna": "K",
+          "encabezado": "EDAD",
+          "origen": "datos.edad",
+          "tipo": "number"
+        },
+        {
+          "columna": "L",
+          "encabezado": "SEXO",
+          "origen": "datos.genero",
+          "tipo": "text"
+        },
+        {
+          "columna": "M",
+          "encabezado": "NACIONALIDAD",
+          "origen": "datos.nacionalidad",
+          "tipo": "text"
+        },
+        {
+          "columna": "N",
+          "encabezado": "DISTRITO",
+          "origen": "datos.distrito",
+          "tipo": "text"
+        },
+        {
+          "columna": "O",
+          "encabezado": "DEPARTAMENTO",
+          "origen": "datos.departamento",
+          "tipo": "text"
+        },
+        {
+          "columna": "P",
+          "encabezado": "INSTRUCTOR",
+          "origen": "datos.instructor",
+          "tipo": "text"
+        },
+        {
+          "columna": "Q",
+          "encabezado": "EQUIPO",
+          "origen": "datos.equipo",
+          "tipo": "text"
+        },
+        {
+          "columna": "R",
+          "encabezado": "ESTADO DE LA DENUNCIA",
+          "origen": "datos.estado_denuncia",
+          "tipo": "text"
+        },
+        {
+          "columna": "S",
+          "encabezado": "Nº DE INFORME FORMULADO",
+          "origen": "datos.numero_informe",
+          "tipo": "text"
+        },
+        {
+          "columna": "T",
+          "encabezado": "FECHA DEL INFORME",
+          "origen": "datos.fecha_informe",
+          "tipo": "date"
+        },
+        {
+          "columna": "U",
+          "encabezado": "DESTINO DEL DOCUMENTO",
+          "origen": "datos.destino_documento",
+          "tipo": "text"
+        },
+        {
+          "columna": "V",
+          "encabezado": "MODALIDAD",
+          "origen": "datos.modalidad",
+          "tipo": "text"
+        },
+        {
+          "columna": "W",
+          "encabezado": "SITUACION DE LA PERSONA",
+          "origen": "datos.situacion",
+          "tipo": "text"
+        },
+        {
+          "columna": "X",
+          "encabezado": "FECHA DE UBICACIÓN",
+          "origen": "datos.fecha_ubicacion",
+          "tipo": "date"
+        },
+        {
+          "columna": "Y",
+          "encabezado": "MES DE UBICACIÓN",
+          "origen": "desaparecido.mes_ubicacion",
+          "tipo": "text"
+        },
+        {
+          "columna": "Z",
+          "encabezado": "DISTRITO DE UBICACIÓN",
+          "origen": "datos.distrito_ubicacion",
+          "tipo": "text"
+        }
+      ]
     }
   ]
 };

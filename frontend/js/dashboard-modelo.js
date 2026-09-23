@@ -7,7 +7,7 @@
   const geo=r=>r.geography?Object.fromEntries(Object.entries(r.geography).map(([k,v])=>[k,clean(v)])):({department:clean(r.place.split(' / ')[0]),province:clean(r.place.split(' / ')[1]),district:clean(r.place.split(' / ')[2])});
   const amounts=[['soles','Soles · PEN'],['dolares','Dólares · USD'],['euros','Euros · EUR']];
   function facets(c){
-    const preferred=['nacionalidad','genero','motivo_detencion','situacion_actual','situacion','motivo','tipo','marca','modalidad','es_funcionario','mas_buscado','sustancia','medida','tipo_municiones','procedencia','delito_general','grupo'];
+    const preferred=['tipo_inmueble','estado_denuncia','nacionalidad','genero','motivo_detencion','situacion_actual','situacion','motivo','tipo','marca','modalidad','es_funcionario','mas_buscado','sustancia','medida','tipo_municiones','procedencia','delito_general','grupo'];
     const fields=preferred.map(k=>c.fields.find(f=>f.key===k)).filter(Boolean);
     return fields.slice(0,6);
   }

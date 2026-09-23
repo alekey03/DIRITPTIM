@@ -11,6 +11,7 @@
     ['drogas', '▦', 'Drogas e insumos', 'Sustancias, cantidades y otros hallazgos.'],
     ['vehiculos', '▱', 'Vehículos y maquinaria', 'Vehículos mayores, menores y maquinaria.'],
     ["dinero", "◇", "Dinero", "Importes separados por moneda."],["celulares", "◇", "Celulares", "Equipos, IMEI y situación."],["migraciones", "◇", "Intervenidos por Ley de Migraciones", "Identificación e infracción migratoria."],["chips", "◇", "Chips", "Tipo, situación y cantidad de chips."],["personas_ubicadas", "◇", "Personas ubicadas", "Persona, situación y lugar de ubicación."],["expulsados", "◇", "Extranjeros expulsados", "Identificación, condición e infracción."],
+    ['locales', '⌂', 'Locales intervenidos', 'Inmuebles, situación y valorización.'],
     ['otros', '＋', 'Otros resultados', 'Dinero, celulares, bienes y demás resultados del detallado.']
   ];
   const cards = document.getElementById('resultCards');
@@ -59,7 +60,7 @@
     window.GruposUI.show(selected());
     window.ComplementariosUI.show(selected());
     document.getElementById('complementResultsPanel').hidden = !selected().some(t=>window.COMPLEMENTARIOS_CATALOGO.tipos.some(c=>c.tipo===t));
-    document.getElementById('resultsPendingNote').hidden = !selected().some(type => !['dinero','celulares','migraciones','chips','personas_ubicadas','expulsados','detenidos','requisitoriados','prostitucion','victimas','menores','drogas','armas','vehiculos','bandas','organizaciones'].includes(type));
+    document.getElementById('resultsPendingNote').hidden = !selected().some(type => !['locales','dinero','celulares','migraciones','chips','personas_ubicadas','expulsados','detenidos','requisitoriados','prostitucion','victimas','menores','drogas','armas','vehiculos','bandas','organizaciones'].includes(type));
   }
   function lock() {
     document.getElementById('resultsSelection').disabled = busy || readOnly || !current;
