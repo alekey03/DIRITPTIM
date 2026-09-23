@@ -13,4 +13,4 @@ Consulta `consultar_seguimiento(fecha)` y declara mediante `declarar_seguimiento
 - Acceso según las mismas funciones de ámbito ya vigentes. La vista de metadatos no se concede directamente a usuarios; la RPC sólo entrega el agregado de sus unidades.
 - No modifica registros de producción ni activa usuarios.
 
-El panel y la RPC de lectura son exclusivos de estadistico_direccion (general) y estadistico_jefatura (sólo las 23 dependencias desconcentradas). Los perfiles locales declaran desde Registros. Administrador general no está incluido en el panel, conforme a la instrucción de limitarlo a esos dos perfiles.
+El administrador general tiene acceso completo al panel y a la RPC. Entre los perfiles estadísticos, estadistico_direccion ve todas las dependencias y estadistico_jefatura sólo los 23 desconcentrados. Los perfiles locales declaran desde Registros y no acceden al panel.

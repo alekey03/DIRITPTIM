@@ -481,7 +481,7 @@ async function loadCurrentProfile(userId) {
   document.querySelectorAll('.admin-only').forEach(element => {
     element.classList.toggle('visible', element.dataset.view === 'usersView' ? puedeCrearUsuarios() : data.rol === 'administrador');
   });
-  document.querySelectorAll('.seguimiento-access').forEach(el => { el.hidden = !['estadistico_direccion','estadistico_jefatura'].includes(data.rol); });
+  document.querySelectorAll('.seguimiento-access').forEach(el => { el.hidden = !['administrador','estadistico_direccion','estadistico_jefatura'].includes(data.rol); });
   window.updateDeclaracionDiaria?.();
   const isAdministrator = data.rol === 'administrador';
   const assignedScope = isAdministrator || data.rol === 'estadistico_direccion'
@@ -963,7 +963,7 @@ userForm.addEventListener('submit', async event => {
 document.querySelectorAll('[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     const target = button.dataset.view;
-    if (target === 'seguimientoView' && (!currentProfile?.activo || !['estadistico_direccion','estadistico_jefatura'].includes(currentProfile.rol))) return;
+    if (target === 'seguimientoView' && (!currentProfile?.activo || !['administrador','estadistico_direccion','estadistico_jefatura'].includes(currentProfile.rol))) return;
     if (target === 'detaineeFormView' && !button.dataset.fromOperativo && window.prepareStandaloneDetainee?.() === false) return;
     const parentGroup = button.closest('.nav-group');
     if (parentGroup) {
