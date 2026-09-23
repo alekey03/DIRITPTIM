@@ -64,7 +64,7 @@ function downloadWorkbook(rows, sheetName, filePrefix) {
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, sheet, sheetName);
   const date = new Date().toISOString().slice(0, 10);
-  XLSX.writeFile(workbook, `${filePrefix}_${date}.xlsx`, { compression: true });
+  downloadStyledWorkbook(workbook, `${filePrefix}_${date}.xlsx`, { compression: true });
 }
 
 async function withExportButton(button, work) {

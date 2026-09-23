@@ -14,17 +14,17 @@
   function options(select,items,empty){select.replaceChildren(new Option(empty,''),...items.map(([v,t])=>new Option(t,v)));}
   function clearOutput(s){s.rows=[];s.filtered=[];s.body.replaceChildren();s.summary.replaceChildren();s.charts.replaceChildren();s.pageText.textContent='';s.prev.disabled=s.next.disabled=true;}
   function setup(id,dashboard){
-    const root=document.getElementById(id),s={root,dashboard,rows:[],filtered:[],page:0,turn:0};states.set(id,s);
+    const root=document.getElementById(id),s={root,dashboard,rows:[],filtered:[],page:0,turn:0};states.set(id,s);s.dashboardFilters=null;
     root.innerHTML=`<div class="records-toolbar"><div><h2>${dashboard?'Resultados a la vista':'Todos los registros, por categoría'}</h2><p>${dashboard?'Explore los indicadores y abra los registros que los sustentan.':'Consulte resultados de distintas intervenciones desde un solo lugar.'}</p></div><button class="secondary" data-refresh>↻ Actualizar</button></div><div class="consulta-scope"></div><form class="card consulta-filters"><label class="consulta-category-search">Buscar categoría<input name="categorySearch" type="search" placeholder="Ej. vehículos, detenidos…"></label><label class="consulta-category">Categoría<select name="category"></select></label><label>Desde<input name="from" type="date"></label><label>Hasta<input name="to" type="date"></label><label>Dependencia<select name="unit"><option value="">Todas las autorizadas</option></select></label><label>Lugar<input name="place" type="search" placeholder="Departamento, provincia o distrito"></label><label>Buscar en registros<input name="search" type="search" placeholder="Nombre, documento, placa, NI…"></label><label>Campo específico<select name="field"></select></label><label>Contiene<input name="value" type="search" placeholder="Valor del campo elegido"></label><div class="consulta-filter-actions"><button class="primary" type="submit">Aplicar filtros</button><button class="secondary" type="button" data-clear>Limpiar</button></div></form><p class="consulta-status" role="status" aria-live="polite"></p><div class="consulta-metrics"></div><div class="consulta-charts"></div><div class="consulta-table-wrap" tabindex="0" aria-label="Tabla de registros, desplazamiento horizontal"><table><thead></thead><tbody></tbody></table></div><div class="consulta-pagination"><button class="secondary" data-prev>Anterior</button><span></span><button class="secondary" data-next>Siguiente</button></div>`;
     s.status=root.querySelector('.consulta-status');s.body=root.querySelector('tbody');s.summary=root.querySelector('.consulta-metrics');s.charts=root.querySelector('.consulta-charts');s.prev=root.querySelector('[data-prev]');s.next=root.querySelector('[data-next]');s.pageText=root.querySelector('.consulta-pagination span');
     if(!dashboard){const exportButton=el('button','⇩ Exportar consulta a Excel','secondary');exportButton.type='button';root.querySelector('.records-toolbar').append(exportButton);exportButton.addEventListener('click',()=>{if(!s.loaded||!currentProfile?.activo)return;render(s);const f=filterValues(s);if(f.from&&f.to&&f.from>f.to)return;if(!s.filtered.length){s.status.textContent='No hay registros para exportar con estos filtros.';return;}try{const c=category(s),rows=s.filtered.map((r,i)=>Object.fromEntries([['N°',i+1],['Fecha',excelDate(r.date)],['Dependencia',r.unit],['Lugar',r.place],['NI principal',r.ni],...c.fields.map(field=>[field.label,r.data[field.key]])]));downloadWorkbook(rows,'Consulta',`registros_${c.id}`);}catch(error){s.status.textContent=error.message;}});}
     const select=root.querySelector('[name="category"]');select.replaceChildren(...categories.map(c=>new Option(c.title,c.id)));select.value='detenidos';
     function fields(){options(root.querySelector('[name="field"]'),category(s).fields.map(f=>[f.key,f.label]),'Todos los campos');}
     fields();
-    select.addEventListener('change',()=>{fields();root.querySelector('[name="value"]').value='';load(s);});
+    select.addEventListener('change',()=>{s.dashboardFilters=null;fields();root.querySelector('[name="value"]').value='';load(s);});
     root.querySelector('[name="categorySearch"]').addEventListener('input',event=>{const norm=v=>v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase();const search=norm(event.target.value);for(const option of select.options)option.hidden=!norm(option.text).includes(search)&&!option.selected;});
-    root.querySelector('form').addEventListener('submit',event=>{event.preventDefault();s.page=0;render(s);});
-    root.querySelector('[data-clear]').addEventListener('click',()=>{for(const name of ['from','to','unit','place','search','field','value'])root.querySelector(`[name="${name}"]`).value='';s.page=0;render(s);});
+    root.querySelector('form').addEventListener('submit',event=>{event.preventDefault();if(s.dashboardFilters){s.dashboardFilters.from=value(s,'from');s.dashboardFilters.to=value(s,'to');s.dashboardFilters.unit=value(s,'unit');}s.page=0;render(s);});
+    root.querySelector('[data-clear]').addEventListener('click',()=>{s.dashboardFilters=null;for(const name of ['from','to','unit','place','search','field','value'])root.querySelector(`[name="${name}"]`).value='';s.page=0;render(s);});
     root.querySelector('[data-refresh]').addEventListener('click',()=>load(s));
     s.prev.addEventListener('click',()=>{s.page--;table(s);});s.next.addEventListener('click',()=>{s.page++;table(s);});
     root.querySelector('.consulta-table-wrap').hidden=dashboard;root.querySelector('.consulta-pagination').hidden=dashboard;
@@ -42,7 +42,7 @@
       const map=new Map(parents.map(p=>[p.id,p]));s.rows=raw.map(r=>model.normalize(r,c,map)).sort((a,b)=>b.date.localeCompare(a.date)||a.id.localeCompare(b.id));
       const units=s.root.querySelector('[name="unit"]'),previous=units.value;
       options(units,[...new Set(s.rows.map(r=>r.unit).filter(Boolean))].sort().map(u=>[u,u]),'Todas las autorizadas');
-      if([...units.options].some(o=>o.value===previous))units.value=previous;
+      if([...units.options].some(o=>o.value===(s.dashboardFilters?.unit||previous)))units.value=s.dashboardFilters?.unit||previous;
       s.loaded=true;render(s);
     }catch(error){if(alive()){clearOutput(s);s.status.textContent=`No se pudieron consultar los datos. ${error.message||'Pulse Actualizar para reintentar.'}`;}}
   }
@@ -50,9 +50,9 @@
     if(!s.loaded)return;
     const filters=filterValues(s);
     if(filters.from&&filters.to&&filters.from>filters.to){s.summary.replaceChildren();s.charts.replaceChildren();s.body.replaceChildren();s.prev.disabled=s.next.disabled=true;s.pageText.textContent='';s.status.textContent='La fecha inicial no puede ser posterior a la fecha final.';return;}
-    const c=category(s);s.filtered=model.filter(s.rows,filters);
+    const c=category(s);s.filtered=model.filter(s.rows,filters);if(s.dashboardFilters)s.filtered=window.DashboardModelo.filter(s.filtered,s.dashboardFilters);
     s.summary.replaceChildren(...model.metrics(s.filtered,c).map(([title,n])=>{const card=el('article',null,'card');card.append(el('small',title),el('strong',fmt(n)));return card;}));
-    s.status.textContent=`${c.title} · ${fmt(s.filtered.length)} registros coincidentes de ${fmt(s.rows.length)} autorizados. ${s.filtered.length?'':'No hay registros para estos filtros.'}`;
+    s.status.textContent=`${s.dashboardFilters?'Selección del dashboard aplicada · use Limpiar para quitarla. ':''}${c.title} · ${fmt(s.filtered.length)} registros coincidentes de ${fmt(s.rows.length)} autorizados. ${s.filtered.length?'':'No hay registros para estos filtros.'}`;
     s.charts.replaceChildren();
     if(s.dashboard){
       const button=el('button','Ver estos registros','primary');button.type='button';button.addEventListener('click',()=>{
@@ -90,9 +90,15 @@
     }
     s.prev.disabled=s.page===0;s.next.disabled=s.page+1>=pages;s.pageText.textContent=`Página ${s.page+1} de ${pages} · ${fmt(s.filtered.length)} registros`;
   }
-  const records=setup('consultaRecordsView',false),dashboard=setup('generalDashboardView',true);
-  window.loadConsultaRecords=()=>load(records);window.loadGeneralDashboard=()=>load(dashboard);
-  // La sesión puede restablecerse antes de terminar de descargar este módulo.
-  if(currentProfile?.activo&&dashboard.root.classList.contains('active'))load(dashboard);
-  window.resetConsulta=()=>{window.resetProduccion?.();session++;detail.close();detailContent.replaceChildren();for(const s of states.values()){s.turn++;s.loaded=false;clearOutput(s);s.root.querySelector('form').reset();s.root.querySelector('[name="category"]').value='detenidos';options(s.root.querySelector('[name="unit"]'),[],'Todas las autorizadas');options(s.root.querySelector('[name="field"]'),categories.find(c=>c.id==='detenidos').fields.map(f=>[f.key,f.label]),'Todos los campos');s.status.textContent='';s.root.querySelector('.consulta-scope').textContent='';}};
+  const records=setup('consultaRecordsView',false);
+  window.loadConsultaRecords=()=>load(records);
+  window.openConsultaFromDashboard=(id,filters)=>{
+    const c=categories.find(c=>c.id===id);if(!c)return;
+    records.root.querySelector('form').reset();records.root.querySelector('[name="category"]').value=id;
+    options(records.root.querySelector('[name="field"]'),c.fields.map(f=>[f.key,f.label]),'Todos los campos');
+    records.dashboardFilters=JSON.parse(JSON.stringify(filters));
+    for(const k of ['from','to'])records.root.querySelector(`[name="${k}"]`).value=filters[k]||'';
+    document.querySelector('.nav-item[data-view="consultaRecordsView"]').click();
+  };
+  window.resetConsulta=()=>{window.resetProduccion?.();window.resetExecutiveDashboard?.();session++;detail.close();detailContent.replaceChildren();for(const s of states.values()){s.turn++;s.loaded=false;s.dashboardFilters=null;clearOutput(s);s.root.querySelector('form').reset();s.root.querySelector('[name="category"]').value='detenidos';options(s.root.querySelector('[name="unit"]'),[],'Todas las autorizadas');options(s.root.querySelector('[name="field"]'),categories.find(c=>c.id==='detenidos').fields.map(f=>[f.key,f.label]),'Todos los campos');s.status.textContent='';s.root.querySelector('.consulta-scope').textContent='';}};
 })();

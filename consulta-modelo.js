@@ -30,7 +30,7 @@
     }
     if(category.table==='intervencion_drogas') {data.sustancia=drugs[record.tipo];data.medida=record.tipo.startsWith('kg_')?'kg':'envoltorios';}
     if(category.table==='intervencion_grupos') data.integrantes=(record.intervencion_grupo_integrantes||[]).length;
-    return {id:record.id,parentId:parent?.id||null,data,date:record.datos?.fecha||record.fecha||parent?.fecha||'',unit:parent?.unidad||record.unidad||'',place:[parent?.departamento||data.departamento,parent?.provincia||data.provincia,parent?.distrito||data.distrito].filter(Boolean).join(' / '),ni:parent?.nota_sicpip||record.nota_sicpip||''};
+    return {geography:{department:parent?.departamento||data.departamento||'',province:parent?.provincia||data.provincia||'',district:parent?.distrito||data.distrito||''},id:record.id,parentId:parent?.id||null,data,date:record.datos?.fecha||record.fecha||parent?.fecha||'',unit:parent?.unidad||record.unidad||'',place:[parent?.departamento||data.departamento,parent?.provincia||data.provincia,parent?.distrito||data.distrito].filter(Boolean).join(' / '),ni:parent?.nota_sicpip||record.nota_sicpip||''};
   }
   function filter(rows, f) {
     return rows.filter(r=>(!f.from||r.date>=f.from)&&(!f.to||(r.date&&r.date<=f.to))&&(!f.unit||r.unit===f.unit)&&(!f.place||normalizeText(r.place).includes(normalizeText(f.place)))&&(!f.search||normalizeText([r.date,r.unit,r.place,r.ni,...Object.values(r.data).filter(v=>typeof v!=='object')].join(' ')).includes(normalizeText(f.search)))&&(!f.field||!f.value||normalizeText(r.data[f.field]).includes(normalizeText(f.value))));
