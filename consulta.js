@@ -1,104 +1,82 @@
 (() => {
-  const model=window.ConsultaModelo, categories=model.categories(), states=new Map();
-  let session=0;
-  const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!=null)node.textContent=text;if(cls)node.className=cls;return node;};
-  const fmt=n=>new Intl.NumberFormat('es-PE',{maximumFractionDigits:6}).format(n);
-  const show=v=>v==null||v===''?'—':typeof v==='boolean'?(v?'Sí':'No'):String(v);
-  const detail=document.createElement('dialog');detail.className='modal';
-  const detailCard=el('div',null,'modal-card'),detailTitle=el('h2'),detailContent=el('div',null,'consulta-detail'),detailClose=el('button','Cerrar','secondary');
-  detailClose.addEventListener('click',()=>detail.close());detailCard.append(detailTitle,detailContent,detailClose);detail.append(detailCard);document.body.append(detail);
-  function openDetail(r,c){detailTitle.textContent=c.title;detailContent.replaceChildren();for(const [label,v]of [['Fecha',r.date],['Dependencia',r.unit],['Lugar',r.place],['NI principal',r.ni],...c.fields.map(f=>[f.label,r.data[f.key]])]){const row=el('p');row.append(el('strong',label+': '),document.createTextNode(show(v)));detailContent.append(row);}detail.showModal();}
-  const value=(s,key)=>s.root.querySelector(`[name="${key}"]`).value;
-  const category=s=>categories.find(c=>c.id===value(s,'category'));
-  function filterValues(s){return Object.fromEntries(['from','to','unit','place','search','field','value'].map(k=>[k,value(s,k)]));}
-  function options(select,items,empty){select.replaceChildren(new Option(empty,''),...items.map(([v,t])=>new Option(t,v)));}
-  function clearOutput(s){s.rows=[];s.filtered=[];s.body.replaceChildren();s.summary.replaceChildren();s.charts.replaceChildren();s.pageText.textContent='';s.prev.disabled=s.next.disabled=true;}
-  function setup(id,dashboard){
-    const root=document.getElementById(id),s={root,dashboard,rows:[],filtered:[],page:0,turn:0};states.set(id,s);s.dashboardFilters=null;
-    root.innerHTML=`<div class="records-toolbar"><div><h2>${dashboard?'Resultados a la vista':'Todos los registros, por categoría'}</h2><p>${dashboard?'Explore los indicadores y abra los registros que los sustentan.':'Consulte resultados de distintas intervenciones desde un solo lugar.'}</p></div><button class="secondary" data-refresh>↻ Actualizar</button></div><div class="consulta-scope"></div><form class="card consulta-filters"><label class="consulta-category-search">Buscar categoría<input name="categorySearch" type="search" placeholder="Ej. vehículos, detenidos…"></label><label class="consulta-category">Categoría<select name="category"></select></label><label>Desde<input name="from" type="date"></label><label>Hasta<input name="to" type="date"></label><label>Dependencia<select name="unit"><option value="">Todas las autorizadas</option></select></label><label>Lugar<input name="place" type="search" placeholder="Departamento, provincia o distrito"></label><label>Buscar en registros<input name="search" type="search" placeholder="Nombre, documento, placa, NI…"></label><label>Campo específico<select name="field"></select></label><label>Contiene<input name="value" type="search" placeholder="Valor del campo elegido"></label><div class="consulta-filter-actions"><button class="primary" type="submit">Aplicar filtros</button><button class="secondary" type="button" data-clear>Limpiar</button></div></form><p class="consulta-status" role="status" aria-live="polite"></p><div class="consulta-metrics"></div><div class="consulta-charts"></div><div class="consulta-table-wrap" tabindex="0" aria-label="Tabla de registros, desplazamiento horizontal"><table><thead></thead><tbody></tbody></table></div><div class="consulta-pagination"><button class="secondary" data-prev>Anterior</button><span></span><button class="secondary" data-next>Siguiente</button></div>`;
-    s.status=root.querySelector('.consulta-status');s.body=root.querySelector('tbody');s.summary=root.querySelector('.consulta-metrics');s.charts=root.querySelector('.consulta-charts');s.prev=root.querySelector('[data-prev]');s.next=root.querySelector('[data-next]');s.pageText=root.querySelector('.consulta-pagination span');
-    if(!dashboard){const exportButton=el('button','⇩ Exportar consulta a Excel','secondary');exportButton.type='button';root.querySelector('.records-toolbar').append(exportButton);exportButton.addEventListener('click',()=>{if(!s.loaded||!currentProfile?.activo)return;render(s);const f=filterValues(s);if(f.from&&f.to&&f.from>f.to)return;if(!s.filtered.length){s.status.textContent='No hay registros para exportar con estos filtros.';return;}try{const c=category(s),rows=s.filtered.map((r,i)=>Object.fromEntries([['N°',i+1],['Fecha',excelDate(r.date)],['Dependencia',r.unit],['Lugar',r.place],['NI principal',r.ni],...c.fields.map(field=>[field.label,r.data[field.key]])]));downloadWorkbook(rows,'Consulta',`registros_${c.id}`);}catch(error){s.status.textContent=error.message;}});}
-    const select=root.querySelector('[name="category"]');select.replaceChildren(...categories.map(c=>new Option(c.title,c.id)));select.value='detenidos';
-    function fields(){options(root.querySelector('[name="field"]'),category(s).fields.map(f=>[f.key,f.label]),'Todos los campos');}
-    fields();
-    select.addEventListener('change',()=>{s.dashboardFilters=null;fields();root.querySelector('[name="value"]').value='';load(s);});
-    root.querySelector('[name="categorySearch"]').addEventListener('input',event=>{const norm=v=>v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase();const search=norm(event.target.value);for(const option of select.options)option.hidden=!norm(option.text).includes(search)&&!option.selected;});
-    root.querySelector('form').addEventListener('submit',event=>{event.preventDefault();if(s.dashboardFilters){s.dashboardFilters.from=value(s,'from');s.dashboardFilters.to=value(s,'to');s.dashboardFilters.unit=value(s,'unit');}s.page=0;render(s);});
-    root.querySelector('[data-clear]').addEventListener('click',()=>{s.dashboardFilters=null;for(const name of ['from','to','unit','place','search','field','value'])root.querySelector(`[name="${name}"]`).value='';s.page=0;render(s);});
-    root.querySelector('[data-refresh]').addEventListener('click',()=>load(s));
-    s.prev.addEventListener('click',()=>{s.page--;table(s);});s.next.addEventListener('click',()=>{s.page++;table(s);});
-    root.querySelector('.consulta-table-wrap').hidden=dashboard;root.querySelector('.consulta-pagination').hidden=dashboard;
-    return s;
+  const Q=window.ConsultaModelo,M=window.DashboardModelo,categories=Q.categories(),root=document.getElementById('consultaRecordsView');
+  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;};
+  const fmt=n=>new Intl.NumberFormat('es-PE',{maximumFractionDigits:6}).format(n),show=v=>v==null||v===''?'—':typeof v==='boolean'?(v?'Sí':'No'):String(v);
+  const date=v=>/^\d{4}-\d{2}-\d{2}/.test(v)?v.slice(0,10).split('-').reverse().join('/'):'—';
+  let rows=[],filtered=[],page=0,turn=0,loaded=false,who='',pending=null,loadedCategory='';
+  const identity=()=>JSON.stringify([currentProfile?.id,currentProfile?.rol,currentProfile?.unidad,currentProfile?.activo]);
+  root.classList.add('records-workspace');
+  root.innerHTML=`<header class="records-heading"><div><span class="dash-eyebrow">CONSULTA DE PRODUCCIÓN</span><h2>Registros, en un solo lugar</h2><p>Encuentre el resultado que necesita y consulte su operativo de origen.</p></div><div class="records-toolbar"><button type="button" class="secondary" data-refresh>↻ Actualizar</button><button type="button" class="secondary" data-export disabled>⇩ Exportar selección</button></div></header><div class="records-access"><span class="records-access-dot" aria-hidden="true"></span><span class="consulta-scope"></span><small>Información según sus permisos</small></div>
+  <form class="dash-filter-panel records-filter-panel" aria-label="Filtros de registros"><div class="dash-filter-heading"><div><span class="dash-eyebrow">LOCALIZAR REGISTROS</span><h3>Elija una categoría y refine su búsqueda</h3></div><button class="dash-text-button" type="button" data-clear>Limpiar filtros ↺</button></div><div class="records-main-filters"><label class="records-category">Categoría<select name="category"></select></label><label class="records-search">Buscar en registros<input name="search" type="search" placeholder="Nombre, documento, placa o NI…" autocomplete="off"></label><label>Desde<input name="from" type="date"></label><label>Hasta<input name="to" type="date"></label></div><div class="records-territory-filters"><label>Dependencia<select name="unit"></select></label><label>Departamento de intervención<select name="department"></select></label><label>Provincia<select name="province"></select></label><label>Distrito<select name="district"></select></label></div><div class="records-specific-heading" data-specific-heading></div><div class="dash-specific" data-specific></div><details class="records-advanced"><summary>Más opciones de búsqueda</summary><div><label>Campo específico<select name="field"></select></label><label>Contiene<input name="value" type="search" placeholder="Valor del campo elegido"></label></div></details><div class="dash-filter-footer"><div class="dash-chips" data-chips></div><button class="primary" type="submit">Aplicar filtros</button></div></form>
+  <p class="consulta-status" role="status" aria-live="polite"></p><div class="records-metrics consulta-metrics"></div><section class="records-results"><header><div><span class="dash-eyebrow">RESULTADOS DE LA CONSULTA</span><h3 data-table-title>Detenidos <span data-count></span></h3></div><label>Filas por página<select name="pageSize"><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></label></header><div class="consulta-table-wrap" tabindex="0" aria-label="Tabla de registros, desplazamiento horizontal"><table><thead></thead><tbody></tbody></table></div><div class="consulta-pagination"><span data-page></span><div><button class="secondary" type="button" data-prev>← Anterior</button><button class="secondary" type="button" data-next>Siguiente →</button></div></div></section>`;
+  const $=q=>root.querySelector(q),value=k=>$(`[name="${k}"]`).value,cat=()=>categories.find(c=>c.id===value('category'));
+  const detail=document.createElement('dialog');detail.className='modal';detail.setAttribute('aria-label','Detalle del registro');
+  const card=el('div',null,'modal-card'),title=el('h2'),content=el('div',null,'consulta-detail'),close=el('button','Cerrar','secondary');close.type='button';close.addEventListener('click',()=>detail.close());card.append(title,content,close);detail.append(card);document.body.append(detail);
+  function openDetail(r,c){title.textContent=c.title;content.replaceChildren();for(const [label,v]of [['Fecha',date(r.date)],['Dependencia',r.unit],['Lugar',r.place],['NI principal',r.ni],...c.fields.map(f=>[f.label,r.data[f.key]])]){const p=el('p');p.append(el('strong',label+': '),document.createTextNode(show(v)));content.append(p);}detail.showModal();}
+  const groupFor=c=>c.table==='intervenciones'?'Operaciones':['detenidos','rq','prostitucion','victimas','menores','migraciones','personas_ubicadas','expulsados'].includes(c.id)?'Personas':c.table==='intervencion_grupos'?'Grupos criminales':c.table==='intervencion_drogas'?'Drogas':'Bienes y otros resultados';
+  for(const name of ['Operaciones','Personas','Grupos criminales','Drogas','Bienes y otros resultados']){const g=el('optgroup');g.label=name;categories.filter(c=>groupFor(c)===name).forEach(c=>g.append(new Option(c.title,c.id)));if(g.children.length)$('[name="category"]').append(g);}$('[name="category"]').value='detenidos';
+  function options(select,items,empty,selected=''){select.replaceChildren(new Option(empty,''),...items.map(x=>new Option(x.label??x,x.value??x)));if(selected&&!Array.from(select.options).some(o=>o.value===selected))select.append(new Option(`${selected} · sin registros actuales`,selected));select.value=selected;}
+  const unique=(fn,source=rows)=>[...new Set(source.map(fn).map(M.clean).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+  function geographic(f={}){
+    options($('[name="department"]'),unique(r=>M.geo(r).department),'Todos los departamentos',f.department||'');
+    const deps=rows.filter(r=>!f.department||M.norm(M.geo(r).department)===M.norm(f.department));
+    options($('[name="province"]'),f.department?unique(r=>M.geo(r).province,deps):[],'Todas las provincias',f.department?f.province||'':'');$('[name="province"]').disabled=!f.department;
+    const provs=deps.filter(r=>!f.province||M.norm(M.geo(r).province)===M.norm(f.province));
+    options($('[name="district"]'),f.province?unique(r=>M.geo(r).district,provs):[],'Todos los distritos',f.department&&f.province?f.district||'':'');$('[name="district"]').disabled=!f.department||!f.province;
   }
-  async function load(s){
-    const turn=++s.turn,epoch=session,profile=currentProfile?.id,c=category(s);clearOutput(s);s.page=0;s.loaded=false;
-    const alive=()=>turn===s.turn&&epoch===session&&currentProfile?.id===profile&&currentProfile?.activo;
-    s.root.querySelector('.consulta-scope').textContent=`${nombrePerfil(currentProfile?.rol)} · ${currentProfile?.unidad||''}`;
-    s.status.textContent='Consultando los registros autorizados…';
-    if(!alive()){s.status.textContent='Inicie sesión con una cuenta activa.';return;}
+  function specific(f={}){
+    const c=cat(),host=$('[data-specific]');host.replaceChildren();
+    function add(label,input){const wrap=el('label',label);wrap.append(input);host.append(wrap);}
+    for(const field of M.facets(c)){const select=el('select');select.name=`facet_${field.key}`;select.dataset.facet=field.key;options(select,[...unique(r=>r.data[field.key]),{value:'__missing__',label:'Sin registrar'}],'Todos',f.facets?.[field.key]||'');add(field.label,select);}
+    if(c.fields.some(x=>x.key==='edad'))for(const [name,label]of [['ageMin','Edad desde'],['ageMax','Edad hasta']]){const input=el('input');input.type='number';input.min='0';input.max='120';input.step='1';input.name=name;input.placeholder=name==='ageMin'?'Ej. 18':'Ej. 60';input.value=f[name]??'';add(label,input);}
+    if(c.id==='dinero'){const select=el('select');select.name='currency';options(select,[...M.amounts.map(([value,label])=>({value,label})),{value:'dinero_otro',label:'Otra moneda'}],'Todas las monedas',f.currency||'');add('Tipo de moneda',select);}
+    host.hidden=!host.children.length;$('[data-specific-heading]').hidden=host.hidden;$('[data-specific-heading]').textContent=`Filtros de ${c.title.toLocaleLowerCase('es')}`;
+    options($('[name="field"]'),c.fields.map(x=>({value:x.key,label:x.label})),'Todos los campos',f.field||'');
+  }
+  function filters(){const f=Object.fromEntries(['from','to','unit','department','province','district','search','field','value'].map(k=>[k,value(k)]));f.facets={};for(const input of $('[data-specific]').querySelectorAll('[name]')){if(input.dataset.facet)f.facets[input.dataset.facet]=input.value;else f[input.name]=input.value;}return f;}
+  function hydrate(f){for(const k of ['from','to','search','value'])$(`[name="${k}"]`).value=f[k]||'';options($('[name="unit"]'),unique(r=>r.unit),'Todas las autorizadas',f.unit||'');geographic(f);specific(f);}
+  function clearOutput(){filtered=[];$('[data-table-title]').textContent=cat().title;$('tbody').replaceChildren();$('.consulta-metrics').replaceChildren();$('[data-page]').textContent='';$('[data-prev]').disabled=$('[data-next]').disabled=$('[data-export]').disabled=true;}
+  async function load(){
+    const f=pending||filters();const token=++turn,person=identity(),c=cat();loaded=false;rows=[];clearOutput();root.setAttribute('aria-busy','true');
+    $('.consulta-scope').textContent=`${nombrePerfil(currentProfile?.rol)} · ${currentProfile?.unidad||''}`;$('.consulta-status').textContent='Consultando los registros autorizados…';
+    const alive=()=>token===turn&&identity()===person&&currentProfile?.activo;
+    if(!alive()){root.removeAttribute('aria-busy');$('.consulta-status').textContent='Inicie sesión con una cuenta activa.';return;}
     try{
-      const [raw,parents]=await Promise.all([model.readAll(supabaseClient,c,alive),c.table==='intervenciones'?Promise.resolve([]):model.readAll(supabaseClient,{table:'intervenciones',select:'id,fecha,unidad,departamento,provincia,distrito,nota_sicpip'},alive)]);
-      if(!alive())return;
-      const map=new Map(parents.map(p=>[p.id,p]));s.rows=raw.map(r=>model.normalize(r,c,map)).sort((a,b)=>b.date.localeCompare(a.date)||a.id.localeCompare(b.id));
-      const units=s.root.querySelector('[name="unit"]'),previous=units.value;
-      options(units,[...new Set(s.rows.map(r=>r.unit).filter(Boolean))].sort().map(u=>[u,u]),'Todas las autorizadas');
-      if([...units.options].some(o=>o.value===(s.dashboardFilters?.unit||previous)))units.value=s.dashboardFilters?.unit||previous;
-      s.loaded=true;render(s);
-    }catch(error){if(alive()){clearOutput(s);s.status.textContent=`No se pudieron consultar los datos. ${error.message||'Pulse Actualizar para reintentar.'}`;}}
+      const [raw,parents]=await Promise.all([Q.readAll(supabaseClient,c,alive),c.table==='intervenciones'?[]:Q.readAll(supabaseClient,{table:'intervenciones',select:'id,fecha,unidad,departamento,provincia,distrito,nota_sicpip'},alive)]);
+      if(!alive())return;const p=new Map(parents.map(r=>[r.id,r]));rows=raw.map(r=>Q.normalize(r,c,p)).sort((a,b)=>b.date.localeCompare(a.date)||a.id.localeCompare(b.id));
+      hydrate(f);pending=null;loaded=true;who=person;loadedCategory=c.id;page=0;render();
+    }catch(e){if(alive()){$('.consulta-status').textContent=`No se pudieron consultar los datos. ${e.message||'Pulse Actualizar para reintentar.'}`;}}
+    finally{if(token===turn)root.removeAttribute('aria-busy');}
   }
-  function render(s){
-    if(!s.loaded)return;
-    const filters=filterValues(s);
-    if(filters.from&&filters.to&&filters.from>filters.to){s.summary.replaceChildren();s.charts.replaceChildren();s.body.replaceChildren();s.prev.disabled=s.next.disabled=true;s.pageText.textContent='';s.status.textContent='La fecha inicial no puede ser posterior a la fecha final.';return;}
-    const c=category(s);s.filtered=model.filter(s.rows,filters);if(s.dashboardFilters)s.filtered=window.DashboardModelo.filter(s.filtered,s.dashboardFilters);
-    s.summary.replaceChildren(...model.metrics(s.filtered,c).map(([title,n])=>{const card=el('article',null,'card');card.append(el('small',title),el('strong',fmt(n)));return card;}));
-    s.status.textContent=`${s.dashboardFilters?'Selección del dashboard aplicada · use Limpiar para quitarla. ':''}${c.title} · ${fmt(s.filtered.length)} registros coincidentes de ${fmt(s.rows.length)} autorizados. ${s.filtered.length?'':'No hay registros para estos filtros.'}`;
-    s.charts.replaceChildren();
-    if(s.dashboard){
-      const button=el('button','Ver estos registros','primary');button.type='button';button.addEventListener('click',()=>{
-        const target=states.get('consultaRecordsView');target.root.querySelector('[name="category"]').value=c.id;
-        options(target.root.querySelector('[name="field"]'),c.fields.map(f=>[f.key,f.label]),'Todos los campos');
-        options(target.root.querySelector('[name="unit"]'),[...new Set(s.rows.map(r=>r.unit).filter(Boolean))].sort().map(u=>[u,u]),'Todas las autorizadas');
-        for(const [key,val]of Object.entries(filters))target.root.querySelector(`[name="${key}"]`).value=val;
-        document.querySelector('.nav-item[data-view="consultaRecordsView"]').click();
-      });s.charts.append(button);
-      chart(s,'Por dependencia',r=>r.unit||'Sin dependencia');chart(s,'Evolución mensual',r=>r.date.slice(0,7)||'Sin fecha',true);
-      if(c.table==='intervencion_drogas')chart(s,'Registros por sustancia',r=>r.data.sustancia);
-      else if(c.id==='prostitucion')chart(s,'Registros por género',r=>r.data.genero||'Sin registrar');
-      else if(c.fields.some(f=>f.key==='situacion'))chart(s,'Registros por situación',r=>r.data.situacion||'Sin registrar');
-    }else table(s);
+  function chips(){const host=$('[data-chips]');host.replaceChildren();for(const input of $('form').querySelectorAll('input,select')){if(input.name==='category'||!input.value)continue;const label=input.closest('label')?.firstChild?.textContent||input.name,b=el('button',`${label}: ${input.selectedOptions?.[0]?.textContent||input.value} ×`,'dash-chip');b.type='button';b.addEventListener('click',()=>{input.value='';if(input.name==='department'){$('[name="province"]').value='';$('[name="district"]').value='';}if(input.name==='province')$('[name="district"]').value='';if(['department','province'].includes(input.name))geographic(filters());page=0;render();});host.append(b);}if(!host.children.length)host.append(el('span','Puede combinar filtros para precisar la consulta.','dash-filter-hint'));}
+  function render(){
+    if(!loaded||who!==identity()||loadedCategory!==cat().id)return false;
+    if(!$('form').reportValidity()){clearOutput();$('.consulta-status').textContent='Revise los valores indicados en los filtros.';return false;}
+    const f=filters(),c=cat();clearOutput();chips();
+    if(f.from&&f.to&&f.from>f.to){$('.consulta-status').textContent='La fecha inicial no puede ser posterior a la fecha final.';return false;}
+    if(f.ageMin!==undefined&&f.ageMin!==''&&f.ageMax!==''&&Number(f.ageMin)>Number(f.ageMax)){$('.consulta-status').textContent='La edad mínima no puede ser mayor que la edad máxima.';return false;}
+    filtered=Q.filter(M.filter(rows,f),{search:f.search,field:f.field,value:f.value});
+    $('.consulta-status').textContent=`${c.title} · ${fmt(filtered.length)} de ${fmt(rows.length)} registros autorizados.${filtered.length?'':' No hay resultados con estos filtros.'}`;
+    $('.consulta-metrics').replaceChildren(...M.totals(filtered,c,f).map(([label,n])=>{const a=el('article');a.append(el('span',label),el('strong',fmt(n)));return a;}));
+    $('[data-export]').disabled=!filtered.length;table();return true;
   }
-  function chart(s,title,key,chronological=false){
-    const counts=new Map();for(const r of s.filtered){const label=key(r);counts.set(label,(counts.get(label)||0)+1);}
-    const article=el('article',null,'card consulta-chart');article.append(el('h3',title),el('p','Número de registros según los filtros aplicados.'));
-    const items=[...counts].sort(chronological?(a,b)=>a[0].localeCompare(b[0]):(a,b)=>b[1]-a[1]);
-    const max=Math.max(1,...items.map(([,n])=>n));
-    for(const [label,n]of items){const row=el('div',null,'consulta-bar');row.append(el('span',label),el('strong',fmt(n)));const track=el('div',null,'consulta-track'),bar=el('i');bar.style.width=`${n/max*100}%`;track.append(bar);row.append(track);article.append(row);}
-    if(!items.length)article.append(el('p','Sin datos para este periodo.'));s.charts.append(article);
+  function table(){
+    const c=cat(),columns=[{key:'date',label:'Fecha'},...c.fields.slice(0,5).map(f=>({...f,data:true})),{key:'unit',label:'Dependencia'},{key:'place',label:'Lugar de intervención'},{key:'ni',label:'NI principal'}],tr=el('tr');
+    for(const f of columns){const th=el('th',f.label);th.scope='col';tr.append(th);}tr.append(el('th','Acciones'));$('thead').replaceChildren(tr);$('tbody').replaceChildren();
+    const size=Number(value('pageSize')),pages=Math.max(1,Math.ceil(filtered.length/size));page=Math.min(Math.max(0,page),pages-1);
+    $('[data-table-title]').replaceChildren(document.createTextNode(c.title+' '),el('span',fmt(filtered.length),'records-count-badge'));
+    for(const r of filtered.slice(page*size,page*size+size)){const row=el('tr');for(const f of columns)row.append(el('td',f.key==='date'?date(r.date):show(f.data?r.data[f.key]:r[f.key])));const actions=el('td');const b=el('button','Ver detalle','table-action');b.type='button';b.addEventListener('click',()=>c.id==='detenidos'?window.openLinkedDetainee(r.id):openDetail(r,c));actions.append(b);if(r.parentId){const op=el('button','Ver operativo ↗','table-action');op.type='button';op.addEventListener('click',()=>window.openOperativoResults(r.parentId));actions.append(op);}else actions.append(el('small','Sin operativo vinculado'));row.append(actions);$('tbody').append(row);}
+    if(!filtered.length){const row=el('tr'),td=el('td',null,'records-empty');td.colSpan=columns.length+1;td.append(el('strong','No se encontraron registros'),el('p','Pruebe con otro periodo o quite algunos filtros.'));row.append(td);$('tbody').append(row);}
+    $('[data-prev]').disabled=page===0;$('[data-next]').disabled=page+1>=pages;$('[data-page]').textContent=`${filtered.length?fmt(page*size+1):'0'}–${fmt(Math.min((page+1)*size,filtered.length))} de ${fmt(filtered.length)} · Página ${page+1} de ${pages}`;
   }
-  function table(s){
-    const c=category(s),columns=[{key:'date',label:'Fecha'},...c.fields.slice(0,5).map(f=>({...f,data:true})),{key:'unit',label:'Dependencia'},{key:'place',label:'Lugar'},{key:'ni',label:'NI principal'}];
-    const head=el('tr');for(const f of columns){const th=el('th',f.label);th.scope='col';head.append(th);}head.append(el('th','Acciones'));s.root.querySelector('thead').replaceChildren(head);s.body.replaceChildren();
-    const pages=Math.max(1,Math.ceil(s.filtered.length/25));s.page=Math.min(Math.max(0,s.page),pages-1);
-    for(const r of s.filtered.slice(s.page*25,s.page*25+25)){
-      const tr=el('tr');for(const f of columns)tr.append(el('td',show(f.data?r.data[f.key]:r[f.key])));
-      const actions=el('td');
-      if(c.id==='detenidos'){const b=el('button','Ver detalle','table-action');b.addEventListener('click',()=>window.openLinkedDetainee(r.id));actions.append(b);}
-      else {const b=el('button','Ver detalle','table-action');b.addEventListener('click',()=>openDetail(r,c));actions.append(b);}
-      if(r.parentId){const b=el('button','Ver operativo','table-action');b.addEventListener('click',()=>window.openOperativoResults(r.parentId));actions.append(b);}else actions.append(el('span','Sin operativo vinculado'));
-      tr.append(actions);s.body.append(tr);
-    }
-    s.prev.disabled=s.page===0;s.next.disabled=s.page+1>=pages;s.pageText.textContent=`Página ${s.page+1} de ${pages} · ${fmt(s.filtered.length)} registros`;
-  }
-  const records=setup('consultaRecordsView',false);
-  window.loadConsultaRecords=()=>load(records);
-  window.openConsultaFromDashboard=(id,filters)=>{
-    const c=categories.find(c=>c.id===id);if(!c)return;
-    records.root.querySelector('form').reset();records.root.querySelector('[name="category"]').value=id;
-    options(records.root.querySelector('[name="field"]'),c.fields.map(f=>[f.key,f.label]),'Todos los campos');
-    records.dashboardFilters=JSON.parse(JSON.stringify(filters));
-    for(const k of ['from','to'])records.root.querySelector(`[name="${k}"]`).value=filters[k]||'';
-    document.querySelector('.nav-item[data-view="consultaRecordsView"]').click();
-  };
-  window.resetConsulta=()=>{window.resetProduccion?.();window.resetExecutiveDashboard?.();session++;detail.close();detailContent.replaceChildren();for(const s of states.values()){s.turn++;s.loaded=false;s.dashboardFilters=null;clearOutput(s);s.root.querySelector('form').reset();s.root.querySelector('[name="category"]').value='detenidos';options(s.root.querySelector('[name="unit"]'),[],'Todas las autorizadas');options(s.root.querySelector('[name="field"]'),categories.find(c=>c.id==='detenidos').fields.map(f=>[f.key,f.label]),'Todos los campos');s.status.textContent='';s.root.querySelector('.consulta-scope').textContent='';}};
+  $('form').addEventListener('submit',e=>{e.preventDefault();page=0;render();});
+  $('form').addEventListener('change',e=>{if(e.target.name==='category'){const f=filters();f.facets={};f.ageMin=f.ageMax=f.currency=f.field=f.value='';specific();pending=f;load();return;}if(e.target.name==='department'){$('[name="province"]').value='';$('[name="district"]').value='';geographic(filters());}if(e.target.name==='province'){$('[name="district"]').value='';geographic(filters());}page=0;render();});
+  $('[data-clear]').addEventListener('click',()=>{const id=cat().id;$('form').reset();$('[name="category"]').value=id;hydrate({});page=0;render();});
+  $('[data-refresh]').addEventListener('click',load);$('[name="pageSize"]').addEventListener('change',()=>{page=0;if(loaded)table();});
+  $('[data-prev]').addEventListener('click',()=>{page--;table();});$('[data-next]').addEventListener('click',()=>{page++;table();});
+  $('[data-export]').addEventListener('click',()=>{if(!currentProfile?.activo||!render()||!filtered.length)return;try{const c=cat(),data=filtered.map((r,i)=>Object.fromEntries([['N°',i+1],['Fecha',excelDate(r.date)],['Dependencia',r.unit],['Lugar',r.place],['NI principal',r.ni],...c.fields.map(f=>[f.label,r.data[f.key]])]));downloadWorkbook(data,'Consulta',`registros_${c.id}`);}catch(e){$('.consulta-status').textContent=e.message;}});
+  window.loadConsultaRecords=load;
+  window.openConsultaFromDashboard=(id,f)=>{if(!categories.some(c=>c.id===id))return;$('form').reset();$('[name="category"]').value=id;specific();pending=JSON.parse(JSON.stringify(f));document.querySelector('.nav-item[data-view="consultaRecordsView"]').click();};
+  window.resetConsulta=()=>{window.resetProduccion?.();window.resetExecutiveDashboard?.();turn++;loaded=false;rows=[];who='';loadedCategory='';pending=null;detail.close();content.replaceChildren();clearOutput();$('thead').replaceChildren();$('form').reset();$('[name="category"]').value='detenidos';hydrate({});$('[data-chips]').replaceChildren();$('.consulta-status').textContent='';$('.consulta-scope').textContent='';$('[data-table-title]').textContent='Registros';root.removeAttribute('aria-busy');};
+  hydrate({});clearOutput();if(currentProfile?.activo&&root.classList.contains('active'))load();
 })();

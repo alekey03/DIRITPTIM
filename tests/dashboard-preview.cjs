@@ -2,7 +2,7 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const stage=path.resolve(__dirname,'..'),base=stage;
 const read=n=>fs.readFileSync(path.join(fs.existsSync(path.join(stage,n))?stage:base,n),'utf8');
 let html=read('index.html').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');
-const scripts=['perfiles-estadisticos.js','materiales-catalogo.js','vehiculos-catalogo.js','requisitoriados-catalogo.js','complementarios-catalogo.js','prostitucion-catalogo.js','victimas-catalogo.js','menores-catalogo.js','consulta-modelo.js','consulta.js','dashboard-modelo.js','dashboard.js'];
+const scripts=['perfiles-estadisticos.js','materiales-catalogo.js','vehiculos-catalogo.js','requisitoriados-catalogo.js','complementarios-catalogo.js','prostitucion-catalogo.js','victimas-catalogo.js','menores-catalogo.js','consulta-modelo.js','dashboard-modelo.js','consulta.js','dashboard.js'];
 const mock=`let currentProfile={id:'demo',activo:true,rol:'administrador',unidad:'ADMINISTRACIÓN GENERAL DIRITPTIM'};
 const places=[['LIMA','LIMA','LINCE'],['AREQUIPA','AREQUIPA','AREQUIPA'],['CUSCO','CUSCO','CUSCO'],['PUNO','PUNO','PUNO'],['LA LIBERTAD','TRUJILLO','TRUJILLO'],['PIURA','PIURA','PIURA'],['LORETO','MAYNAS','IQUITOS']];
 const parents=Array.from({length:36},(_,i)=>({id:'op-'+String(i).padStart(3,'0'),tipo:'operativo',unidad:i%3?'DEPITPTIM '+places[i%7][0]:'DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS',fecha:'2026-'+String(1+i%9).padStart(2,'0')+'-15',departamento:places[i%7][0],provincia:places[i%7][1],distrito:places[i%7][2],nota_sicpip:'NI-DEMO-'+i}));
