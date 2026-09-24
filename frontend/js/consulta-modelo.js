@@ -46,7 +46,7 @@
     if(category.id==='dinero')for(const [key,label]of [['soles','Soles (S/)'],['dolares','Dólares (USD)'],['euros','Euros (EUR)']])out.push([label,rows.reduce((sum,r)=>sum+Math.round(Number(r.data[key]||0)*100),0)/100]);
     if(['celulares','chips'].includes(category.id))out.push(['Cantidad total',rows.reduce((sum,r)=>sum+Number(r.data.cantidad||0),0)]);
     if(category.table==='intervencion_vehiculos') out[0][0]='Vehículos / maquinaria registrados';
-    if(category.table==='intervencion_grupos'&&rows.some(r=>r.historical))out[0][0]='Filas de integrantes';
+    if(category.table==='intervencion_grupos')out[0][0]=category.type==='banda'?'Bandas criminales':'Organizaciones criminales';
     if(category.table==='intervencion_grupos')out.push(['Vínculos de integrantes',rows.reduce((n,r)=>n+Number(r.data.integrantes||0),0)]);
     if(category.id==='prostitucion')out.push(['Femenino',rows.filter(r=>r.data.genero==='FEMENINO').length],['Masculino',rows.filter(r=>r.data.genero==='MASCULINO').length],['Género sin registrar',rows.filter(r=>!r.data.genero).length]);
     if(category.id==='victimas')out.push(['Menores de edad',rows.filter(r=>r.data.edad!=null&&Number(r.data.edad)<18).length],['Mayores de edad',rows.filter(r=>r.data.edad!=null&&Number(r.data.edad)>=18).length]);
@@ -64,7 +64,7 @@
       const {data,error}=await query;
       if(!alive())throw new Error('Consulta cancelada');
       if(error)throw error;
-      if(!data?.length)return [...rows,...await window.HistoricoProduccion.read(client,category,alive)];
+      if(!data?.length){const all=[...rows,...await window.HistoricoProduccion.read(client,category,alive)];return category.table==='intervencion_grupos'?window.HistoricoProduccion.groupRows(all):all;}
       if(data[data.length-1].id===cursor)throw new Error('No se pudo avanzar en la consulta.');
       rows.push(...data);cursor=data[data.length-1].id;
     }
