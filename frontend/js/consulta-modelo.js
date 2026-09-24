@@ -23,6 +23,7 @@
   }
   const normalizeText = value => String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().trim();
   function normalize(record, category, parents) {
+    if(record.historical)return window.HistoricoProduccion.normalize(record,category);
     const parent = category.table==='intervenciones' ? record : parents.get(record.intervencion_id);
     const data = {...record,...record.personas,...record.datos,...(Array.isArray(record.intervencion_operativos)?record.intervencion_operativos[0]:record.intervencion_operativos)};
     if (category.id==='detenidos') {
@@ -39,12 +40,13 @@
   }
   function metrics(rows, category) {
     const out=[['Registros',rows.length],['Operativos vinculados',new Set(rows.map(r=>r.parentId).filter(Boolean)).size],['Dependencias',new Set(rows.map(r=>r.unit).filter(Boolean)).size]];
-    if(category.id==='desaparecidos')data.nombre=[data.apellido_paterno,data.apellido_materno,data.nombres].filter(Boolean).join(' ');
+
     if(category.table==='intervencion_drogas') for(const unit of ['kg','envoltorios']) {const relevant=rows.filter(r=>r.data.medida===unit);if(relevant.length)out.push([unit==='kg'?'Cantidad (kg)':'Cantidad (envoltorios)',relevant.reduce((sum,r)=>sum+Number(r.data.cantidad||0),0)]);}
     if(category.id==='desaparecidos')out.splice(1,1,['Con fecha de ubicación',rows.filter(r=>r.data.fecha_ubicacion).length]);
     if(category.id==='dinero')for(const [key,label]of [['soles','Soles (S/)'],['dolares','Dólares (USD)'],['euros','Euros (EUR)']])out.push([label,rows.reduce((sum,r)=>sum+Math.round(Number(r.data[key]||0)*100),0)/100]);
     if(['celulares','chips'].includes(category.id))out.push(['Cantidad total',rows.reduce((sum,r)=>sum+Number(r.data.cantidad||0),0)]);
     if(category.table==='intervencion_vehiculos') out[0][0]='Vehículos / maquinaria registrados';
+    if(category.table==='intervencion_grupos'&&rows.some(r=>r.historical))out[0][0]='Filas de integrantes';
     if(category.table==='intervencion_grupos')out.push(['Vínculos de integrantes',rows.reduce((n,r)=>n+Number(r.data.integrantes||0),0)]);
     if(category.id==='prostitucion')out.push(['Femenino',rows.filter(r=>r.data.genero==='FEMENINO').length],['Masculino',rows.filter(r=>r.data.genero==='MASCULINO').length],['Género sin registrar',rows.filter(r=>!r.data.genero).length]);
     if(category.id==='victimas')out.push(['Menores de edad',rows.filter(r=>r.data.edad!=null&&Number(r.data.edad)<18).length],['Mayores de edad',rows.filter(r=>r.data.edad!=null&&Number(r.data.edad)>=18).length]);
@@ -62,7 +64,7 @@
       const {data,error}=await query;
       if(!alive())throw new Error('Consulta cancelada');
       if(error)throw error;
-      if(!data?.length)return rows;
+      if(!data?.length)return [...rows,...await window.HistoricoProduccion.read(client,category,alive)];
       if(data[data.length-1].id===cursor)throw new Error('No se pudo avanzar en la consulta.');
       rows.push(...data);cursor=data[data.length-1].id;
     }

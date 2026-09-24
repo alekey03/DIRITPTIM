@@ -121,15 +121,13 @@
   window.openOperativoById = openRecord;
   window.loadOperativos = async () => {
     const turn = ++listRequest, session = epoch;
-    rows.replaceChildren(); listStatus.textContent = 'Consultando borradores…';
+    rows.replaceChildren(); listStatus.textContent = 'Consultando operativos…';
     const prev = document.getElementById('operativosPrev'), next = document.getElementById('operativosNext');
     prev.disabled = next.disabled = true;
     if (!currentProfile?.activo) { listStatus.textContent = 'Inicie sesión con una cuenta activa.'; return; }
     try {
-      const { data, error } = await supabaseClient.from('intervenciones')
-        .select('id,fecha,tipo,nota_sicpip,unidad,departamento,provincia,distrito')
-        .in('tipo', ['operativo', 'megaoperativo']).order('creado_en', { ascending: false }).order('id')
-        .range(page * 25, page * 25 + 25);
+      const all=await window.ConsultaModelo.readAll(supabaseClient,{table:'intervenciones'},()=>session===epoch&&turn===listRequest&&currentProfile?.activo);
+      const data=all.filter(r=>['operativo','megaoperativo'].includes(r.tipo)).map(r=>({...r,...(r.historical?r.datos:{})})).sort((a,b)=>String(b.fecha||'').localeCompare(String(a.fecha||''))||a.id.localeCompare(b.id)).slice(page*25,page*25+26),error=null;
       if (session !== epoch || turn !== listRequest) return;
       if (error) throw error;
       for (const record of data.slice(0, 25)) {
@@ -140,14 +138,14 @@
         }
         const action = document.createElement('td'), button = document.createElement('button');
         button.type = 'button'; button.className = 'table-action'; button.textContent = 'Abrir';
-        button.addEventListener('click', () => openRecord(record.id)); action.appendChild(button);
+        button.addEventListener('click', () => record.historical?window.HistoricoProduccion.open(record.id,false,window.loadOperativos):openRecord(record.id)); action.appendChild(button);
         const resultsButton = document.createElement('button'); resultsButton.type = 'button'; resultsButton.className = 'table-action'; resultsButton.textContent = 'Resultados';
-        resultsButton.addEventListener('click', () => window.openOperativoResults?.(record.id)); action.appendChild(resultsButton);
+        resultsButton.addEventListener('click', () => record.historical?window.HistoricoProduccion.open(record.id):window.openOperativoResults?.(record.id)); action.appendChild(resultsButton);
         row.appendChild(action); rows.appendChild(row);
       }
       prev.disabled = page === 0; next.disabled = data.length <= 25;
       document.getElementById('operativosPage').textContent = `Página ${page + 1}`;
-      listStatus.textContent = data.length ? '' : 'No hay borradores en esta página.';
+      listStatus.textContent = data.length ? '' : 'No hay operativos en esta página.';
     } catch (error) {
       if (session === epoch && turn === listRequest) {
         prev.disabled = page === 0;

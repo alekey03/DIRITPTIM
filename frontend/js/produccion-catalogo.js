@@ -1,4 +1,3 @@
-// Solo encabezados y mapeos; no contiene registros personales.
 window.PRODUCCION_CATALOGO = {
   "version": 2,
   "hojas": [
@@ -6,236 +5,299 @@ window.PRODUCCION_CATALOGO = {
       "nombre": "1_OPERATIVOS",
       "tabla": "intervenciones",
       "raiz": "intervencion",
-      "tipo": null,
+      "tipo": "operativo",
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero_fila",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes_fecha",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "intervencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "intervencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
+        },
+        {
+          "encabezado": "OPERATIVO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_5"
+        },
+        {
+          "encabezado": "EL RESULTADO:POSITIVO - NEGATIVO",
+          "tipo": "text",
+          "origen": "operativo.resultado",
+          "historicoKey": "resultado"
+        },
+        {
+          "encabezado": "ORDEN DE OPERACIONES",
+          "tipo": "text",
+          "origen": "operativo.orden_operaciones",
+          "historicoKey": "orden_operaciones"
+        },
+        {
+          "encabezado": "PLAN DE OPERACIONES",
+          "tipo": "text",
+          "origen": "operativo.plan_operaciones",
+          "historicoKey": "plan_operaciones"
+        },
+        {
+          "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
+          "origen": "intervencion.departamento",
+          "historicoKey": "departamento"
+        },
+        {
+          "encabezado": "PROVINCIA",
+          "tipo": "text",
+          "origen": "intervencion.provincia",
+          "historicoKey": "provincia"
+        },
+        {
+          "encabezado": "DISTRITO",
+          "tipo": "text",
+          "origen": "intervencion.distrito",
+          "historicoKey": "distrito"
+        },
+        {
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_12"
+        },
+        {
+          "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_13"
+        },
+        {
+          "encabezado": "DELITO GENERAL",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_14"
+        },
+        {
+          "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_15"
+        },
+        {
+          "encabezado": "SUB TIPO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_16"
+        },
+        {
+          "encabezado": "MOTIVO DEL OPERATIVO \n(FLAGRANCIA-MEDIDA LIMITATIVA)",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_17"
+        },
+        {
+          "encabezado": "TIPO DE OPERATIVO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_18"
+        },
+        {
+          "encabezado": "PERSONAL A CARGO CANTIDAD",
+          "tipo": "number",
+          "origen": "operativo.personal_cargo",
+          "historicoKey": "personal_cargo"
+        },
+        {
+          "encabezado": "VEHICULO MAYOR A CARGO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_mayores_cargo",
+          "historicoKey": "vehiculos_mayores_cargo"
+        },
+        {
+          "encabezado": "VEHICULO MENOR A CARGO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_menores_cargo",
+          "historicoKey": "vehiculos_menores_cargo"
+        },
+        {
+          "encabezado": "PERSONAL PNP DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.personal_apoyo_pnp",
+          "historicoKey": "personal_apoyo_pnp"
+        },
+        {
+          "encabezado": "VEHICULO MAYOR DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_mayores_apoyo_pnp",
+          "historicoKey": "vehiculos_mayores_apoyo_pnp"
+        },
+        {
+          "encabezado": "VEHICULO MENOR   DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_menores_apoyo_pnp",
+          "historicoKey": "vehiculos_menores_apoyo_pnp"
+        },
+        {
+          "encabezado": "PERSONAL FF.AA DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.personal_apoyo_ffaa",
+          "historicoKey": "personal_apoyo_ffaa"
+        },
+        {
+          "encabezado": "VEHICULO MAYOR FF.AA DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_mayores_apoyo_ffaa",
+          "historicoKey": "vehiculos_mayores_apoyo_ffaa"
+        },
+        {
+          "encabezado": "VEHICULO MENOR FF.AA DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_menores_apoyo_ffaa",
+          "historicoKey": "vehiculos_menores_apoyo_ffaa"
+        },
+        {
+          "encabezado": "OTRAS ENTIDADES",
+          "tipo": "text",
+          "origen": "operativo.otras_entidades",
+          "historicoKey": "otras_entidades"
+        },
+        {
+          "encabezado": "VEHICULO MAYOR OTRAS ENTIDADES",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_mayores_otras_entidades",
+          "historicoKey": "vehiculos_mayores_otras_entidades"
+        },
+        {
+          "encabezado": "VEHICULO MENOR OTRAS ENTIDADES",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_menores_otras_entidades",
+          "historicoKey": "vehiculos_menores_otras_entidades"
+        },
+        {
+          "encabezado": "DIRECCION -DIRNIC DIRNOS",
+          "tipo": "text",
+          "origen": "intervencion.direccion_policial",
+          "historicoKey": "direccion_policial"
+        },
+        {
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
+          "tipo": "text",
+          "origen": "intervencion.direccion_especializada_region",
+          "historicoKey": "direccion_especializada_region"
+        },
+        {
+          "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
+          "origen": "intervencion.division_policial",
+          "historicoKey": "division_policial"
+        },
+        {
+          "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
+          "origen": "intervencion.departamento_policial",
+          "historicoKey": "departamento_policial"
+        },
+        {
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
+          "origen": "intervencion.unidad_area_equipo",
+          "historicoKey": "unidad_area_equipo"
+        },
+        {
+          "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "nota_sicpip"
+        },
+        {
+          "encabezado": "LATITUD",
+          "tipo": "number",
+          "origen": "intervencion.latitud",
+          "historicoKey": "latitud"
+        },
+        {
+          "encabezado": "LONGITUD",
+          "tipo": "number",
+          "origen": "intervencion.longitud",
+          "historicoKey": "longitud"
         },
         {
           "columna": "E",
           "encabezado": "SI ES \n OPERATIVO / MEGA OPERATIVO",
           "origen": "intervencion.tipo",
-          "tipo": "text"
-        },
-        {
-          "columna": "F",
-          "encabezado": "EL RESULTADO: POSITIVO - NEGATIVO",
-          "origen": "operativo.resultado",
-          "tipo": "text"
-        },
-        {
-          "columna": "G",
-          "encabezado": "ORDEN DE OPERACIONES",
-          "origen": "operativo.orden_operaciones",
-          "tipo": "text"
-        },
-        {
-          "columna": "H",
-          "encabezado": "PLAN DE OPERACIONES",
-          "origen": "operativo.plan_operaciones",
-          "tipo": "text"
-        },
-        {
-          "columna": "I",
-          "encabezado": "DEPARTAMENTO",
-          "origen": "intervencion.departamento",
-          "tipo": "text"
-        },
-        {
-          "columna": "J",
-          "encabezado": "PROVINCIA",
-          "origen": "intervencion.provincia",
-          "tipo": "text"
-        },
-        {
-          "columna": "K",
-          "encabezado": "DISTRITO",
-          "origen": "intervencion.distrito",
-          "tipo": "text"
-        },
-        {
-          "columna": "L",
-          "encabezado": "PERSONAL A CARGO CANTIDAD",
-          "origen": "operativo.personal_cargo",
-          "tipo": "number"
-        },
-        {
-          "columna": "M",
-          "encabezado": "VEHICULO MAYOR A CARGO",
-          "origen": "operativo.vehiculos_mayores_cargo",
-          "tipo": "number"
-        },
-        {
-          "columna": "N",
-          "encabezado": "VEHICULO MENOR A CARGO",
-          "origen": "operativo.vehiculos_menores_cargo",
-          "tipo": "number"
-        },
-        {
-          "columna": "O",
-          "encabezado": "PERSONAL PNP DE APOYO",
-          "origen": "operativo.personal_apoyo_pnp",
-          "tipo": "number"
-        },
-        {
-          "columna": "P",
-          "encabezado": "VEHICULO MAYOR DE APOYO",
-          "origen": "operativo.vehiculos_mayores_apoyo_pnp",
-          "tipo": "number"
-        },
-        {
-          "columna": "Q",
-          "encabezado": "VEHICULO MENOR DE APOYO",
-          "origen": "operativo.vehiculos_menores_apoyo_pnp",
-          "tipo": "number"
-        },
-        {
-          "columna": "R",
-          "encabezado": "PERSONAL FF.AA DE APOYO",
-          "origen": "operativo.personal_apoyo_ffaa",
-          "tipo": "number"
-        },
-        {
-          "columna": "S",
-          "encabezado": "VEHICULO MAYOR FF.AA DE APOYO",
-          "origen": "operativo.vehiculos_mayores_apoyo_ffaa",
-          "tipo": "number"
-        },
-        {
-          "columna": "T",
-          "encabezado": "VEHICULO MENOR FF.AA DE APOYO",
-          "origen": "operativo.vehiculos_menores_apoyo_ffaa",
-          "tipo": "number"
-        },
-        {
-          "columna": "U",
-          "encabezado": "OTRAS ENTIDADES",
-          "origen": "operativo.otras_entidades",
-          "tipo": "text"
-        },
-        {
-          "columna": "V",
-          "encabezado": "VEHICULO MAYOR OTRAS ENTIDADES",
-          "origen": "operativo.vehiculos_mayores_otras_entidades",
-          "tipo": "number"
-        },
-        {
-          "columna": "W",
-          "encabezado": "VEHICULO MENOR OTRAS ENTIDADES",
-          "origen": "operativo.vehiculos_menores_otras_entidades",
-          "tipo": "number"
-        },
-        {
-          "columna": "X",
-          "encabezado": "DIRECCION -DIRNIC DIRNOS",
-          "origen": "intervencion.direccion_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "Y",
-          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
-          "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
-        },
-        {
-          "columna": "Z",
-          "encabezado": "DIVISION POLICIAL",
-          "origen": "intervencion.division_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "AA",
-          "encabezado": "DEPARTAMENTO POLICAL",
-          "origen": "intervencion.departamento_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "AB",
-          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
-          "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "tipo": "text",
+          "historicoKey": "tipo"
         },
         {
           "columna": "AC",
           "encabezado": "NOTA INFORMATIVA SICPIP",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
-        },
-        {
-          "columna": "AD",
-          "encabezado": "LATITUD",
-          "origen": "intervencion.latitud",
-          "tipo": "number"
-        },
-        {
-          "columna": "AE",
-          "encabezado": "LONGITUD",
-          "origen": "intervencion.longitud",
-          "tipo": "number"
+          "tipo": "text",
+          "historicoKey": "nota_sicpip"
         },
         {
           "columna": "AF",
           "encabezado": "DETALLE DE LA UBICACIÓN",
           "origen": "intervencion.detalle_ubicacion",
-          "tipo": "text"
+          "tipo": "text",
+          "historicoKey": "detalle_ubicacion"
         },
         {
           "columna": "AG",
           "encabezado": "CANTIDAD DE PERSONAS QUE SE INTERVIENEN",
           "origen": "operativo.personas_intervenidas",
-          "tipo": "number"
+          "tipo": "number",
+          "historicoKey": "personas_intervenidas"
         },
         {
           "columna": "AH",
           "encabezado": "CANTIDAD DE VEHICULOS MAYORES INTERVENIDOS",
           "origen": "operativo.vehiculos_mayores_intervenidos",
-          "tipo": "number"
+          "tipo": "number",
+          "historicoKey": "vehiculos_mayores_intervenidos"
         },
         {
           "columna": "AI",
           "encabezado": "CANTIDAD DE VEHICULOS MENORES INTERVENIDOS",
           "origen": "operativo.vehiculos_menores_intervenidos",
-          "tipo": "number"
+          "tipo": "number",
+          "historicoKey": "vehiculos_menores_intervenidos"
         },
         {
           "columna": "AJ",
           "encabezado": "CONTROL DE IDENTIDAD DE PERSONAS EXTRANJERAS",
           "origen": "operativo.control_identidad_extranjeros",
-          "tipo": "text"
+          "tipo": "text",
+          "historicoKey": "control_identidad_extranjeros"
         },
         {
           "columna": "AK",
           "encabezado": "INTERVENCION A PENALES",
           "origen": "operativo.intervencion_penales",
-          "tipo": "text"
+          "tipo": "text",
+          "historicoKey": "intervencion_penales"
         },
         {
           "columna": "AL",
           "encabezado": "OPERATIVO A ESPECIFICAR",
           "origen": "operativo.operativo_especificar",
-          "tipo": "text"
+          "tipo": "text",
+          "historicoKey": "operativo_especificar"
         }
       ]
     },
@@ -247,232 +309,244 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes_intervencion",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "requisitoria.datos.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA DETENCION",
+          "tipo": "time",
           "origen": "requisitoria.datos.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
           "origen": "requisitoria.datos.apellido_paterno",
-          "tipo": "text"
+          "historicoKey": "apellido_paterno"
         },
         {
-          "columna": "F",
           "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
           "origen": "requisitoria.datos.apellido_materno",
-          "tipo": "text"
+          "historicoKey": "apellido_materno"
         },
         {
-          "columna": "G",
           "encabezado": "NOMBRES",
+          "tipo": "text",
           "origen": "requisitoria.datos.nombres",
-          "tipo": "text"
+          "historicoKey": "nombres"
         },
         {
-          "columna": "H",
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "requisitoria.datos.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "I",
           "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "requisitoria.datos.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "J",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "requisitoria.datos.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "K",
           "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "requisitoria.datos.tipo_documento",
-          "tipo": "text"
+          "historicoKey": "tipo_documento"
         },
         {
-          "columna": "L",
           "encabezado": "N° DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "requisitoria.datos.numero_documento",
-          "tipo": "text"
+          "historicoKey": "numero_documento"
         },
         {
-          "columna": "M",
           "encabezado": "TIPO DE REQUISITORIA",
+          "tipo": "text",
           "origen": "requisitoria.datos.tipo",
-          "tipo": "text"
+          "historicoKey": "tipo"
         },
         {
-          "columna": "N",
-          "encabezado": "EL REQUISITORIADO PERTENECE A LOS MAS BUSCADOS",
+          "encabezado": "EL REQUISITORIADO  PERTENECE A LOS MAS BUSCADOS",
+          "tipo": "text",
           "origen": "requisitoria.datos.mas_buscado",
-          "tipo": "text"
+          "historicoKey": "mas_buscado"
         },
         {
-          "columna": "O",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "P",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "Q",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "R",
           "encabezado": "EL RQ ES FUNCIONARIO PUBLICO",
+          "tipo": "text",
           "origen": "requisitoria.datos.es_funcionario",
-          "tipo": "text"
+          "historicoKey": "es_funcionario"
         },
         {
-          "columna": "S",
           "encabezado": "ENTIDAD PUBLICA QUE PERTENECE",
+          "tipo": "text",
           "origen": "requisitoria.datos.entidad_publica",
-          "tipo": "text"
+          "historicoKey": "entidad_publica"
         },
         {
-          "columna": "T",
           "encabezado": "DETALLAR LA ENTIDAD PUBLICA",
+          "tipo": "text",
           "origen": "requisitoria.datos.detalle_entidad",
-          "tipo": "text"
+          "historicoKey": "detalle_entidad"
         },
         {
-          "columna": "U",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "requisitoria.datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "V",
           "encabezado": "DELITO FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "requisitoria.datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "W",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "requisitoria.datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "X",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "requisitoria.datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "Y",
           "encabezado": "SUB TIPO",
+          "tipo": "text",
           "origen": "requisitoria.datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "Z",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "requisitoria.datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "AA",
           "encabezado": "SI DET + DELITO FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "requisitoria.datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "AB",
           "encabezado": "SI DET + DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "requisitoria.datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "AC",
           "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "requisitoria.datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "AD",
           "encabezado": "SI DET + DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "requisitoria.datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "AE",
           "encabezado": "DIRECCION -DIRNIC DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "AF",
           "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "AG",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "AH",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "AI",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AJ",
           "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AK",
+          "encabezado": "AUTORIDAD QUE SOLICITA LA REQUISITORIA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "autoridad_solicitante"
+        },
+        {
+          "encabezado": "DOCUMENTO QUE SOLICITA LA REQUISITORIA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "documento_solicitante"
+        },
+        {
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AL",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -484,310 +558,310 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "detencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA DETENCION",
+          "tipo": "time",
           "origen": "detencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
           "origen": "persona.apellido_paterno",
-          "tipo": "text"
+          "historicoKey": "apellido_paterno"
         },
         {
-          "columna": "F",
           "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
           "origen": "persona.apellido_materno",
-          "tipo": "text"
+          "historicoKey": "apellido_materno"
         },
         {
-          "columna": "G",
           "encabezado": "NOMBRES",
+          "tipo": "text",
           "origen": "persona.nombres",
-          "tipo": "text"
+          "historicoKey": "nombres"
         },
         {
-          "columna": "H",
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "persona.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "I",
           "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "persona.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "J",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "persona.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "K",
           "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "persona.tipo_documento",
-          "tipo": "text"
+          "historicoKey": "tipo_documento"
         },
         {
-          "columna": "L",
           "encabezado": "N° DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "persona.numero_documento",
-          "tipo": "text"
+          "historicoKey": "numero_documento"
         },
         {
-          "columna": "M",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "N",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "O",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "P",
-          "encabezado": "EL DETENIDO ES FUNCIONARIO PUBLICO",
+          "encabezado": "EL DETENIDO  ES FUNCIONARIO PUBLICO",
+          "tipo": "text",
           "origen": "detencion.es_funcionario_publico",
-          "tipo": "text"
+          "historicoKey": "es_funcionario_publico"
         },
         {
-          "columna": "Q",
           "encabezado": "ENTIDAD PUBLICA QUE PERTENECE",
+          "tipo": "text",
           "origen": "detencion.entidad_publica",
-          "tipo": "text"
+          "historicoKey": "entidad_publica"
         },
         {
-          "columna": "R",
           "encabezado": "DETALLAR LA ENTIDAD PUBLICA",
+          "tipo": "text",
           "origen": "detencion.detalle_entidad_publica",
-          "tipo": "text"
+          "historicoKey": "detalle_entidad_publica"
         },
         {
-          "columna": "S",
           "encabezado": "MOTIVO DE LA DETENCION",
+          "tipo": "text",
           "origen": "detencion.motivo_detencion",
-          "tipo": "text"
+          "historicoKey": "motivo_detencion"
         },
         {
-          "columna": "T",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "delitos.0.es_tentativa",
-          "tipo": "text"
+          "historicoKey": "es_tentativa"
         },
         {
-          "columna": "U",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "delitos.0.fuero_ley_especial",
-          "tipo": "text"
+          "historicoKey": "fuero_ley_especial"
         },
         {
-          "columna": "V",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "delitos.0.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "W",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "delitos.0.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "X",
           "encabezado": "SUB TIPO",
+          "tipo": "text",
           "origen": "delitos.0.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "Y",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "delitos.1.es_tentativa",
-          "tipo": "text"
+          "historicoKey": "fuente_25"
         },
         {
-          "columna": "Z",
           "encabezado": "SI DET + DELITO FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "delitos.1.fuero_ley_especial",
-          "tipo": "text"
+          "historicoKey": "fuente_26"
         },
         {
-          "columna": "AA",
           "encabezado": "SI DET + DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "delitos.1.delito_general",
-          "tipo": "text"
+          "historicoKey": "fuente_27"
         },
         {
-          "columna": "AB",
           "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "delitos.1.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "fuente_28"
         },
         {
-          "columna": "AC",
           "encabezado": "SI DET + DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "delitos.1.subtipo",
-          "tipo": "text"
+          "historicoKey": "fuente_29"
         },
         {
-          "columna": "AD",
           "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "AE",
           "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "AF",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "AG",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "AH",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AI",
-          "encabezado": "INDICAR SI ES INTEGRANTE DE UNA BBCC /OOCC",
+          "encabezado": "INDICAR SI ES INTEGRANTE DE  UNA BBCC /OOCC",
+          "tipo": "text",
           "origen": "derivado.grupo",
-          "tipo": "text"
+          "historicoKey": "fuente_35"
         },
         {
-          "columna": "AJ",
           "encabezado": "REGISTRAR EL NOMBRE DE LA BBCC /OOCC/NO ES INTEGRANTE",
+          "tipo": "text",
           "origen": "detencion.nombre_organizacion",
-          "tipo": "text"
+          "historicoKey": "nombre_organizacion"
         },
         {
-          "columna": "AK",
           "encabezado": "ARMAS DE FUEGO - ARMA BLANCA -OTROS- NINGUNA",
+          "tipo": "text",
           "origen": "derivado.armas",
-          "tipo": "text"
+          "historicoKey": "fuente_37"
         },
         {
-          "columna": "AL",
           "encabezado": "TIPO ARMA",
+          "tipo": "text",
           "origen": "derivado.tipos_armas",
-          "tipo": "text"
+          "historicoKey": "fuente_38"
         },
         {
-          "columna": "AM",
           "encabezado": "SITUACION ACTUAL DEL DETENIDO",
+          "tipo": "text",
           "origen": "detencion.situacion_actual",
-          "tipo": "text"
+          "historicoKey": "situacion_actual"
         },
         {
-          "columna": "AN",
           "encabezado": "REGISTRAR EL DOCUMENTO CON EL QUE LE DIERON LIBERTAD AL DETENIDO",
+          "tipo": "text",
           "origen": "detencion.documento_libertad",
-          "tipo": "text"
+          "historicoKey": "documento_libertad"
         },
         {
-          "columna": "AO",
           "encabezado": "REGISTRAR EL DOCUMENTO CON EL QUE SE PONE A DISPOSICION AL DETENIDO",
+          "tipo": "text",
           "origen": "detencion.documento_disposicion",
-          "tipo": "text"
+          "historicoKey": "documento_disposicion"
         },
         {
-          "columna": "AP",
           "encabezado": "NOMBRE DEL FISCAL A CARGO",
+          "tipo": "text",
           "origen": "detencion.fiscal_nombre",
-          "tipo": "text"
+          "historicoKey": "fiscal_nombre"
         },
         {
-          "columna": "AQ",
           "encabezado": "FISCALIA A LA QUE PERTENECE EL FISCAL A CARGO",
+          "tipo": "text",
           "origen": "detencion.fiscalia",
-          "tipo": "text"
+          "historicoKey": "fiscalia"
         },
         {
-          "columna": "AR",
           "encabezado": "PTO A DISP_DIRNIC /DIRNOS2",
+          "tipo": "text",
           "origen": "detencion.disposicion_direccion",
-          "tipo": "text"
+          "historicoKey": "disposicion_direccion"
         },
         {
-          "columna": "AS",
           "encabezado": "PTO A DISP_DIRECCIONES /REGIONES /FRENTES2",
+          "tipo": "text",
           "origen": "detencion.disposicion_region",
-          "tipo": "text"
+          "historicoKey": "disposicion_region"
         },
         {
-          "columna": "AT",
           "encabezado": "PTO A DISP_ DIVISION POLICIAL 2",
+          "tipo": "text",
           "origen": "detencion.disposicion_division",
-          "tipo": "text"
+          "historicoKey": "disposicion_division"
         },
         {
-          "columna": "AU",
           "encabezado": "PTO A DISP_ DEPARTAMENTO POLICAL 2",
+          "tipo": "text",
           "origen": "detencion.disposicion_departamento",
-          "tipo": "text"
+          "historicoKey": "disposicion_departamento"
         },
         {
-          "columna": "AV",
           "encabezado": "PTO A DISP_EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO 2",
+          "tipo": "text",
           "origen": "detencion.disposicion_unidad",
-          "tipo": "text"
+          "historicoKey": "disposicion_unidad"
         },
         {
-          "columna": "AW",
           "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AX",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AY",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -799,607 +873,416 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "generado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "generado.mes_fecha",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "menor.datos.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA DETENCION",
+          "tipo": "time",
           "origen": "menor.datos.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
           "origen": "menor.datos.apellido_paterno",
-          "tipo": "text"
+          "historicoKey": "apellido_paterno"
         },
         {
-          "columna": "F",
           "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
           "origen": "menor.datos.apellido_materno",
-          "tipo": "text"
+          "historicoKey": "apellido_materno"
         },
         {
-          "columna": "G",
           "encabezado": "NOMBRES",
+          "tipo": "text",
           "origen": "menor.datos.nombres",
-          "tipo": "text"
+          "historicoKey": "nombres"
         },
         {
-          "columna": "H",
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "menor.datos.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "I",
           "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "menor.datos.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "J",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "menor.datos.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "K",
           "encabezado": "TIPO DE DOC. DE IDENTIDAD",
+          "tipo": "text",
           "origen": "menor.datos.tipo_documento",
-          "tipo": "text"
+          "historicoKey": "tipo_documento"
         },
         {
-          "columna": "L",
           "encabezado": "N° DOC.DE IDENTIDAD",
+          "tipo": "text",
           "origen": "menor.datos.numero_documento",
-          "tipo": "text"
+          "historicoKey": "numero_documento"
         },
         {
-          "columna": "M",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "N",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "O",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "P",
           "encabezado": "MOTIVO DE LA DETENCION",
+          "tipo": "text",
           "origen": "menor.datos.motivo",
-          "tipo": "text"
+          "historicoKey": "motivo"
         },
         {
-          "columna": "Q",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "menor.datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "R",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "menor.datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "S",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "menor.datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "T",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "menor.datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "U",
           "encabezado": "SUB TIPO DE DELITO",
+          "tipo": "text",
           "origen": "menor.datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "V",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "menor.datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "W",
           "encabezado": "FUERO/LEYES ESPECIALES2",
+          "tipo": "text",
           "origen": "menor.datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "X",
           "encabezado": "SI DET + DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "menor.datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "Y",
           "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "menor.datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "Z",
           "encabezado": "SI DET + DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "menor.datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "AA",
           "encabezado": "DIRECCION PNP",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "AB",
           "encabezado": "REGPOL/FP/ DD.EE",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "AC",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "AD",
           "encabezado": "DEPARTAMENTO /UNIDADES POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "AE",
           "encabezado": "AREAS/SECCION",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AF",
-          "encabezado": "INDICAR SI ES INTEGRANTE DE UNA BBCC /OOCC",
+          "encabezado": "INDICAR SI ES INTEGRANTE DE  UNA BBCC /OOCC",
+          "tipo": "text",
           "origen": "menor.datos.grupo",
-          "tipo": "text"
+          "historicoKey": "grupo"
         },
         {
-          "columna": "AG",
           "encabezado": "REGISTRAR EL NOMBRE DE LA BBCC /OOCC/NO ES INTEGRANTE",
+          "tipo": "text",
           "origen": "menor.datos.nombre_grupo",
-          "tipo": "text"
+          "historicoKey": "nombre_grupo"
         },
         {
-          "columna": "AH",
           "encabezado": "ARMAS DE FUEGO - ARMA BLANCA -OTROS- NINGUNA",
+          "tipo": "text",
           "origen": "menor.datos.arma_categoria",
-          "tipo": "text"
+          "historicoKey": "arma_categoria"
         },
         {
-          "columna": "AI",
           "encabezado": "TIPO ARMA",
+          "tipo": "text",
           "origen": "menor.datos.arma_tipo",
-          "tipo": "text"
+          "historicoKey": "arma_tipo"
         },
         {
-          "columna": "AJ",
           "encabezado": "SITUACION ACTUAL DEL DETENIDO",
+          "tipo": "text",
           "origen": "menor.datos.situacion",
-          "tipo": "text"
+          "historicoKey": "situacion"
         },
         {
-          "columna": "AK",
           "encabezado": "REGISTRAR EL DOCUMENTO CON EL QUE LE DIERON LIBERTAD AL DETENIDO",
+          "tipo": "text",
           "origen": "menor.datos.documento_libertad",
-          "tipo": "text"
+          "historicoKey": "documento_libertad"
         },
         {
-          "columna": "AL",
           "encabezado": "REGISTRAR EL DOCUMENTO CON EL QUE SE PONE A DISPOSICION AL DETENIDO",
+          "tipo": "text",
           "origen": "menor.datos.documento_disposicion",
-          "tipo": "text"
+          "historicoKey": "documento_disposicion"
         },
         {
-          "columna": "AM",
           "encabezado": "NOMBRE DEL FISCAL A CARGO",
+          "tipo": "text",
           "origen": "menor.datos.fiscal",
-          "tipo": "text"
+          "historicoKey": "fiscal"
         },
         {
-          "columna": "AN",
           "encabezado": "FISCALIA A LA QUE PERTENECE EL FISCAL A CARGO",
+          "tipo": "text",
           "origen": "menor.datos.fiscalia",
-          "tipo": "text"
+          "historicoKey": "fiscalia"
         },
         {
-          "columna": "AO",
           "encabezado": "PTO A DISP_DIRNIC /DIRNOS2",
+          "tipo": "text",
           "origen": "menor.datos.disposicion_direccion",
-          "tipo": "text"
+          "historicoKey": "disposicion_direccion"
         },
         {
-          "columna": "AP",
           "encabezado": "PTO A DISP_DIRECCIONES /REGIONES /FRENTES2",
+          "tipo": "text",
           "origen": "menor.datos.disposicion_region",
-          "tipo": "text"
+          "historicoKey": "disposicion_region"
         },
         {
-          "columna": "AQ",
           "encabezado": "PTO A DISP_ DIVISION POLICIAL 2",
+          "tipo": "text",
           "origen": "menor.datos.disposicion_division",
-          "tipo": "text"
+          "historicoKey": "disposicion_division"
         },
         {
-          "columna": "AR",
           "encabezado": "PTO A DISP_ DEPARTAMENTO POLICAL 2",
+          "tipo": "text",
           "origen": "menor.datos.disposicion_departamento",
-          "tipo": "text"
+          "historicoKey": "disposicion_departamento"
         },
         {
-          "columna": "AS",
           "encabezado": "PTO A DISP_EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO 2",
+          "tipo": "text",
           "origen": "menor.datos.disposicion_unidad",
-          "tipo": "text"
+          "historicoKey": "disposicion_unidad"
         },
         {
-          "columna": "AT",
           "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AU",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AV",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
     {
-      "nombre": "5_ENV_PBC",
+      "nombre": "5_DROGAS",
       "tabla": "intervencion_drogas",
       "raiz": "droga",
-      "tipo": "env_pbc",
+      "tipo": null,
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "intervencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "intervencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
-          "encabezado": "CANTIDAD UNIDADES",
+          "encabezado": "CANTIDAD",
+          "tipo": "number",
           "origen": "droga.cantidad",
-          "tipo": "number"
+          "historicoKey": "cantidad"
         },
         {
-          "columna": "F",
+          "encabezado": "KILOGRAMOS / ENVOLTORIOS",
+          "tipo": "text",
+          "origen": "derivado.medida",
+          "historicoKey": "medida"
+        },
+        {
+          "encabezado": "TIPO DE DROGA",
+          "tipo": "text",
+          "origen": "derivado.sustancia",
+          "historicoKey": "sustancia"
+        },
+        {
           "encabezado": "DIRECCION PNP",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "G",
           "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "H",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "I",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "J",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "K",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "L",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "M",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
+        },
+        {
+          "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "nota_sicpip"
+        },
+        {
+          "encabezado": "LATITUD",
+          "tipo": "number",
+          "origen": "intervencion.latitud",
+          "historicoKey": "latitud"
+        },
+        {
+          "encabezado": "LONGITUD",
+          "tipo": "number",
+          "origen": "intervencion.longitud",
+          "historicoKey": "longitud"
         },
         {
           "columna": "N",
           "encabezado": "NOTA INFORMATIVA SICPIP",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
-        },
-        {
-          "columna": "O",
-          "encabezado": "LATITUD",
-          "origen": "intervencion.latitud",
-          "tipo": "number"
-        },
-        {
-          "columna": "P",
-          "encabezado": "LONGITUD",
-          "origen": "intervencion.longitud",
-          "tipo": "number"
-        }
-      ]
-    },
-    {
-      "nombre": "6_ENV_CC",
-      "tabla": "intervencion_drogas",
-      "raiz": "droga",
-      "tipo": "env_cc",
-      "encabezados_recuperados_de": null,
-      "columnas": [
-        {
-          "columna": "A",
-          "encabezado": "N°",
-          "origen": "derivado.numero",
-          "tipo": "number"
-        },
-        {
-          "columna": "B",
-          "encabezado": "MES",
-          "origen": "derivado.mes",
-          "tipo": "text"
-        },
-        {
-          "columna": "C",
-          "encabezado": "FECHA",
-          "origen": "intervencion.fecha",
-          "tipo": "date"
-        },
-        {
-          "columna": "D",
-          "encabezado": "HORA",
-          "origen": "intervencion.hora",
-          "tipo": "time"
-        },
-        {
-          "columna": "E",
-          "encabezado": "CANTIDAD UNIDADES",
-          "origen": "droga.cantidad",
-          "tipo": "number"
-        },
-        {
-          "columna": "F",
-          "encabezado": "DIRECCION PNP",
-          "origen": "intervencion.direccion_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "G",
-          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
-          "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
-        },
-        {
-          "columna": "H",
-          "encabezado": "DIVISION POLICIAL",
-          "origen": "intervencion.division_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "I",
-          "encabezado": "DEPARTAMENTO POLICAL",
-          "origen": "intervencion.departamento_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "J",
-          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
-          "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
-        },
-        {
-          "columna": "K",
-          "encabezado": "DEPARTAMENTO",
-          "origen": "intervencion.departamento",
-          "tipo": "text"
-        },
-        {
-          "columna": "L",
-          "encabezado": "PROVINCIA",
-          "origen": "intervencion.provincia",
-          "tipo": "text"
-        },
-        {
-          "columna": "M",
-          "encabezado": "DISTRITO",
-          "origen": "intervencion.distrito",
-          "tipo": "text"
-        },
-        {
-          "columna": "N",
-          "encabezado": "NOTA INFORMATIVA SICPIP",
-          "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
-        },
-        {
-          "columna": "O",
-          "encabezado": "LATITUD",
-          "origen": "intervencion.latitud",
-          "tipo": "number"
-        },
-        {
-          "columna": "P",
-          "encabezado": "LONGITUD",
-          "origen": "intervencion.longitud",
-          "tipo": "number"
-        }
-      ]
-    },
-    {
-      "nombre": "7_ENV_MARIHUANA",
-      "tabla": "intervencion_drogas",
-      "raiz": "droga",
-      "tipo": "env_marihuana",
-      "encabezados_recuperados_de": null,
-      "columnas": [
-        {
-          "columna": "A",
-          "encabezado": "N°",
-          "origen": "derivado.numero",
-          "tipo": "number"
-        },
-        {
-          "columna": "B",
-          "encabezado": "MES",
-          "origen": "derivado.mes",
-          "tipo": "text"
-        },
-        {
-          "columna": "C",
-          "encabezado": "FECHA",
-          "origen": "intervencion.fecha",
-          "tipo": "date"
-        },
-        {
-          "columna": "D",
-          "encabezado": "HORA",
-          "origen": "intervencion.hora",
-          "tipo": "time"
-        },
-        {
-          "columna": "E",
-          "encabezado": "CANTIDAD UNIDADES",
-          "origen": "droga.cantidad",
-          "tipo": "number"
-        },
-        {
-          "columna": "F",
-          "encabezado": "DIRECCION PNP",
-          "origen": "intervencion.direccion_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "G",
-          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
-          "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
-        },
-        {
-          "columna": "H",
-          "encabezado": "DIVISION POLICIAL",
-          "origen": "intervencion.division_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "I",
-          "encabezado": "DEPARTAMENTO POLICAL",
-          "origen": "intervencion.departamento_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "J",
-          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
-          "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
-        },
-        {
-          "columna": "K",
-          "encabezado": "DEPARTAMENTO",
-          "origen": "intervencion.departamento",
-          "tipo": "text"
-        },
-        {
-          "columna": "L",
-          "encabezado": "PROVINCIA",
-          "origen": "intervencion.provincia",
-          "tipo": "text"
-        },
-        {
-          "columna": "M",
-          "encabezado": "DISTRITO",
-          "origen": "intervencion.distrito",
-          "tipo": "text"
-        },
-        {
-          "columna": "N",
-          "encabezado": "NOTA INFORMATIVA SICPIP",
-          "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
-        },
-        {
-          "columna": "O",
-          "encabezado": "LATITUD",
-          "origen": "intervencion.latitud",
-          "tipo": "number"
-        },
-        {
-          "columna": "P",
-          "encabezado": "LONGITUD",
-          "origen": "intervencion.longitud",
-          "tipo": "number"
+          "tipo": "text",
+          "historicoKey": "nota_sicpip"
         }
       ]
     },
@@ -1411,286 +1294,286 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": "13_ARMAS AF",
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "intervencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "intervencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
           "origen": "material.datos.apellido_paterno",
-          "tipo": "text"
+          "historicoKey": "apellido_paterno"
         },
         {
-          "columna": "F",
-          "encabezado": "APELLIDO MATERNO ",
+          "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
           "origen": "material.datos.apellido_materno",
-          "tipo": "text"
+          "historicoKey": "apellido_materno"
         },
         {
-          "columna": "G",
-          "encabezado": "NOMBRES ",
+          "encabezado": "NOMBRES",
+          "tipo": "text",
           "origen": "material.datos.nombres",
-          "tipo": "text"
+          "historicoKey": "nombres"
         },
         {
-          "columna": "H",
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "material.datos.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "I",
-          "encabezado": " GENERO",
+          "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "material.datos.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "J",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "material.datos.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "K",
           "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "material.datos.tipo_documento",
-          "tipo": "text"
+          "historicoKey": "tipo_documento"
         },
         {
-          "columna": "L",
           "encabezado": "N° DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "material.datos.numero_documento",
-          "tipo": "text"
+          "historicoKey": "numero_documento"
         },
         {
-          "columna": "M",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "N",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "O",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "P",
-          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA ",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "material.datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "Q",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "material.datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "R",
-          "encabezado": "DELITO GENERAL ",
+          "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "material.datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "S",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "material.datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "T",
-          "encabezado": "SUB TIPO DE DELITO ",
+          "encabezado": "SUB TIPO DE DELITO",
+          "tipo": "text",
           "origen": "material.datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "U",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "material.datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "V",
-          "encabezado": " SI DET + DELITO FUERO/LEYES ESPECIALES 2",
+          "encabezado": "SI DET + DELITO FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "material.datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "W",
-          "encabezado": " SI DET + DELITO/ DELITO GENERAL2",
+          "encabezado": "SI DET + DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "material.datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "X",
-          "encabezado": " SI DET + DELITO/DELITO ESPECIFICO2",
+          "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "material.datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "Y",
-          "encabezado": " SI DET + DELITO/SUB TIPO2",
+          "encabezado": "SI DET + DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "material.datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "Z",
           "encabezado": "SITUACION DEL  ARMA DEL  FUEGO",
+          "tipo": "text",
           "origen": "material.datos.situacion",
-          "tipo": "text"
+          "historicoKey": "situacion"
         },
         {
-          "columna": "AA",
-          "encabezado": " TIPO DE ARMA ",
+          "encabezado": "TIPO DE ARMA",
+          "tipo": "text",
           "origen": "material.datos.tipo",
-          "tipo": "text"
+          "historicoKey": "tipo"
         },
         {
-          "columna": "AB",
-          "encabezado": " MARCA",
+          "encabezado": "MARCA",
+          "tipo": "text",
           "origen": "material.datos.marca",
-          "tipo": "text"
+          "historicoKey": "marca"
         },
         {
-          "columna": "AC",
-          "encabezado": " MODELO",
+          "encabezado": "MODELO",
+          "tipo": "text",
           "origen": "material.datos.modelo",
-          "tipo": "text"
+          "historicoKey": "modelo"
         },
         {
-          "columna": "AD",
-          "encabezado": " CALIBRE",
+          "encabezado": "CALIBRE",
+          "tipo": "text",
           "origen": "material.datos.calibre",
-          "tipo": "text"
+          "historicoKey": "calibre"
         },
         {
-          "columna": "AE",
-          "encabezado": " SERIE",
+          "encabezado": "SERIE",
+          "tipo": "text",
           "origen": "material.datos.serie",
-          "tipo": "text"
+          "historicoKey": "serie"
         },
         {
-          "columna": "AF",
-          "encabezado": " OTRAS CARACTERISTICAS",
+          "encabezado": "OTRAS CARACTERISTICAS",
+          "tipo": "text",
           "origen": "material.datos.caracteristicas",
-          "tipo": "text"
+          "historicoKey": "caracteristicas"
         },
         {
-          "columna": "AG",
-          "encabezado": " EL NOMBRE DEL FISCAL Y FISCALIA A CARGO",
+          "encabezado": "EL NOMBRE DEL FISCAL Y FISCALIA A CARGO",
+          "tipo": "text",
           "origen": "material.datos.fiscal_fiscalia",
-          "tipo": "text"
+          "historicoKey": "fiscal_fiscalia"
         },
         {
-          "columna": "AH",
           "encabezado": "DIRECCION PNP",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "AI",
-          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL ",
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "AJ",
-          "encabezado": " DIVISION POLICIAL ",
+          "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "AK",
-          "encabezado": " DEPARTAMENTO POLICAL ",
+          "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "AL",
-          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO ",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AM",
           "encabezado": "PROCEDENCIA DEL ARMA DE FUEGO",
+          "tipo": "text",
           "origen": "material.datos.procedencia",
-          "tipo": "text"
+          "historicoKey": "procedencia"
         },
         {
-          "columna": "AN",
           "encabezado": "NRO DE REGISTRO SUCAMEC O CERTIFICADO DE PROPIEDAD",
+          "tipo": "text",
           "origen": "material.datos.registro_sucamec",
-          "tipo": "text"
+          "historicoKey": "registro_sucamec"
         },
         {
-          "columna": "AO",
           "encabezado": "N° DE DENUNCIAS O PERDIDA, ROBO U OTROS",
+          "tipo": "text",
           "origen": "material.datos.denuncia",
-          "tipo": "text"
+          "historicoKey": "denuncia"
         },
         {
-          "columna": "AP",
           "encabezado": "PROPIETARIO",
+          "tipo": "text",
           "origen": "material.datos.propietario",
-          "tipo": "text"
+          "historicoKey": "propietario"
         },
         {
-          "columna": "AQ",
           "encabezado": "CANTIDAD DE MUNICIONES",
+          "tipo": "number",
           "origen": "material.datos.cantidad_municiones",
-          "tipo": "number"
+          "historicoKey": "cantidad_municiones"
         },
         {
-          "columna": "AR",
           "encabezado": "TIPO DE MUNICIONES",
+          "tipo": "text",
           "origen": "material.datos.tipo_municiones",
-          "tipo": "text"
+          "historicoKey": "tipo_municiones"
         },
         {
-          "columna": "AS",
           "encabezado": "N° NOTA INFORMATIVA",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AT",
-          "encabezado": "LATITUD ",
+          "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AU",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -1702,220 +1585,220 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "intervencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "intervencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
           "origen": "material.datos.apellido_paterno",
-          "tipo": "text"
+          "historicoKey": "apellido_paterno"
         },
         {
-          "columna": "F",
           "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
           "origen": "material.datos.apellido_materno",
-          "tipo": "text"
+          "historicoKey": "apellido_materno"
         },
         {
-          "columna": "G",
           "encabezado": "NOMBRES",
+          "tipo": "text",
           "origen": "material.datos.nombres",
-          "tipo": "text"
+          "historicoKey": "nombres"
         },
         {
-          "columna": "H",
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "material.datos.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "I",
           "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "material.datos.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "J",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "material.datos.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "K",
           "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "material.datos.tipo_documento",
-          "tipo": "text"
+          "historicoKey": "tipo_documento"
         },
         {
-          "columna": "L",
           "encabezado": "N° DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "material.datos.numero_documento",
-          "tipo": "text"
+          "historicoKey": "numero_documento"
         },
         {
-          "columna": "M",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "material.datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "N",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "material.datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "O",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "material.datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "P",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "material.datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "Q",
           "encabezado": "SUB TIPO DE DELITO",
+          "tipo": "text",
           "origen": "material.datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "R",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "material.datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "S",
           "encabezado": "SI DET + DELITO FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "material.datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "T",
           "encabezado": "SI DET + DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "material.datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "U",
           "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "material.datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "V",
           "encabezado": "SI DET + DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "material.datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "W",
           "encabezado": "SITUACION DEL ARMA BLANCA",
+          "tipo": "text",
           "origen": "material.datos.situacion",
-          "tipo": "text"
+          "historicoKey": "situacion"
         },
         {
-          "columna": "X",
           "encabezado": "TIPO ARMA BLANCA",
+          "tipo": "text",
           "origen": "material.datos.tipo",
-          "tipo": "text"
+          "historicoKey": "tipo"
         },
         {
-          "columna": "Y",
-          "encabezado": "SI SELECCIONO \"OTRO\"\n  ESPECIFICAR",
+          "encabezado": "SI SELECCIONO \"OTRO\"\n ESPECIFICAR",
+          "tipo": "text",
           "origen": "material.datos.otro_tipo",
-          "tipo": "text"
+          "historicoKey": "otro_tipo"
         },
         {
-          "columna": "Z",
           "encabezado": "DIRECCION PNP",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "AA",
           "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "AB",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "AC",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "AD",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AE",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "AF",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "AG",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "AH",
           "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AI",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AJ",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -1927,250 +1810,257 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "intervencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "intervencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
-          "encabezado": "EL NOMBRE DE LA BANDA CRIMINAL  ( NO DEBE COMBINAR CELDA)",
+          "encabezado": "EL NOMBRE DE LA BANDA CRIMINAL  ( NO DEBE  COMBINAR CELDA)",
+          "tipo": "text",
           "origen": "grupo.nombre",
-          "tipo": "text"
+          "historicoKey": "nombre"
         },
         {
-          "columna": "F",
           "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
           "origen": "persona.apellido_paterno",
-          "tipo": "text"
+          "historicoKey": "apellido_paterno"
         },
         {
-          "columna": "G",
           "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
           "origen": "persona.apellido_materno",
-          "tipo": "text"
+          "historicoKey": "apellido_materno"
         },
         {
-          "columna": "H",
           "encabezado": "NOMBRES",
+          "tipo": "text",
           "origen": "persona.nombres",
-          "tipo": "text"
+          "historicoKey": "nombres"
         },
         {
-          "columna": "I",
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "persona.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "J",
           "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "persona.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "K",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "persona.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "L",
           "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "persona.tipo_documento",
-          "tipo": "text"
+          "historicoKey": "tipo_documento"
         },
         {
-          "columna": "M",
-          "encabezado": "N° DE DOCUEMNTO DE IDENTIDAD",
+          "encabezado": "N°  DE DOCUEMNTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "persona.numero_documento",
-          "tipo": "text"
+          "historicoKey": "numero_documento"
         },
         {
-          "columna": "N",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "O",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "P",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "Q",
           "encabezado": "REFERENCIA DEL LUGAR",
+          "tipo": "text",
           "origen": "grupo.referencia_lugar",
-          "tipo": "text"
+          "historicoKey": "referencia_lugar"
         },
         {
-          "columna": "R",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "delitos.0.es_tentativa",
-          "tipo": "text"
+          "historicoKey": "es_tentativa"
         },
         {
-          "columna": "S",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "delitos.0.fuero_ley_especial",
-          "tipo": "text"
+          "historicoKey": "fuero_ley_especial"
         },
         {
-          "columna": "T",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "delitos.0.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "U",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "delitos.0.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "V",
           "encabezado": "SUB TIPO",
+          "tipo": "text",
           "origen": "delitos.0.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "W",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "delitos.1.es_tentativa",
-          "tipo": "text"
+          "historicoKey": "fuente_23"
         },
         {
-          "columna": "X",
           "encabezado": "FUERO/LEYES ESPECIALES2",
+          "tipo": "text",
           "origen": "delitos.1.fuero_ley_especial",
-          "tipo": "text"
+          "historicoKey": "fuente_24"
         },
         {
-          "columna": "Y",
           "encabezado": "SI DET + DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "delitos.1.delito_general",
-          "tipo": "text"
+          "historicoKey": "fuente_25"
         },
         {
-          "columna": "Z",
           "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "delitos.1.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "fuente_26"
         },
         {
-          "columna": "AA",
           "encabezado": "SI DET + DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "delitos.1.subtipo",
-          "tipo": "text"
+          "historicoKey": "fuente_27"
         },
         {
-          "columna": "AB",
-          "encabezado": "LA MODALIDAD DE LA BANDA CRIMINAL",
+          "encabezado": "LA MODALIDAD  DE LA BANDA CRIMINAL",
+          "tipo": "text",
           "origen": "grupo.modalidad",
-          "tipo": "text"
+          "historicoKey": "modalidad"
         },
         {
-          "columna": "AC",
           "encabezado": "EL MOTIVO DE LA DETENCION (FLAGRANCIA - DETENCION PRELIMINAR)",
+          "tipo": "text",
           "origen": "detencion.motivo_detencion",
-          "tipo": "text"
+          "historicoKey": "motivo_detencion"
         },
         {
-          "columna": "AD",
           "encabezado": "NOMBRE DEL FISCAL",
+          "tipo": "text",
           "origen": "detencion.fiscal_nombre",
-          "tipo": "text"
+          "historicoKey": "fiscal_nombre"
         },
         {
-          "columna": "AE",
           "encabezado": "FISCALIA A LA QUE PERTENECE2",
+          "tipo": "text",
           "origen": "detencion.fiscalia",
-          "tipo": "text"
+          "historicoKey": "fiscalia"
         },
         {
-          "columna": "AF",
           "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "AG",
           "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "AH",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "AI",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "AJ",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AK",
           "encabezado": "SITUACION ACTUAL DEL DETENIDO",
+          "tipo": "text",
           "origen": "detencion.situacion_actual",
-          "tipo": "text"
+          "historicoKey": "situacion_actual"
         },
         {
-          "columna": "AL",
           "encabezado": "N° DE NOTA INFOMATIVA REALIZADA",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AM",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AN",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
+        },
+        {
+          "encabezado": "PARA CONTAR LA CANTIDAD DE BANDAS ,\nPONGA SI SÓLO A UNO DE LOS MIEMBROS DE LA BANDA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_41"
         },
         {
           "columna": "AO",
           "encabezado": "(PONER SI, SÓLO A UNO DE LOS MIEMBROS DE LAS BANDAS)\n\n",
           "origen": "derivado.contar_banda",
-          "tipo": "text"
+          "tipo": "text",
+          "historicoKey": "contar_banda"
         }
       ]
     },
@@ -2182,250 +2072,256 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": "16_ORGANIZACION CRIMINAL",
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "intervencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "intervencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
-          "encabezado": " EL NOMBRE DE LA ORGANIZACION CRIMINAL  ( NO DEBE  COMBINAR CELDA)",
+          "encabezado": "EL NOMBRE DE LA ORGANIZACION CRIMINAL  ( NO DEBE  COMBINAR CELDA)",
+          "tipo": "text",
           "origen": "grupo.nombre",
-          "tipo": "text"
+          "historicoKey": "nombre"
         },
         {
-          "columna": "F",
           "encabezado": "ROL QUE DESEMPEÑA  EN LA OO.CC",
+          "tipo": "text",
           "origen": "integrante.rol",
-          "tipo": "text"
+          "historicoKey": "rol"
         },
         {
-          "columna": "G",
-          "encabezado": " APELLIDO PATERNO",
+          "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
           "origen": "persona.apellido_paterno",
-          "tipo": "text"
+          "historicoKey": "apellido_paterno"
         },
         {
-          "columna": "H",
-          "encabezado": " APELLIDO MATERNO ",
+          "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
           "origen": "persona.apellido_materno",
-          "tipo": "text"
+          "historicoKey": "apellido_materno"
         },
         {
-          "columna": "I",
-          "encabezado": " NOMBRES ",
+          "encabezado": "NOMBRES",
+          "tipo": "text",
           "origen": "persona.nombres",
-          "tipo": "text"
+          "historicoKey": "nombres"
         },
         {
-          "columna": "J",
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "persona.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "K",
-          "encabezado": " GENERO",
+          "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "persona.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "L",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "persona.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "M",
           "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "persona.tipo_documento",
-          "tipo": "text"
+          "historicoKey": "tipo_documento"
         },
         {
-          "columna": "N",
-          "encabezado": " N°  DE DOCUEMNTO DE IDENTIDAD",
+          "encabezado": "N°  DE DOCUEMNTO DE IDENTIDAD",
+          "tipo": "text",
           "origen": "persona.numero_documento",
-          "tipo": "text"
+          "historicoKey": "numero_documento"
         },
         {
-          "columna": "O",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "P",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "Q",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "R",
-          "encabezado": " REFERENCIA DEL LUGAR ",
+          "encabezado": "REFERENCIA DEL LUGAR",
+          "tipo": "text",
           "origen": "grupo.referencia_lugar",
-          "tipo": "text"
+          "historicoKey": "referencia_lugar"
         },
         {
-          "columna": "S",
-          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA ",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "delitos.0.es_tentativa",
-          "tipo": "text"
+          "historicoKey": "es_tentativa"
         },
         {
-          "columna": "T",
-          "encabezado": "FUERO/LEYES ESPECIALES ",
+          "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "delitos.0.fuero_ley_especial",
-          "tipo": "text"
+          "historicoKey": "fuero_ley_especial"
         },
         {
-          "columna": "U",
-          "encabezado": " DELITO GENERAL",
+          "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "delitos.0.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "V",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "delitos.0.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "W",
           "encabezado": "SUB TIPO",
+          "tipo": "text",
           "origen": "delitos.0.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "X",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "delitos.1.es_tentativa",
-          "tipo": "text"
+          "historicoKey": "fuente_24"
         },
         {
-          "columna": "Y",
           "encabezado": "FUERO/LEYES ESPECIALES2",
+          "tipo": "text",
           "origen": "delitos.1.fuero_ley_especial",
-          "tipo": "text"
+          "historicoKey": "fuente_25"
         },
         {
-          "columna": "Z",
-          "encabezado": " SI DET + DELITO/ DELITO GENERAL2",
+          "encabezado": "SI DET + DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "delitos.1.delito_general",
-          "tipo": "text"
+          "historicoKey": "fuente_26"
         },
         {
-          "columna": "AA",
-          "encabezado": " SI DET + DELITO/DELITO ESPECIFICO2",
+          "encabezado": "SI DET + DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "delitos.1.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "fuente_27"
         },
         {
-          "columna": "AB",
-          "encabezado": " SI DET + DELITO/SUB TIPO2",
+          "encabezado": "SI DET + DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "delitos.1.subtipo",
-          "tipo": "text"
+          "historicoKey": "fuente_28"
         },
         {
-          "columna": "AC",
-          "encabezado": "  LA MODALIDAD  DE LA BANDA CRIMINAL ",
+          "encabezado": "LA MODALIDAD  DE LA BANDA CRIMINAL",
+          "tipo": "text",
           "origen": "grupo.modalidad",
-          "tipo": "text"
+          "historicoKey": "modalidad"
         },
         {
-          "columna": "AD",
-          "encabezado": " EL MOTIVO DE LA DETENCION (FLAGRANCIA - DETENCION PRELIMINAR)",
+          "encabezado": "EL MOTIVO DE LA DETENCION (FLAGRANCIA - DETENCION PRELIMINAR)",
+          "tipo": "text",
           "origen": "detencion.motivo_detencion",
-          "tipo": "text"
+          "historicoKey": "motivo_detencion"
         },
         {
-          "columna": "AE",
-          "encabezado": " NOMBRE DEL FISCAL ",
+          "encabezado": "NOMBRE DEL FISCAL",
+          "tipo": "text",
           "origen": "detencion.fiscal_nombre",
-          "tipo": "text"
+          "historicoKey": "fiscal_nombre"
         },
         {
-          "columna": "AF",
-          "encabezado": " FISCALIA A LA QUE PERTENECE EL  FISCAL ",
+          "encabezado": "FISCALIA A LA QUE PERTENECE EL  FISCAL",
+          "tipo": "text",
           "origen": "detencion.fiscalia",
-          "tipo": "text"
+          "historicoKey": "fiscalia"
         },
         {
-          "columna": "AG",
           "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "AH",
           "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "AI",
-          "encabezado": " DIVISION POLICIAL ",
+          "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "AJ",
-          "encabezado": " DEPARTAMENTO POLICAL ",
+          "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "AK",
-          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO ",
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AL",
-          "encabezado": "SITUACION ACTUAL DEL DETENIDO ",
+          "encabezado": "SITUACION ACTUAL DEL DETENIDO",
+          "tipo": "text",
           "origen": "detencion.situacion_actual",
-          "tipo": "text"
+          "historicoKey": "situacion_actual"
         },
         {
-          "columna": "AM",
-          "encabezado": " N° DE NOTA INFOMATIVA REALIZADA",
+          "encabezado": "N° DE NOTA INFOMATIVA REALIZADA",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AN",
-          "encabezado": "LATITUD ",
+          "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AO",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
+        },
+        {
+          "encabezado": "PARA CONTAR LA CANTIDAD DE BANDAS ,\nPONGA SI SÓLO A UNO DE LOS MIEMBROS DE LA ORGANIZACIÓN CRIMINAL",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_42"
         }
       ]
     },
@@ -2437,178 +2333,178 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "intervencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "intervencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "PLACA",
+          "tipo": "text",
           "origen": "vehiculo.datos.placa",
-          "tipo": "text"
+          "historicoKey": "placa"
         },
         {
-          "columna": "F",
           "encabezado": "MARCA",
+          "tipo": "text",
           "origen": "vehiculo.datos.marca",
-          "tipo": "text"
+          "historicoKey": "marca"
         },
         {
-          "columna": "G",
           "encabezado": "SITUACION DEL VEHICULO",
+          "tipo": "text",
           "origen": "vehiculo.datos.situacion",
-          "tipo": "text"
+          "historicoKey": "situacion"
         },
         {
-          "columna": "H",
           "encabezado": "VALORIZACION DE LOS VEHICULOS INCAUTADOS",
+          "tipo": "number",
           "origen": "vehiculo.datos.valorizacion",
-          "tipo": "number"
+          "historicoKey": "valorizacion"
         },
         {
-          "columna": "I",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "vehiculo.datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "J",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "vehiculo.datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "K",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "vehiculo.datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "L",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "vehiculo.datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "M",
           "encabezado": "SUB TIPO DE DELITO",
+          "tipo": "text",
           "origen": "vehiculo.datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "N",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "vehiculo.datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "O",
-          "encabezado": "SI EL VEH + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "encabezado": "SI  EL VEH + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "vehiculo.datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "P",
-          "encabezado": "SI EL VEH + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "encabezado": "SI  EL VEH + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "vehiculo.datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "Q",
-          "encabezado": "SI EL VEH + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "encabezado": "SI  EL VEH + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "vehiculo.datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "R",
-          "encabezado": "SI EL VEH + DE UN DELITO /DELITO/SUB TIPO2",
+          "encabezado": "SI  EL VEH + DE UN DELITO /DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "vehiculo.datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "S",
           "encabezado": "DIRECCION PNP",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "T",
           "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "U",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "V",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "W",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "X",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "Y",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "Z",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "AA",
           "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AB",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AC",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -2620,178 +2516,178 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "intervencion.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "intervencion.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "PLACA",
+          "tipo": "text",
           "origen": "vehiculo.datos.placa",
-          "tipo": "text"
+          "historicoKey": "placa"
         },
         {
-          "columna": "F",
           "encabezado": "MARCA",
+          "tipo": "text",
           "origen": "vehiculo.datos.marca",
-          "tipo": "text"
+          "historicoKey": "marca"
         },
         {
-          "columna": "G",
           "encabezado": "SITUACION DEL VEHICULO",
+          "tipo": "text",
           "origen": "vehiculo.datos.situacion",
-          "tipo": "text"
+          "historicoKey": "situacion"
         },
         {
-          "columna": "H",
           "encabezado": "VALORIZACION DE LOS VEHICULOS INCAUTADOS",
+          "tipo": "number",
           "origen": "vehiculo.datos.valorizacion",
-          "tipo": "number"
+          "historicoKey": "valorizacion"
         },
         {
-          "columna": "I",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "vehiculo.datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "J",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "vehiculo.datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "K",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "vehiculo.datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "L",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "vehiculo.datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "M",
           "encabezado": "SUB TIPO DE DELITO",
+          "tipo": "text",
           "origen": "vehiculo.datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "N",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "vehiculo.datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "O",
-          "encabezado": "SI EL VEH + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "encabezado": "SI  EL VEH + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "vehiculo.datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "P",
-          "encabezado": "SI EL VEH + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "encabezado": "SI  EL VEH + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "vehiculo.datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "Q",
-          "encabezado": "SI EL VEH + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "encabezado": "SI  EL VEH + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "vehiculo.datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "R",
-          "encabezado": "SI EL VEH + DE UN DELITO /DELITO/SUB TIPO2",
+          "encabezado": "SI  EL VEH + DE UN DELITO /DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "vehiculo.datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "S",
           "encabezado": "DIRECCION PNP",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "T",
           "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "U",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "V",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "W",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "X",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "Y",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "Z",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "AA",
           "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AB",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AC",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -2803,112 +2699,178 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "prostitucion.datos.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA INTERVENCION",
+          "tipo": "time",
           "origen": "prostitucion.datos.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
+          "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "apellido_paterno"
+        },
+        {
+          "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "apellido_materno"
+        },
+        {
+          "encabezado": "NOMBRES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "nombres"
+        },
+        {
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "prostitucion.datos.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "F",
+          "encabezado": "CONDICION",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "condicion"
+        },
+        {
           "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "prostitucion.datos.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "G",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "prostitucion.datos.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "H",
+          "encabezado": "TIPO DE DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "tipo_documento"
+        },
+        {
+          "encabezado": "N° DOCUMENTO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "numero_documento"
+        },
+        {
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "I",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "J",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "K",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_17"
+        },
+        {
+          "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_18"
+        },
+        {
+          "encabezado": "DELITO GENERAL",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_19"
+        },
+        {
+          "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_20"
+        },
+        {
+          "encabezado": "SUB TIPO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_21"
+        },
+        {
           "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "L",
           "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "M",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "N",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "O",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "P",
           "encabezado": "N° DE NOTA INFOMATIVA REALIZADA",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "Q",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "R",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -2920,112 +2882,190 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "victima.datos.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA INTERVENCION",
+          "tipo": "time",
           "origen": "victima.datos.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
+          "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "apellido_paterno"
+        },
+        {
+          "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "apellido_materno"
+        },
+        {
+          "encabezado": "NOMBRES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "nombres"
+        },
+        {
           "encabezado": "EDAD",
+          "tipo": "number",
           "origen": "victima.datos.edad",
-          "tipo": "number"
+          "historicoKey": "edad"
         },
         {
-          "columna": "F",
+          "encabezado": "CONDICION",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "condicion"
+        },
+        {
+          "encabezado": "SITUACION",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "situacion"
+        },
+        {
           "encabezado": "GENERO",
+          "tipo": "text",
           "origen": "victima.datos.genero",
-          "tipo": "text"
+          "historicoKey": "genero"
         },
         {
-          "columna": "G",
           "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
           "origen": "victima.datos.nacionalidad",
-          "tipo": "text"
+          "historicoKey": "nacionalidad"
         },
         {
-          "columna": "H",
+          "encabezado": "TIPO DE DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "tipo_documento"
+        },
+        {
+          "encabezado": "N° DOCUMENTO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "numero_documento"
+        },
+        {
+          "encabezado": "PUESTA A DISPOSICION DE UPE/UDAVIT",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_15"
+        },
+        {
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "I",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "J",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "K",
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_19"
+        },
+        {
+          "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_20"
+        },
+        {
+          "encabezado": "DELITO GENERAL",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_21"
+        },
+        {
+          "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_22"
+        },
+        {
+          "encabezado": "SUB TIPO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_23"
+        },
+        {
           "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "L",
           "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "M",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "N",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "O",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "P",
           "encabezado": "N° DE NOTA INFOMATIVA REALIZADA",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "Q",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "R",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -3037,178 +3077,178 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "datos.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "datos.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "F",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "G",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "H",
           "encabezado": "SOLES",
+          "tipo": "number",
           "origen": "datos.soles",
-          "tipo": "number"
+          "historicoKey": "soles"
         },
         {
-          "columna": "I",
           "encabezado": "DOLARES",
+          "tipo": "number",
           "origen": "datos.dolares",
-          "tipo": "number"
+          "historicoKey": "dolares"
         },
         {
-          "columna": "J",
           "encabezado": "EUROS",
+          "tipo": "number",
           "origen": "datos.euros",
-          "tipo": "number"
+          "historicoKey": "euros"
         },
         {
-          "columna": "K",
           "encabezado": "DINERO OTRO",
+          "tipo": "text",
           "origen": "datos.dinero_otro",
-          "tipo": "text"
+          "historicoKey": "dinero_otro"
         },
         {
-          "columna": "L",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "M",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "N",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "O",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "P",
           "encabezado": "SUB TIPO",
+          "tipo": "text",
           "origen": "datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "Q",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "R",
-          "encabezado": "SI EL DINERO + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "encabezado": "SI  EL DINERO + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "S",
-          "encabezado": "SI EL DINERO + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "encabezado": "SI  EL DINERO + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "T",
-          "encabezado": "SI EL DINERO + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "encabezado": "SI  EL DINERO + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "U",
-          "encabezado": "SI EL DINERO + DE UN DELITO /DELITO/SUB TIPO2",
+          "encabezado": "SI  EL DINERO + DE UN DELITO /DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "V",
           "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "W",
           "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "X",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "Y",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "Z",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AA",
           "encabezado": "N° DE NOTA INFOMATIVA REALIZADA",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AB",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AC",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -3220,190 +3260,190 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "C",
           "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "D",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "E",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "F",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "G",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_7"
         },
         {
-          "columna": "H",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "datos.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "I",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "J",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "K",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "L",
           "encabezado": "CANTIDAD",
+          "tipo": "number",
           "origen": "datos.cantidad",
-          "tipo": "number"
+          "historicoKey": "cantidad"
         },
         {
-          "columna": "M",
           "encabezado": "MARCA",
+          "tipo": "text",
           "origen": "datos.marca",
-          "tipo": "text"
+          "historicoKey": "marca"
         },
         {
-          "columna": "N",
           "encabezado": "MODELO",
+          "tipo": "text",
           "origen": "datos.modelo",
-          "tipo": "text"
+          "historicoKey": "modelo"
         },
         {
-          "columna": "O",
           "encabezado": "IMEI FÍSICO",
+          "tipo": "text",
           "origen": "datos.imei_fisico",
-          "tipo": "text"
+          "historicoKey": "imei_fisico"
         },
         {
-          "columna": "P",
           "encabezado": "IMEI LÓGICO",
+          "tipo": "text",
           "origen": "datos.imei_logico",
-          "tipo": "text"
+          "historicoKey": "imei_logico"
         },
         {
-          "columna": "Q",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "R",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "S",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "T",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "U",
           "encabezado": "SUB TIPO",
+          "tipo": "text",
           "origen": "datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "V",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "W",
-          "encabezado": "SI EL CELULAR + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "encabezado": "SI  EL CELULAR + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "X",
-          "encabezado": "SI EL CELULAR + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "encabezado": "SI  EL CELULAR + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "Y",
-          "encabezado": "SI EL CELULAR + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "encabezado": "SI  EL CELULAR + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "Z",
-          "encabezado": "SI EL CELULAR + DE UN DELITO /DELITO/SUB TIPO2",
+          "encabezado": "SI  EL CELULAR + DE UN DELITO /DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "AA",
           "encabezado": "OBSERVACIONES",
+          "tipo": "text",
           "origen": "datos.observaciones",
-          "tipo": "text"
+          "historicoKey": "observaciones"
         },
         {
-          "columna": "AB",
           "encabezado": "SITUACION DEL EQUIPO MOVIL",
+          "tipo": "text",
           "origen": "datos.situacion",
-          "tipo": "text"
+          "historicoKey": "situacion"
         },
         {
-          "columna": "AC",
           "encabezado": "N° NOTA INFORMATIVA (SICPIP)",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AD",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AE",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -3520,154 +3560,180 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "datos.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
+        },
+        {
+          "encabezado": "HORA INTERVENCION",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "hora"
+        },
+        {
+          "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
+          "origen": "datos.apellido_paterno",
+          "historicoKey": "apellido_paterno"
+        },
+        {
+          "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
+          "origen": "datos.apellido_materno",
+          "historicoKey": "apellido_materno"
+        },
+        {
+          "encabezado": "NOMBRES",
+          "tipo": "text",
+          "origen": "datos.nombres",
+          "historicoKey": "nombres"
+        },
+        {
+          "encabezado": "EDAD",
+          "tipo": "number",
+          "origen": "datos.edad",
+          "historicoKey": "edad"
+        },
+        {
+          "encabezado": "CONDICION",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "condicion"
+        },
+        {
+          "encabezado": "SITUACION",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "situacion"
+        },
+        {
+          "encabezado": "GENERO",
+          "tipo": "text",
+          "origen": "datos.genero",
+          "historicoKey": "genero"
+        },
+        {
+          "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
+          "origen": "datos.nacionalidad",
+          "historicoKey": "nacionalidad"
+        },
+        {
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
+          "origen": "datos.tipo_documento",
+          "historicoKey": "tipo_documento"
+        },
+        {
+          "encabezado": "N° DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
+          "origen": "datos.numero_documento",
+          "historicoKey": "numero_documento"
+        },
+        {
+          "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
+          "origen": "intervencion.departamento",
+          "historicoKey": "departamento"
+        },
+        {
+          "encabezado": "PROVINCIA",
+          "tipo": "text",
+          "origen": "intervencion.provincia",
+          "historicoKey": "provincia"
+        },
+        {
+          "encabezado": "DISTRITO",
+          "tipo": "text",
+          "origen": "intervencion.distrito",
+          "historicoKey": "distrito"
+        },
+        {
+          "encabezado": "INFRACCION A LA LEY DE MIGRACIONES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_18"
+        },
+        {
+          "encabezado": "SUB TIPO DE INFRACCION",
+          "tipo": "text",
+          "origen": "datos.subtipo_infraccion",
+          "historicoKey": "subtipo_infraccion"
+        },
+        {
+          "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
+          "origen": "intervencion.direccion_policial",
+          "historicoKey": "direccion_policial"
+        },
+        {
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
+          "origen": "intervencion.direccion_especializada_region",
+          "historicoKey": "direccion_especializada_region"
+        },
+        {
+          "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
+          "origen": "intervencion.division_policial",
+          "historicoKey": "division_policial"
+        },
+        {
+          "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
+          "origen": "intervencion.departamento_policial",
+          "historicoKey": "departamento_policial"
+        },
+        {
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
+          "origen": "intervencion.unidad_area_equipo",
+          "historicoKey": "unidad_area_equipo"
+        },
+        {
+          "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
+          "origen": "intervencion.nota_sicpip",
+          "historicoKey": "nota_sicpip"
+        },
+        {
+          "encabezado": "LATITUD",
+          "tipo": "number",
+          "origen": "intervencion.latitud",
+          "historicoKey": "latitud"
+        },
+        {
+          "encabezado": "LONGITUD",
+          "tipo": "number",
+          "origen": "intervencion.longitud",
+          "historicoKey": "longitud"
         },
         {
           "columna": "D",
           "encabezado": "HORA DETENCION",
           "origen": "datos.hora",
-          "tipo": "time"
-        },
-        {
-          "columna": "E",
-          "encabezado": "APELLIDO PATERNO",
-          "origen": "datos.apellido_paterno",
-          "tipo": "text"
-        },
-        {
-          "columna": "F",
-          "encabezado": "APELLIDO MATERNO",
-          "origen": "datos.apellido_materno",
-          "tipo": "text"
-        },
-        {
-          "columna": "G",
-          "encabezado": "NOMBRES",
-          "origen": "datos.nombres",
-          "tipo": "text"
-        },
-        {
-          "columna": "H",
-          "encabezado": "EDAD",
-          "origen": "datos.edad",
-          "tipo": "number"
-        },
-        {
-          "columna": "I",
-          "encabezado": "GENERO",
-          "origen": "datos.genero",
-          "tipo": "text"
-        },
-        {
-          "columna": "J",
-          "encabezado": "NACIONALIDAD (PAIS)",
-          "origen": "datos.nacionalidad",
-          "tipo": "text"
-        },
-        {
-          "columna": "K",
-          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
-          "origen": "datos.tipo_documento",
-          "tipo": "text"
-        },
-        {
-          "columna": "L",
-          "encabezado": "N° DOCUMENTO DE IDENTIDAD",
-          "origen": "datos.numero_documento",
-          "tipo": "text"
-        },
-        {
-          "columna": "M",
-          "encabezado": "DEPARTAMENTO",
-          "origen": "intervencion.departamento",
-          "tipo": "text"
-        },
-        {
-          "columna": "N",
-          "encabezado": "PROVINCIA",
-          "origen": "intervencion.provincia",
-          "tipo": "text"
-        },
-        {
-          "columna": "O",
-          "encabezado": "DISTRITO",
-          "origen": "intervencion.distrito",
-          "tipo": "text"
+          "tipo": "time",
+          "historicoKey": "hora"
         },
         {
           "columna": "P",
           "encabezado": "LEY DE MIGRACIONES SELECCIONAR",
           "origen": "datos.ley_migraciones",
-          "tipo": "text"
-        },
-        {
-          "columna": "Q",
-          "encabezado": "SUB TIPO DE INFRACCION",
-          "origen": "datos.subtipo_infraccion",
-          "tipo": "text"
-        },
-        {
-          "columna": "R",
-          "encabezado": "DIRNIC /DIRNOS",
-          "origen": "intervencion.direccion_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "S",
-          "encabezado": "DIRECCIONES /REGIONES /FRENTES",
-          "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
-        },
-        {
-          "columna": "T",
-          "encabezado": "DIVISION POLICIAL",
-          "origen": "intervencion.division_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "U",
-          "encabezado": "DEPARTAMENTO POLICAL",
-          "origen": "intervencion.departamento_policial",
-          "tipo": "text"
-        },
-        {
-          "columna": "V",
-          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
-          "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
-        },
-        {
-          "columna": "W",
-          "encabezado": "NOTA INFOMATIVA SICPIP",
-          "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
-        },
-        {
-          "columna": "X",
-          "encabezado": "LATITUD",
-          "origen": "intervencion.latitud",
-          "tipo": "number"
-        },
-        {
-          "columna": "Y",
-          "encabezado": "LONGITUD",
-          "origen": "intervencion.longitud",
-          "tipo": "number"
+          "tipo": "text",
+          "historicoKey": "ley_migraciones"
         }
       ]
     },
@@ -4168,178 +4234,178 @@ window.PRODUCCION_CATALOGO = {
       "encabezados_recuperados_de": null,
       "columnas": [
         {
-          "columna": "A",
           "encabezado": "N°",
+          "tipo": "number",
           "origen": "derivado.numero_fila",
-          "tipo": "number"
+          "historicoKey": "fuente_1"
         },
         {
-          "columna": "B",
           "encabezado": "MES",
+          "tipo": "text",
           "origen": "derivado.mes_fecha",
-          "tipo": "text"
+          "historicoKey": "fuente_2"
         },
         {
-          "columna": "C",
           "encabezado": "FECHA",
+          "tipo": "date",
           "origen": "datos.fecha",
-          "tipo": "date"
+          "historicoKey": "fecha"
         },
         {
-          "columna": "D",
           "encabezado": "HORA",
+          "tipo": "time",
           "origen": "datos.hora",
-          "tipo": "time"
+          "historicoKey": "hora"
         },
         {
-          "columna": "E",
           "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
           "origen": "intervencion.departamento",
-          "tipo": "text"
+          "historicoKey": "departamento"
         },
         {
-          "columna": "F",
           "encabezado": "PROVINCIA",
+          "tipo": "text",
           "origen": "intervencion.provincia",
-          "tipo": "text"
+          "historicoKey": "provincia"
         },
         {
-          "columna": "G",
           "encabezado": "DISTRITO",
+          "tipo": "text",
           "origen": "intervencion.distrito",
-          "tipo": "text"
+          "historicoKey": "distrito"
         },
         {
-          "columna": "H",
           "encabezado": "SITUACION DE INMUEBLE",
+          "tipo": "text",
           "origen": "datos.situacion",
-          "tipo": "text"
+          "historicoKey": "situacion"
         },
         {
-          "columna": "I",
           "encabezado": "TIPO DE  INMUEBLE",
+          "tipo": "text",
           "origen": "datos.tipo_inmueble",
-          "tipo": "text"
+          "historicoKey": "tipo_inmueble"
         },
         {
-          "columna": "J",
           "encabezado": "DETALLAR EL INMUEBLE",
+          "tipo": "text",
           "origen": "datos.detalle_inmueble",
-          "tipo": "text"
+          "historicoKey": "detalle_inmueble"
         },
         {
-          "columna": "K",
           "encabezado": "VALORIZACION DEL INMUEBLE  INCAUTADO",
+          "tipo": "number",
           "origen": "datos.valorizacion",
-          "tipo": "number"
+          "historicoKey": "valorizacion"
         },
         {
-          "columna": "L",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
           "origen": "datos.tentativa",
-          "tipo": "text"
+          "historicoKey": "tentativa"
         },
         {
-          "columna": "M",
           "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
           "origen": "datos.fuero",
-          "tipo": "text"
+          "historicoKey": "fuero"
         },
         {
-          "columna": "N",
           "encabezado": "DELITO GENERAL",
+          "tipo": "text",
           "origen": "datos.delito_general",
-          "tipo": "text"
+          "historicoKey": "delito_general"
         },
         {
-          "columna": "O",
           "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
           "origen": "datos.delito_especifico",
-          "tipo": "text"
+          "historicoKey": "delito_especifico"
         },
         {
-          "columna": "P",
           "encabezado": "SUB TIPO",
+          "tipo": "text",
           "origen": "datos.subtipo",
-          "tipo": "text"
+          "historicoKey": "subtipo"
         },
         {
-          "columna": "Q",
           "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
           "origen": "datos.tentativa_2",
-          "tipo": "text"
+          "historicoKey": "tentativa_2"
         },
         {
-          "columna": "R",
           "encabezado": "SI  EL DINERO + DE UN DELITO /FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
           "origen": "datos.fuero_2",
-          "tipo": "text"
+          "historicoKey": "fuero_2"
         },
         {
-          "columna": "S",
           "encabezado": "SI  EL DINERO + DE UN DELITO / DELITO/ DELITO GENERAL2",
+          "tipo": "text",
           "origen": "datos.delito_general_2",
-          "tipo": "text"
+          "historicoKey": "delito_general_2"
         },
         {
-          "columna": "T",
           "encabezado": "SI  EL DINERO + DE UN DELITO / DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
           "origen": "datos.delito_especifico_2",
-          "tipo": "text"
+          "historicoKey": "delito_especifico_2"
         },
         {
-          "columna": "U",
           "encabezado": "SI  EL DINERO + DE UN DELITO /DELITO/SUB TIPO2",
+          "tipo": "text",
           "origen": "datos.subtipo_2",
-          "tipo": "text"
+          "historicoKey": "subtipo_2"
         },
         {
-          "columna": "V",
           "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
           "origen": "intervencion.direccion_policial",
-          "tipo": "text"
+          "historicoKey": "direccion_policial"
         },
         {
-          "columna": "W",
           "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
           "origen": "intervencion.direccion_especializada_region",
-          "tipo": "text"
+          "historicoKey": "direccion_especializada_region"
         },
         {
-          "columna": "X",
           "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
           "origen": "intervencion.division_policial",
-          "tipo": "text"
+          "historicoKey": "division_policial"
         },
         {
-          "columna": "Y",
           "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
           "origen": "intervencion.departamento_policial",
-          "tipo": "text"
+          "historicoKey": "departamento_policial"
         },
         {
-          "columna": "Z",
           "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
           "origen": "intervencion.unidad_area_equipo",
-          "tipo": "text"
+          "historicoKey": "unidad_area_equipo"
         },
         {
-          "columna": "AA",
           "encabezado": "N° DE NOTA INFOMATIVA REALIZADA",
+          "tipo": "text",
           "origen": "intervencion.nota_sicpip",
-          "tipo": "text"
+          "historicoKey": "nota_sicpip"
         },
         {
-          "columna": "AB",
           "encabezado": "LATITUD",
+          "tipo": "number",
           "origen": "intervencion.latitud",
-          "tipo": "number"
+          "historicoKey": "latitud"
         },
         {
-          "columna": "AC",
           "encabezado": "LONGITUD",
+          "tipo": "number",
           "origen": "intervencion.longitud",
-          "tipo": "number"
+          "historicoKey": "longitud"
         }
       ]
     },
@@ -4505,6 +4571,484 @@ window.PRODUCCION_CATALOGO = {
           "encabezado": "DISTRITO DE UBICACIÓN",
           "origen": "datos.distrito_ubicacion",
           "tipo": "text"
+        }
+      ]
+    },
+    {
+      "nombre": "MEGAOPERATIVOS",
+      "tabla": "intervenciones",
+      "tipo": "megaoperativo",
+      "raiz": "operativo",
+      "columnas": [
+        {
+          "encabezado": "N°",
+          "tipo": "number",
+          "origen": "derivado.numero_fila",
+          "historicoKey": "fuente_1"
+        },
+        {
+          "encabezado": "MES",
+          "tipo": "text",
+          "origen": "derivado.mes_fecha",
+          "historicoKey": "fuente_2"
+        },
+        {
+          "encabezado": "FECHA",
+          "tipo": "date",
+          "origen": "intervencion.fecha",
+          "historicoKey": "fecha"
+        },
+        {
+          "encabezado": "HORA",
+          "tipo": "time",
+          "origen": "intervencion.hora",
+          "historicoKey": "hora"
+        },
+        {
+          "encabezado": "MEGA OPERATIVO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_5"
+        },
+        {
+          "encabezado": "EL RESULTADO:POSITIVO - NEGATIVO",
+          "tipo": "text",
+          "origen": "operativo.resultado",
+          "historicoKey": "resultado"
+        },
+        {
+          "encabezado": "ORDEN DE OPERACIONES",
+          "tipo": "text",
+          "origen": "operativo.orden_operaciones",
+          "historicoKey": "orden_operaciones"
+        },
+        {
+          "encabezado": "PLAN DE OPERACIONES",
+          "tipo": "text",
+          "origen": "operativo.plan_operaciones",
+          "historicoKey": "plan_operaciones"
+        },
+        {
+          "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
+          "origen": "intervencion.departamento",
+          "historicoKey": "departamento"
+        },
+        {
+          "encabezado": "PROVINCIA",
+          "tipo": "text",
+          "origen": "intervencion.provincia",
+          "historicoKey": "provincia"
+        },
+        {
+          "encabezado": "DISTRITO",
+          "tipo": "text",
+          "origen": "intervencion.distrito",
+          "historicoKey": "distrito"
+        },
+        {
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_12"
+        },
+        {
+          "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_13"
+        },
+        {
+          "encabezado": "DELITO GENERAL",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_14"
+        },
+        {
+          "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_15"
+        },
+        {
+          "encabezado": "SUB TIPO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_16"
+        },
+        {
+          "encabezado": "MOTIVO DEL OPERATIVO \n(FLAGRANCIA-MEDIDA LIMITATIVA)",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_17"
+        },
+        {
+          "encabezado": "TIPO DE OPERATIVO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_18"
+        },
+        {
+          "encabezado": "PERSONAL A CARGO CANTIDAD",
+          "tipo": "number",
+          "origen": "operativo.personal_cargo",
+          "historicoKey": "personal_cargo"
+        },
+        {
+          "encabezado": "VEHICULO MAYOR A CARGO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_mayores_cargo",
+          "historicoKey": "vehiculos_mayores_cargo"
+        },
+        {
+          "encabezado": "VEHICULO MENOR A CARGO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_menores_cargo",
+          "historicoKey": "vehiculos_menores_cargo"
+        },
+        {
+          "encabezado": "PERSONAL PNP DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.personal_apoyo_pnp",
+          "historicoKey": "personal_apoyo_pnp"
+        },
+        {
+          "encabezado": "VEHICULO MAYOR DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_mayores_apoyo_pnp",
+          "historicoKey": "vehiculos_mayores_apoyo_pnp"
+        },
+        {
+          "encabezado": "VEHICULO MENOR   DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_menores_apoyo_pnp",
+          "historicoKey": "vehiculos_menores_apoyo_pnp"
+        },
+        {
+          "encabezado": "PERSONAL FF.AA DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.personal_apoyo_ffaa",
+          "historicoKey": "personal_apoyo_ffaa"
+        },
+        {
+          "encabezado": "VEHICULO MAYOR FF.AA DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_mayores_apoyo_ffaa",
+          "historicoKey": "vehiculos_mayores_apoyo_ffaa"
+        },
+        {
+          "encabezado": "VEHICULO MENOR FF.AA DE APOYO",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_menores_apoyo_ffaa",
+          "historicoKey": "vehiculos_menores_apoyo_ffaa"
+        },
+        {
+          "encabezado": "OTRAS ENTIDADES",
+          "tipo": "text",
+          "origen": "operativo.otras_entidades",
+          "historicoKey": "otras_entidades"
+        },
+        {
+          "encabezado": "VEHICULO MAYOR OTRAS ENTIDADES",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_mayores_otras_entidades",
+          "historicoKey": "vehiculos_mayores_otras_entidades"
+        },
+        {
+          "encabezado": "VEHICULO MENOR OTRAS ENTIDADES",
+          "tipo": "number",
+          "origen": "operativo.vehiculos_menores_otras_entidades",
+          "historicoKey": "vehiculos_menores_otras_entidades"
+        },
+        {
+          "encabezado": "DIRECCION -DIRNIC DIRNOS",
+          "tipo": "text",
+          "origen": "intervencion.direccion_policial",
+          "historicoKey": "direccion_policial"
+        },
+        {
+          "encabezado": "DIRECCION ESPECIALIZADAS/REGION /FRENTE POLICIAL",
+          "tipo": "text",
+          "origen": "intervencion.direccion_especializada_region",
+          "historicoKey": "direccion_especializada_region"
+        },
+        {
+          "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
+          "origen": "intervencion.division_policial",
+          "historicoKey": "division_policial"
+        },
+        {
+          "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
+          "origen": "intervencion.departamento_policial",
+          "historicoKey": "departamento_policial"
+        },
+        {
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
+          "origen": "intervencion.unidad_area_equipo",
+          "historicoKey": "unidad_area_equipo"
+        },
+        {
+          "encabezado": "NOTA INFOMATIVA SICPIP",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "nota_sicpip"
+        },
+        {
+          "encabezado": "LATITUD",
+          "tipo": "number",
+          "origen": "intervencion.latitud",
+          "historicoKey": "latitud"
+        },
+        {
+          "encabezado": "LONGITUD",
+          "tipo": "number",
+          "origen": "intervencion.longitud",
+          "historicoKey": "longitud"
+        }
+      ]
+    },
+    {
+      "nombre": "31_EXPLOSIVOS",
+      "tabla": "intervencion_materiales",
+      "tipo": "explosivo",
+      "raiz": "material",
+      "columnas": [
+        {
+          "encabezado": "N°",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_1"
+        },
+        {
+          "encabezado": "MES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_2"
+        },
+        {
+          "encabezado": "FECHA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fecha"
+        },
+        {
+          "encabezado": "HORA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "hora"
+        },
+        {
+          "encabezado": "APELLIDO PATERNO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "apellido_paterno"
+        },
+        {
+          "encabezado": "APELLIDO MATERNO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "apellido_materno"
+        },
+        {
+          "encabezado": "NOMBRES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "nombres"
+        },
+        {
+          "encabezado": "EDAD",
+          "tipo": "number",
+          "origen": "",
+          "historicoKey": "edad"
+        },
+        {
+          "encabezado": "GENERO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "genero"
+        },
+        {
+          "encabezado": "NACIONALIDAD (PAIS)",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "nacionalidad"
+        },
+        {
+          "encabezado": "TIPO DOCUMENTO DE IDENTIDAD",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "tipo_documento"
+        },
+        {
+          "encabezado": "N° DE DOCUMENTO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_12"
+        },
+        {
+          "encabezado": "DEPARTAMENTO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_13"
+        },
+        {
+          "encabezado": "PROVINCIA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_14"
+        },
+        {
+          "encabezado": "DISTRITO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_15"
+        },
+        {
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_16"
+        },
+        {
+          "encabezado": "FUERO/LEYES ESPECIALES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_17"
+        },
+        {
+          "encabezado": "DELITO GENERAL",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_18"
+        },
+        {
+          "encabezado": "DELITO ESPECIFICO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_19"
+        },
+        {
+          "encabezado": "SUB TIPO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_20"
+        },
+        {
+          "encabezado": "EL DELITO COMETIDO ES TENTANTIVA 2",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_21"
+        },
+        {
+          "encabezado": "SI EXPLOSIVO + DELITO FUERO/LEYES ESPECIALES 2",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_22"
+        },
+        {
+          "encabezado": "SI EXPLOSIVO + DELITO/ DELITO GENERAL2",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_23"
+        },
+        {
+          "encabezado": "SI EXPLOSIVO + DELITO/DELITO ESPECIFICO2",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_24"
+        },
+        {
+          "encabezado": "SI EXPLOSIVO + DELITO/SUB TIPO2",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_25"
+        },
+        {
+          "encabezado": "EL MOTIVO (Hallazgo/Incautacion)",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_26"
+        },
+        {
+          "encabezado": "SITUACION DEL MATERIAL EXPLOSIVO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_27"
+        },
+        {
+          "encabezado": "TIPO DE MATERIAL EXPLOSIVO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_28"
+        },
+        {
+          "encabezado": "DETALLE TIPO DE MATERIAL EXPLOSIVO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_29"
+        },
+        {
+          "encabezado": "DETALLE TIPO DE MATERIAL EXPLOSIVO2",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_30"
+        },
+        {
+          "encabezado": "CANTIDAD",
+          "tipo": "number",
+          "origen": "",
+          "historicoKey": "cantidad"
+        },
+        {
+          "encabezado": "DIRNIC /DIRNOS",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_32"
+        },
+        {
+          "encabezado": "DIRECCIONES /REGIONES /FRENTES",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_33"
+        },
+        {
+          "encabezado": "DIVISION POLICIAL",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_34"
+        },
+        {
+          "encabezado": "DEPARTAMENTO POLICAL",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_35"
+        },
+        {
+          "encabezado": "EL NOMBRE DE LA UNIDAD/AREAS /EQUIPO",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_36"
+        },
+        {
+          "encabezado": "N° DE NOTA INFOMATIVA REALIZADA",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "nota_sicpip"
+        },
+        {
+          "encabezado": "LATITUD",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_38"
+        },
+        {
+          "encabezado": "LONGITUD",
+          "tipo": "text",
+          "origen": "",
+          "historicoKey": "fuente_39"
         }
       ]
     }

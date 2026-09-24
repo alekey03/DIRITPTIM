@@ -1,7 +1,7 @@
 (() => {
   const model=window.ProduccionModelo;
   const dialog=document.createElement('dialog');dialog.className='modal produccion-modal';dialog.setAttribute('aria-labelledby','produccionTitle');
-  dialog.innerHTML=`<div class="modal-card"><header class="produccion-header"><div><small>REPORTE DE PRODUCCIÓN</small><h2 id="produccionTitle">Excel completo · 24 pestañas</h2></div><button type="button" class="secondary" data-close aria-label="Cerrar exportación">Cerrar</button></header><p>Incluye los registros guardados, también los borradores, de todas las categorías del formato. Cada hoja usa la fecha de su registro; cuando no tiene fecha propia, usa la del operativo.</p><p class="consulta-scope" data-scope></p><form><fieldset class="produccion-filters"><legend>Alcance del reporte</legend><label>Desde<input name="from" type="date"></label><label>Hasta<input name="to" type="date"></label><label>Dependencia<select name="unit"><option value="">Todas las autorizadas</option></select></label><button type="submit" class="primary" data-prepare>Preparar Excel</button></fieldset></form><p data-status role="status" aria-live="polite"></p><div data-preview></div><div class="produccion-footer"><p>Las 24 pestañas se conservan aunque no tengan registros. Se exporta la NI principal. Armas de fuego, OO. CC. y chips usan los encabezados anteriores porque la nueva plantilla los trae vacíos. «ENERO» en Personas ubicadas conserva el encabezado recibido y contiene el mes de cada registro.</p><button type="button" class="primary" data-download hidden>⇩ Descargar Excel completo</button></div></div>`;
+  dialog.innerHTML=`<div class="modal-card"><header class="produccion-header"><div><small>REPORTE DE PRODUCCIÓN</small><h2 id="produccionTitle">Excel completo · 24 pestañas</h2></div><button type="button" class="secondary" data-close aria-label="Cerrar exportación">Cerrar</button></header><p>Incluye los registros guardados, también los borradores, de todas las categorías del formato. Cada hoja usa la fecha de su registro; cuando no tiene fecha propia, usa la del operativo.</p><p class="consulta-scope" data-scope></p><form><fieldset class="produccion-filters"><legend>Alcance del reporte</legend><label>Desde<input name="from" type="date"></label><label>Hasta<input name="to" type="date"></label><label>Dependencia<select name="unit"><option value="">Todas las autorizadas</option></select></label><button type="submit" class="primary" data-prepare>Preparar Excel</button></fieldset></form><p data-status role="status" aria-live="polite"></p><div data-preview></div><div class="produccion-footer"><p>Se incluyen los registros históricos, aunque tengan datos pendientes. Los campos originales del histórico se conservan para su revisión.</p><button type="button" class="primary" data-download hidden>⇩ Descargar Excel completo</button></div></div>`;
   document.body.append(dialog);
   const $=selector=>dialog.querySelector(selector),form=$('form'),status=$('[data-status]'),preview=$('[data-preview]'),download=$('[data-download]'),fields=$('fieldset');
   let turn=0,report=null,sourceStamp=null,reportIdentity=null;
@@ -19,7 +19,7 @@
     dialog.showModal();status.textContent='Consultando dependencias autorizadas…';fields.disabled=true;
     try{
       const parents=await model.readTable(supabaseClient,'intervenciones','id,tipo,unidad',alive);
-      const units=[...new Set([...parents.filter(p=>['operativo','megaoperativo'].includes(p.tipo)),...await model.readTable(supabaseClient,'desapariciones','id,unidad',alive)].map(p=>p.unidad).filter(Boolean))].sort();
+      const units=[...new Set([...await window.HistoricoProduccion.read(supabaseClient,{},alive,'id,unidad'),...parents.filter(p=>['operativo','megaoperativo'].includes(p.tipo)),...await model.readTable(supabaseClient,'desapariciones','id,unidad',alive)].map(p=>p.unidad).filter(Boolean))].sort();
       form.elements.unit.replaceChildren(new Option('Todas las autorizadas',''),...units.map(u=>new Option(u,u)));
       if(alive())status.textContent='Seleccione el periodo y prepare el reporte. Los filtros de la consulta por categoría no se aplican a este Excel completo.';
     }catch(error){if(alive())status.textContent=error.message;}
@@ -34,7 +34,7 @@
     try{
       const data=await model.snapshot(supabaseClient,alive,message=>{if(alive())status.textContent=message;});
       if(!alive())return;
-      report=model.build(data,filters);sourceStamp=model.stamp(data.intervenciones)+'#'+(data.desapariciones||[]).map(r=>r.id+':'+r.version).sort().join('|');reportIdentity=profile;
+      report=model.build(data,filters);sourceStamp=(data.produccion_historica||[]).map(r=>r.id+':'+r.version).sort().join('|')+'#'+model.stamp(data.intervenciones)+'#'+(data.desapariciones||[]).map(r=>r.id+':'+r.version).sort().join('|');reportIdentity=profile;
       const list=document.createElement('dl');list.className='produccion-counts';
       for(const sheet of report.sheets){const row=document.createElement('div'),title=document.createElement('dt'),count=document.createElement('dd');title.textContent=sheet.nombre;count.textContent=String(sheet.rows.length);row.append(title,count);list.append(row);}
       preview.append(list);
@@ -54,7 +54,8 @@
       const parents=await model.readTable(supabaseClient,'intervenciones','id,tipo,version',alive);
       if(!alive())return;
       const missing=await model.readTable(supabaseClient,'desapariciones','id,version',alive);
-      if(sourceStamp!==model.stamp(parents)+'#'+missing.map(r=>r.id+':'+r.version).sort().join('|')){clear();throw new Error('Los registros o sus permisos cambiaron. Prepare de nuevo el Excel.');}
+      const history=await window.HistoricoProduccion.read(supabaseClient,{},alive,'id,version');
+      if(sourceStamp!==history.map(r=>r.id+':'+r.version).sort().join('|')+'#'+model.stamp(parents)+'#'+missing.map(r=>r.id+':'+r.version).sort().join('|')){clear();throw new Error('Los registros o sus permisos cambiaron. Prepare de nuevo el Excel.');}
       const workbook=model.workbook(report,window.XLSX);
       if(!alive())return;
       const dates=[report.filters.from||'inicio',report.filters.to||'actual'].join('_');

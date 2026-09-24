@@ -29,7 +29,7 @@
   }
   async function snapshot(client, alive=()=>true, progress=()=>{}) {
     const parents=await readTable(client,'intervenciones','*,intervencion_operativos(*)',alive);
-    const data={intervenciones:parents};
+    const data={intervenciones:parents,produccion_historica:await window.HistoricoProduccion.read(client,{},alive)};
     const tables=[...new Set(sheets.map(s=>s.tabla).filter(t=>t!=='intervenciones'))];
     // A group can retain a historical detention that is excluded from the detainee total.
     tables.push('detenciones');
@@ -75,9 +75,12 @@
         }
       } else rows.push(context);
     }
+    for(const h of data.produccion_historica||[]){if(h.tabla!==sheet.tabla||(sheet.tipo&&h.tipo!==sheet.tipo))continue;if(!matches(h.fecha||'',h,filters))continue;rows.push({historico:h,fecha:h.fecha||'',recordId:h.id});}
     return rows.sort((a,b)=>a.fecha.localeCompare(b.fecha)||(a.sortId||a.recordId).localeCompare(b.sortId||b.recordId));
   }
   function sourceValue(context, source, index) {
+    if(source==='derivado.medida')return context.droga?.tipo?.startsWith('kg_')?'kg':'envoltorios';
+    if(source==='derivado.sustancia')return context.droga?.tipo||'';
     if (source==='intervencion.tipo') return context.intervencion.tipo==='megaoperativo'?'MEGA OPERATIVO':'OPERATIVO';
     if (source==='operativo.resultado') return context.operativo.resultado?String(context.operativo.resultado).toUpperCase():'';
     if (/^(derivado|generado)\.(numero|numero_fila)$/.test(source)) return index+1;
@@ -116,7 +119,7 @@
     const result=sheets.map(sheet=>{
       const records=contexts(data,sheet,filters,issues);
       const rows=records.map((record,i)=>sheet.columnas.map(c=>{
-        try {return cell(sourceValue(record,c.origen,i),c.tipo);}
+        try {const value=record.historico?record.historico.datos[c.historicoKey]:sourceValue(record,c.origen,i);if(record.historico){try{return cell(value,c.tipo);}catch{return cell(value,'text');}}return cell(value,c.tipo);}
         catch(error) {issues.errors.push(`${sheet.nombre}, registro ${record.recordId}, ${c.encabezado.trim()}: ${error.message}`);return {t:'s',v:''};}
       }));
       return {...sheet,rows};
