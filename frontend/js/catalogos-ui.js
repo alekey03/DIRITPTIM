@@ -273,6 +273,8 @@
     return operativoCatalogs;
   };
 
+  window.getHistoricalCatalogs = () => ({crimes: CRIMES, police: POLICE, weapons: WEAPONS});
+
   window.setProtectedCatalogs = function setProtectedCatalogs(catalogs) {
     CRIMES = Array.isArray(catalogs?.delitos) ? catalogs.delitos : [];
     POLICE = policeCatalog(Array.isArray(catalogs?.dependencias_policiales) ? catalogs.dependencias_policiales : []);
