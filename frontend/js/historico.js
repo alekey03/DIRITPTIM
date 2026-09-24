@@ -14,7 +14,7 @@
  }
  function normalize(r,c){const data={...r.datos};if(['detenidos','rq','menores','victimas','prostitucion','migraciones'].includes(c.id))data.nombre=[data.apellido_paterno,data.apellido_materno,data.nombres].filter(Boolean).join(' ');
   if(c.table==='intervencion_drogas')data.medida=/KILO|^KG$/.test(norm(data.medida))?'kg':/ENV/.test(norm(data.medida))?'envoltorios':data.medida;
-  if(c.table==='intervencion_grupos')data.integrantes=1;
+  if(c.table==='intervencion_grupos')data.integrantes=r.historicalMembers?.length||1;
   return {historical:true,source:r,id:r.id,data,date:r.fecha||'',unit:r.unidad||'',ni:r.nota_sicpip||'',parentId:c.table==='intervenciones'?r.id:r.operativo_id,place:[data.departamento,data.provincia,data.distrito].filter(Boolean).join(' / '),geography:{department:data.departamento||'',province:data.provincia||'',district:data.distrito||''}};
  }
  const canEdit=r=>!!currentProfile?.activo&&(['administrador','estadistico_direccion'].includes(currentProfile.rol)||(currentProfile.rol==='estadistico_jefatura'&&DEPENDENCIAS_INSTITUCIONALES.some(d=>d.unidad===r.unidad&&d.ambito==='DESCONCENTRADO')));
@@ -101,5 +101,33 @@
    if(r.tabla==='intervenciones'){const related=await read(supabaseClient,{parent:id},alive,'id,categoria,hoja,fila');if(!alive())return;const section=el('section');section.append(el('h3','Resultados vinculados'));for(const child of related){const b=el('button',`${child.hoja.trim()} · fila ${child.fila}`,'table-action');b.type='button';b.onclick=()=>open(child.id,false,onSaved);section.append(b);}if(!related.length)section.append(el('p','No hay resultados vinculados con certeza a este operativo.'));card.append(section);}
   }catch(e){if(alive()){card.replaceChildren(el('p',e.message));const exit=el('button','Cerrar','secondary');exit.onclick=close;card.append(exit);}}
  }
- window.HistoricoProduccion={read,normalize,canEdit,open,close,schema};
+ // Agrupa solamente filas ya autorizadas por RLS. Un bloque del Excel es un grupo,
+ // aunque otra intervención tenga un nombre idéntico.
+ function groupRows(rows){
+  const out=[],groups=new Map();
+  for(const r of rows){if(!r.historical||r.tabla!=='intervencion_grupos'||!r.datos.grupo_historico_id){out.push(r);continue;}
+   const key=r.datos.grupo_historico_id;
+   if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r);
+  }
+  for(const [id,members] of groups){members.sort((a,b)=>a.fila-b.fila);const head=members.find(r=>r.id===id)||members[0];out.push({...head,historicalMembers:members,datos:{...head.datos,integrantes:members.length,integrantes_busqueda:members.map(r=>[r.datos.apellido_paterno,r.datos.apellido_materno,r.datos.nombres,r.datos.numero_documento].filter(Boolean).join(' ')).join(' / ')}});}
+  return out;
+ }
+ async function openGroup(row,onSaved=()=>{}){
+  const token=++epoch,who=identity(),alive=()=>token===epoch&&who===identity()&&currentProfile?.activo;
+  card.replaceChildren(el('p','Consultando integrantes…'));if(!modal.open)modal.showModal();
+  try{
+   const rows=await read(supabaseClient,{table:'intervencion_grupos',type:row.tipo},alive);
+   if(!alive())return;
+   const members=rows.filter(r=>r.datos.grupo_historico_id===row.datos.grupo_historico_id).sort((a,b)=>a.fila-b.fila);
+   if(!members.length)throw Error('El grupo ya no está disponible en su ámbito.');
+   const head=members.find(r=>r.id===row.datos.grupo_historico_id)||members[0];
+   card.replaceChildren();const heading=el('div',null,'modal-heading'),title=el('div');title.append(el('h2',head.datos.nombre),el('p',`${row.tipo==='banda'?'Banda criminal':'Organización criminal'} · ${members.length} integrantes registrados`));const exit=el('button','Cerrar','secondary');exit.type='button';exit.onclick=close;heading.append(title,exit);card.append(heading);
+   card.append(el('p',[head.fecha,head.unidad].filter(Boolean).join(' · ')));
+   const wrap=el('div');wrap.style.overflowX='auto';const table=el('table'),thead=el('thead'),tr=el('tr');for(const text of ['Integrante','Documento','Edad','Nacionalidad','Rol','Acciones'])tr.append(el('th',text));thead.append(tr);table.append(thead);const body=el('tbody');
+   for(const member of members){const d=member.datos,tr=el('tr');for(const value of [[d.apellido_paterno,d.apellido_materno,d.nombres].filter(Boolean).join(' '),d.numero_documento,d.edad,d.nacionalidad,d.rol])tr.append(el('td',value==null||value===''?'Sin registrar':String(value)));const actions=el('td');for(const edit of [false,true]){if(edit&&!canEdit(member))continue;const button=el('button',edit?'Editar integrante':'Ver integrante','table-action');button.type='button';button.onclick=()=>open(member.id,edit,onSaved);actions.append(button);}tr.append(actions);body.append(tr);}
+   table.append(body);wrap.append(table);card.append(wrap);
+  }catch(e){if(alive()){card.replaceChildren(el('p',e.message));const exit=el('button','Cerrar','secondary');exit.onclick=close;card.append(exit);}}
+ }
+
+ window.HistoricoProduccion={read,normalize,canEdit,open,openGroup,groupRows,close,schema};
 })();
