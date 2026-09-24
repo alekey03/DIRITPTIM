@@ -11,7 +11,7 @@
   <form class="dash-filter-panel" aria-label="Filtros del dashboard"><div class="dash-filter-heading"><div><span class="dash-eyebrow">EXPLORAR PRODUCCIÓN</span><h3>¿Qué resultado desea analizar?</h3></div><button class="dash-text-button" type="button" data-clear>Restablecer filtros ↺</button></div><div class="dash-filter-grid"><label class="dash-category-label">Categoría<select name="category"></select></label><label>Desde<input name="from" type="date"></label><label>Hasta<input name="to" type="date"></label><label>Dependencia<select name="unit"><option value="">Todas las autorizadas</option></select></label></div><div class="dash-location-heading">Lugar de intervención <small>Seleccione un territorio para profundizar</small></div><div class="dash-filter-grid dash-geo-filters"><label>Departamento<select name="department"></select></label><label>Provincia<select name="province"></select></label><label>Distrito<select name="district"></select></label></div><div class="dash-specific" data-specific></div><div class="dash-filter-footer"><div class="dash-chips" data-chips></div><button class="primary" type="submit">Aplicar filtros</button></div></form>
   <p class="dash-status" role="status" aria-live="polite"></p>
   <section id="dashOverview" class="dash-section"><div class="dash-section-heading"><div><span class="dash-eyebrow">01 / PANORAMA</span><h3 data-category-title></h3></div><button type="button" class="secondary" data-records>Consultar registros ↗</button></div><div class="dash-kpis" data-kpis></div><div class="dash-overview-grid"><article class="dash-card dash-trend"><header><div><h3>Evolución de los registros</h3><p>Distribución en el tiempo del resultado seleccionado</p></div><div class="dash-toggle" role="group" aria-label="Agrupar evolución"><button type="button" aria-pressed="true" data-grain="month">Mensual</button><button type="button" aria-pressed="false" data-grain="year">Anual</button></div></header><div data-trend></div></article><article class="dash-brief"><span class="dash-eyebrow">LECTURA EJECUTIVA</span><h3>Claves del periodo</h3><div data-brief></div><p class="dash-footnote">Participaciones sobre registros filtrados. No representan tasas de criminalidad.</p></article></div></section>
-  <section id="dashTerritory" class="dash-section"><div class="dash-section-heading"><div><span class="dash-eyebrow">02 / TERRITORIO</span><h3>¿Dónde se concentra la producción?</h3></div><button type="button" class="dash-text-button" data-peru>Ver todo el Perú ↗</button></div><div class="dash-territory-grid"><article class="dash-card dash-map-card"><header><div><h3>Distribución por departamento</h3><p>Toque una región para filtrar. Pase el cursor para ver su participación.</p></div><span class="dash-badge">PERÚ</span></header><p class="dash-map-hover" data-map-hover aria-live="polite"></p><div id="executiveMap" class="dash-map" aria-label="Mapa de registros por departamento"></div><div class="dash-map-legend"><span><i style="background:#e7ecef"></i>Sin registros</span><span><i style="background:#66c99a"></i>&lt; 5%</span><span><i style="background:#c7dd77"></i>5–10%</span><span><i style="background:#f4ba58"></i>10–20%</span><span><i style="background:#e87770"></i>≥ 20%</span></div><p class="dash-footnote" data-map-note></p></article><article class="dash-card"><header><div><h3>Participación territorial</h3><p data-territory-level>Registros y porcentaje del total filtrado</p></div></header><div data-territory-ranking></div></article></div></section>
+  <section id="dashTerritory" class="dash-section"><div class="dash-section-heading"><div><span class="dash-eyebrow">02 / TERRITORIO</span><h3>¿Dónde se concentra la producción?</h3></div><button type="button" class="dash-text-button" data-peru>Ver todo el Perú ↗</button></div><div class="dash-territory-grid"><article class="dash-card dash-map-card"><header><div><h3 data-map-title>Distribución por departamento</h3><p>Toque una región para filtrar. Pase el cursor para ver su participación.</p></div><span class="dash-badge" data-map-place>PERÚ</span></header><button type="button" class="dash-text-button" data-map-back hidden>← Volver</button><p class="dash-map-hover" data-map-hover aria-live="polite"></p><div id="executiveMap" class="dash-map" aria-label="Mapa de registros por departamento"></div><div class="dash-map-legend"><span><i style="background:#e7ecef"></i>Sin registros</span><span><i style="background:#66c99a"></i>&lt; 5%</span><span><i style="background:#c7dd77"></i>5–10%</span><span><i style="background:#f4ba58"></i>10–20%</span><span><i style="background:#e87770"></i>≥ 20%</span></div><p class="dash-footnote" data-map-note></p></article><article class="dash-card"><header><div><h3>Participación territorial</h3><p data-territory-level>Registros y porcentaje del total filtrado</p></div></header><div data-territory-ranking></div></article></div></section>
   <section id="dashProfile" class="dash-section"><div class="dash-section-heading"><div><span class="dash-eyebrow">03 / COMPOSICIÓN</span><h3 data-composition-title>Una mirada al detalle</h3></div><span class="dash-badge">INTERACTIVO</span></div><div class="dash-profile-grid" data-profile></div></section>
   <section class="dash-section dash-card dash-units"><header><div><span class="dash-eyebrow">CONTRIBUCIÓN OPERATIVA</span><h3>Resultados por dependencia</h3><p>Cantidad de registros de la categoría seleccionada, no una evaluación de desempeño.</p></div></header><div data-units></div></section>
   <footer class="dash-footer"><span>DIRITPTIM · Producción policial</span><span>El alcance de los datos depende del perfil y la unidad asignada.</span></footer>`;
@@ -22,11 +22,11 @@
   function filters(){const f=Object.fromEntries(['from','to','unit','department','province','district'].map(k=>[k,v(k)]));f.facets={};for(const input of $('[data-specific]').querySelectorAll('[name]')){if(input.dataset.facet)f.facets[input.dataset.facet]=input.value;else f[input.name]=input.value;}return f;}
   function unique(key,source=rows){return [...new Set(source.map(key).map(M.clean).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));}
   function geographic(){
-    options($('[name="department"]'),unique(r=>M.geo(r).department),'Todo el territorio autorizado');
+    options($('[name="department"]'),[...new Set([...unique(r=>M.geo(r).department),...((window.CATALOGO_UBIGEO||[]).map(x=>x.value)),v('department')].filter(Boolean))],'Todo el territorio autorizado');
     const deps=rows.filter(r=>!v('department')||M.norm(M.geo(r).department)===M.norm(v('department')));
-    options($('[name="province"]'),v('department')?unique(r=>M.geo(r).province,deps):[],'Todas las provincias');$('[name="province"]').disabled=!v('department');
+    options($('[name="province"]'),v('department')?[...new Set([...unique(r=>M.geo(r).province,deps),v('province')].filter(Boolean))]:[],'Todas las provincias');$('[name="province"]').disabled=!v('department');
     const provs=deps.filter(r=>!v('province')||M.norm(M.geo(r).province)===M.norm(v('province')));
-    options($('[name="district"]'),v('province')?unique(r=>M.geo(r).district,provs):[],'Todos los distritos');$('[name="district"]').disabled=!v('province');
+    options($('[name="district"]'),v('province')?[...new Set([...unique(r=>M.geo(r).district,provs),v('district')].filter(Boolean))]:[],'Todos los distritos');$('[name="district"]').disabled=!v('province');
   }
   function specific(preserve=false){
     const old=preserve?filters():{},host=$('[data-specific]');host.replaceChildren();const c=cat();
@@ -83,27 +83,45 @@
     if(!host.children.length){const a=card('Por lugar de intervención','Distribución de los registros seleccionados.');bars(a,M.group(filtered,r=>M.geo(r).district),filtered.length,null);host.append(a);}
   }
   function donut(host,items,key){const colors=['#38ae86','#6498d2','#e9ad55','#b092d0','#e7847e','#78c9cb'],wrap=make('div',null,'dash-donut-wrap'),ring=make('div',null,'dash-donut'),center=make('div');let offset=0;ring.style.background=`conic-gradient(${items.map((x,i)=>{const start=offset;offset+=x.count/filtered.length*100;return `${colors[i]} ${start}% ${offset}%`;}).join(',')})`;ring.setAttribute('role','img');ring.setAttribute('aria-label',items.map(x=>`${x.label}: ${pct(x.count,filtered.length)}`).join('; '));center.append(make('strong',fmt(filtered.length)),make('small','REGISTROS'));ring.append(center);const legend=make('div',null,'dash-donut-legend');items.forEach((x,i)=>{const b=make('button');b.type='button';b.title=`${x.label}: ${fmt(x.count)} registros`;const dot=make('i');dot.style.background=colors[i];b.append(dot,make('span',x.label),make('strong',pct(x.count,filtered.length)));b.addEventListener('click',()=>selectFacet(key,x.label));legend.append(b);});wrap.append(ring,legend);host.append(wrap);}
-  async function drawMap(){const version=++mapTurn,total=filtered.length,groups=M.group(filtered,r=>M.geo(r).department),counts=new Map(groups.map(x=>[M.norm(x.label),x.count]));
+  async function drawMap(){const version=++mapTurn,total=filtered.length,f=filters();
+    const level=f.province?'district':f.department?'province':'department';
+    const urls={department:'departamentos',province:'provincias',district:'distritos'};
+    const names={department:'Departamentos',province:'Provincias',district:'Distritos'};
     try{
-      if(!window.L)throw Error('El visor cartográfico no está disponible. Consulte el ranking territorial.');
-      if(!geometry){const response=await fetch('frontend/assets/maps/departamentos.geojson');if(!response.ok)throw Error('No se pudo cargar la cartografía.');geometry=await response.json();}
+      if(!window.L)throw Error('El visor cartográfico no está disponible.');
+      geometry ||= {};
+      if(!geometry[level]){const response=await fetch('frontend/assets/maps/'+urls[level]+'.geojson');if(!response.ok)throw Error('No se pudo cargar la cartografía.');geometry[level]=await response.json();}
       if(version!==mapTurn||!loaded||identity()!==loadedIdentity)return;
-      if(!map){map=L.map('executiveMap',{attributionControl:false,scrollWheelZoom:false,minZoom:4,maxZoom:9,zoomSnap:.25});map.fitBounds([[-18.5,-81.5],[0,-68.5]]);}
-      if(layer)layer.remove();
-      layer=L.featureGroup().addTo(map);
+      let features=geometry[level].features.filter(feature=>{const p=feature.properties;return level==='department'||(M.norm(level==='province'?p.FIRST_NOMB:p.NOMBDEP)===M.norm(f.department)&&(level!=='district'||M.norm(p.NOMBPROV)===M.norm(f.province)));});
+      const nameOf=feature=>feature.properties[{department:'NOMBDEP',province:'NOMBPROV',district:'NOMBDIST'}[level]];
+      const counts=new Map(M.group(filtered,r=>M.geo(r)[level]).map(x=>[M.norm(x.label),x.count]));
+      if(!map)map=L.map('executiveMap',{attributionControl:false,scrollWheelZoom:false,minZoom:4,maxZoom:15,zoomSnap:.25});
+      if(layer)layer.remove();layer=L.featureGroup().addTo(map);
+      const info=$('[data-map-hover]');info.textContent=`${names[level]} de ${f.province||f.department||'Perú'} · ${fmt(total)} registros. Seleccione un territorio para explorar.`;
+      $('[data-map-back]').hidden=level==='department';$('[data-map-back]').textContent=level==='district'?'← Volver a '+f.department:'← Volver al Perú';
+      $('[data-map-title]').textContent='Distribución por '+({department:'departamento',province:'provincia',district:'distrito'})[level];
+      $('[data-map-place]').textContent=f.province||f.department||'PERÚ';
       const color=n=>!n?'#e7ecef':n/Math.max(total,1)<.05?'#66c99a':n/total<.1?'#c7dd77':n/total<.2?'#f4ba58':'#e87770';
-      const info=$('[data-map-hover]');info.textContent='Pase el cursor sobre una región para ver sus registros y porcentaje.';
-      L.geoJSON(geometry,{interactive:true,style:feature=>{const n=counts.get(M.norm(feature.properties.NOMBDEP))||0;return {fillColor:color(n),color:'#fff',weight:1.5,fillOpacity:.95};},onEachFeature:(feature,shape)=>{
-        const name=feature.properties.NOMBDEP,n=counts.get(M.norm(name))||0,tip=make('div',null,'dash-map-tip');tip.append(make('strong',name),make('span',`${fmt(n)} registros · ${pct(n,total)}`));shape.bindTooltip(tip,{sticky:true,className:'dash-region-tooltip',opacity:1});
-        const show=()=>{shape.setStyle({weight:3,color:'#274c55',fillOpacity:1});info.textContent=`${name} · ${fmt(n)} registros · ${pct(n,total)} del total seleccionado`;};
-        const hide=()=>{shape.setStyle({weight:1.5,color:'#fff',fillOpacity:.95});shape.closeTooltip();};
-        const select=()=>{const option=[...$('[name="department"]').options].find(o=>M.norm(o.value)===M.norm(name));if(!option){info.textContent=`${name}: sin registros para esta selección.`;return;}$('[name="department"]').value=option.value;$('[name="province"]').value='';$('[name="district"]').value='';geographic();apply();};
+      const geoLayer=L.geoJSON({type:'FeatureCollection',features},{interactive:true,style:feature=>({fillColor:color(counts.get(M.norm(nameOf(feature)))||0),color:'#fff',weight:1.4,fillOpacity:.95}),onEachFeature:(feature,shape)=>{
+        const name=nameOf(feature),n=counts.get(M.norm(name))||0,tip=make('div',null,'dash-map-tip');tip.append(make('strong',name),make('span',`${fmt(n)} registros · ${pct(n,total)}`));shape.bindTooltip(tip,{sticky:true,className:'dash-region-tooltip',opacity:1});
+        const show=()=>{shape.setStyle({weight:3,color:'#274c55'});info.textContent=`${name} · ${fmt(n)} registros · ${pct(n,total)} del total seleccionado`;};
+        const hide=()=>{shape.setStyle({weight:1.4,color:'#fff'});shape.closeTooltip();};
+        const select=()=>{const control=$(`[name="${level}"]`);let option=[...control.options].find(o=>M.norm(o.value)===M.norm(name));if(!option){option=new Option(name,name);control.add(option);}control.value=option.value;
+          if(level==='department'){ $('[name="province"]').value='';$('[name="district"]').value=''; }
+          if(level==='province')$('[name="district"]').value='';
+          geographic();apply();
+        };
         shape.on('click',select);shape.on('mouseover',show);shape.on('mouseout',hide);
-        shape.on('add',()=>{const path=shape.getElement();if(path){path.setAttribute('tabindex','0');path.setAttribute('role','button');path.setAttribute('aria-label',`${name}: ${n} registros, ${pct(n,total)}. Filtrar departamento`);path.style.pointerEvents='auto';path.addEventListener('focus',()=>{show();shape.openTooltip(shape.getBounds().getCenter());});path.addEventListener('blur',hide);path.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}});}});
-        if(n){const label=make('span',pct(n,total),'dash-region-percent');label.title=name;L.marker(shape.getBounds().getCenter(),{interactive:false,keyboard:false,icon:L.divIcon({className:'dash-region-label',html:label,iconSize:[52,20],iconAnchor:[26,10]})}).addTo(layer);}
-      }}).addTo(layer);map.invalidateSize({pan:false});
-      const recognized=new Set(geometry.features.map(f=>M.norm(f.properties.NOMBDEP))),located=filtered.filter(r=>recognized.has(M.norm(M.geo(r).department))).length;
-      $('[data-map-note]').textContent=`${fmt(located)} de ${fmt(total)} registros con departamento reconocido. ${fmt(total-located)} sin ubicación cartográfica reconocida. Porcentajes sobre todos los registros filtrados. Los colores indican participación, no riesgo ni desempeño.`;
+        shape.on('add',()=>{const path=shape.getElement();if(path){path.setAttribute('tabindex','0');path.setAttribute('role','button');path.setAttribute('aria-label',`${name}: ${n} registros, ${pct(n,total)}. Explorar ${level==='department'?'provincias':level==='province'?'distritos':'distrito'}`);path.style.pointerEvents='auto';path.addEventListener('focus',()=>{show();shape.openTooltip(shape.getBounds().getCenter());});path.addEventListener('blur',hide);path.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}});}});
+        const label=make('div',null,'dash-territory-label');label.append(make('span',name),make('strong',pct(n,total)));
+        L.marker(shape.getBounds().getCenter(),{interactive:false,keyboard:false,icon:L.divIcon({className:'dash-territory-marker',html:label,iconSize:[86,34],iconAnchor:[43,17]})}).addTo(layer);
+      }}).addTo(layer);
+      map.invalidateSize({pan:false});
+      const bounds=f.district&&level==='district'?L.geoJSON(features.filter(x=>M.norm(nameOf(x))===M.norm(f.district))).getBounds():geoLayer.getBounds();
+      if(bounds.isValid())map.fitBounds(bounds,{padding:[30,30],maxZoom:level==='department'?6:level==='province'?10:14,animate:true,duration:.5});
+      const recognized=new Set(features.map(x=>M.norm(nameOf(x)))),located=filtered.filter(r=>recognized.has(M.norm(M.geo(r)[level]))).length;
+      $('[data-map-note]').textContent=`${fmt(located)} de ${fmt(total)} registros ubicados en este nivel. ${fmt(total-located)} sin ubicación cartográfica reconocida. Porcentajes sobre el total filtrado; los colores indican participación, no riesgo.`;
+      if(!features.length)info.textContent='No hay cartografía disponible para esta selección. Use Volver para cambiar de territorio.';
     }catch(e){if(version===mapTurn)$('[data-map-note]').textContent=e.message;}
   }
   function render(){
@@ -122,9 +140,10 @@
     bars($('[data-units]'),M.group(filtered,r=>r.unit),filtered.length,label=>{$('[name="unit"]').value=label;apply();},12);drawMap();
   }
   $('form').addEventListener('submit',e=>{e.preventDefault();apply();});
-  $('form').addEventListener('change',e=>{if(e.target.name==='category'){for(const n of ['province','district'])$(`[name="${n}"]`).value='';specific();load();return;}if(['department','province'].includes(e.target.name))geographic();apply();});
+  $('form').addEventListener('change',e=>{if(e.target.name==='category'){for(const n of ['province','district'])$(`[name="${n}"]`).value='';specific();load();return;}if(e.target.name==='department'){$('[name="province"]').value='';$('[name="district"]').value='';}if(e.target.name==='province')$('[name="district"]').value='';if(['department','province'].includes(e.target.name))geographic();apply();});
   $('[data-refresh]').addEventListener('click',load);
   $('[data-clear]').addEventListener('click',()=>{const id=cat().id;$('form').reset();$('[name="category"]').value=id;geographic();specific();apply();});
+  $('[data-map-back]').addEventListener('click',()=>{if(v('province')){$('[name="province"]').value='';$('[name="district"]').value='';}else{for(const k of ['department','province','district'])$(`[name="${k}"]`).value='';}geographic();apply();});
   $('[data-peru]').addEventListener('click',()=>{for(const k of ['department','province','district'])$(`[name="${k}"]`).value='';geographic();apply();if(map)map.fitBounds([[-18.5,-81.5],[0,-68.5]]);});
   for(const button of root.querySelectorAll('[data-grain]'))button.addEventListener('click',()=>{grain=button.dataset.grain;root.querySelectorAll('[data-grain]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));if(loaded)trend(filters());});
   $('[data-records]').addEventListener('click',()=>{if(loaded&&identity()===loadedIdentity)window.openConsultaFromDashboard?.(cat().id,filters());});
