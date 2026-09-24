@@ -17,3 +17,8 @@
 .dash-map{background:radial-gradient(ellipse at center,#edf8e8,#fbfdf8)}
 
 .sidebar .seguimiento-access[hidden]{display:none!important}
+
+/* Mantener legibles todos los indicadores sobre las tarjetas verdes claras. */
+.dash-kpis .dash-kpi{color:#164d32}
+.dash-kpis .dash-kpi .dash-kpi-label{color:#367358}
+.dash-kpis .dash-kpi .dash-kpi-icon{color:#367358}
