@@ -37,20 +37,21 @@
     if(!host.children.length)host.hidden=true;else host.hidden=false;
   }
   function clearVisuals(){filtered=[];$('[data-kpis]').replaceChildren();$('[data-trend]').replaceChildren();$('[data-brief]').replaceChildren();$('[data-profile]').replaceChildren();$('[data-units]').replaceChildren();$('[data-territory-ranking]').replaceChildren();$('[data-map-note]').textContent='';if(layer){layer.remove();layer=null;}mapTurn++;$('[data-records]').disabled=true;}
-  async function load(){
+  async function load(settings={}){
+    const quiet=settings.quiet===true;
     window.loadProductionOverview?.();
-    const token=++turn,who=identity(),c=cat(),old=loaded&&loadedIdentity===who;loaded=false;rows=[];clearVisuals();
+    const token=++turn,who=identity(),c=cat(),old=loaded&&loadedIdentity===who;const previous=quiet&&old?JSON.stringify(rows):null;if(!quiet){loaded=false;rows=[];clearVisuals();}
     $('[data-scope]').textContent=`${nombrePerfil(currentProfile?.rol)} · ${currentProfile?.unidad||''}`;
-    $('.dash-status').textContent='Consultando la producción autorizada…';$('[data-updated]').textContent='Actualizando…';root.setAttribute('aria-busy','true');
+    if(!quiet){$('.dash-status').textContent='Consultando la producción autorizada…';$('[data-updated]').textContent='Actualizando…';}root.setAttribute('aria-busy','true');
     const alive=()=>token===turn&&who===identity()&&currentProfile?.activo;
     if(!alive()){root.removeAttribute('aria-busy');$('.dash-status').textContent='Inicie sesión con una cuenta activa.';return;}
     try{
       const [raw,parents]=await Promise.all([Q.readAll(supabaseClient,c,alive),c.table==='intervenciones'?[]:Q.readAll(supabaseClient,{table:'intervenciones',select:'id,fecha,unidad,departamento,provincia,distrito,nota_sicpip'},alive)]);
-      if(!alive())return;
+      if(!alive()||(quiet&&$('form').contains(document.activeElement)))return;
       const p=new Map(parents.map(r=>[r.id,r]));rows=raw.map(r=>Q.normalize(r,c,p));
-      options($('[name="unit"]'),unique(r=>r.unit),'Todas las autorizadas');geographic();specific(old);loaded=true;loadedIdentity=who;
-      updated=new Intl.DateTimeFormat('es-PE',{hour:'2-digit',minute:'2-digit',timeZone:'America/Lima'}).format(new Date());$('[data-updated]').textContent=`Actualizado a las ${updated} · hora de Lima`;render();
-    }catch(e){if(alive()){$('.dash-status').textContent=`No se pudieron cargar los datos. ${e.message||'Intente actualizar.'}`;$('[data-updated]').textContent='Consulta no completada';}}
+      const changed=previous!==JSON.stringify(rows);if(changed){options($('[name="unit"]'),unique(r=>r.unit),'Todas las autorizadas');geographic();specific(old);}loaded=true;loadedIdentity=who;
+      updated=new Intl.DateTimeFormat('es-PE',{hour:'2-digit',minute:'2-digit',timeZone:'America/Lima'}).format(new Date());$('[data-updated]').textContent=`Actualizado a las ${updated} · hora de Lima`;if(changed)render();
+    }catch(e){if(alive()){if(!quiet)$('.dash-status').textContent=`No se pudieron cargar los datos. ${e.message||'Intente actualizar.'}`;$('[data-updated]').textContent='Consulta no completada';}}
     finally{if(token===turn)root.removeAttribute('aria-busy');}
   }
   function card(title,subtitle){const a=make('article',null,'dash-card'),h=make('header'),d=make('div');d.append(make('h3',title),make('p',subtitle));h.append(d);a.append(h);return a;}
@@ -149,6 +150,7 @@
   for(const button of root.querySelectorAll('[data-grain]'))button.addEventListener('click',()=>{grain=button.dataset.grain;root.querySelectorAll('[data-grain]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));if(loaded)trend(filters());});
   $('[data-records]').addEventListener('click',()=>{if(loaded&&identity()===loadedIdentity)window.openConsultaFromDashboard?.(cat().id,filters());});
   window.loadGeneralDashboard=load;
+  window.refreshDashboardAutomatically=()=>load({quiet:true});
   window.resetExecutiveDashboard=()=>{window.resetProductionOverview?.();turn++;loaded=false;loadedIdentity='';rows=[];clearVisuals();$('form').reset();$('[name="category"]').value='detenidos';options($('[name="unit"]'),[],'Todas las autorizadas');geographic();specific();$('.dash-status').textContent='';$('[data-scope]').textContent='';$('[data-chips]').replaceChildren();$('[data-updated]').textContent='Consulta según permisos de su cuenta';if(map){mapResize?.disconnect();mapResize=null;map.remove();map=null;}root.removeAttribute('aria-busy');};
   geographic();specific();if(currentProfile?.activo&&root.classList.contains('active'))load();
 })();
