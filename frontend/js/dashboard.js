@@ -2,7 +2,7 @@
   const root=document.getElementById('generalDashboardView'),M=window.DashboardModelo,Q=window.ConsultaModelo,categories=Q.categories();
   const make=(tag,text,cls)=>{const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;};
   const fmt=n=>new Intl.NumberFormat('es-PE',{maximumFractionDigits:2}).format(n),pct=(n,total)=>`${fmt(total?n/total*100:0)}%`;
-  let rows=[],filtered=[],turn=0,loaded=false,loadedIdentity='',updated='',grain='month',map=null,layer=null,geometry=null,mapTurn=0;
+  let rows=[],filtered=[],turn=0,loaded=false,loadedIdentity='',updated='',grain='month',map=null,layer=null,geometry=null,mapTurn=0,mapResize=null;
   const identity=()=>JSON.stringify([currentProfile?.id,currentProfile?.rol,currentProfile?.unidad,currentProfile?.activo]);
   root.classList.add('executive-dashboard');
   root.innerHTML=`
@@ -95,7 +95,7 @@
       let features=geometry[level].features.filter(feature=>{const p=feature.properties;return level==='department'||(M.norm(level==='province'?p.FIRST_NOMB:p.NOMBDEP)===M.norm(f.department)&&(level!=='district'||M.norm(p.NOMBPROV)===M.norm(f.province)));});
       const nameOf=feature=>feature.properties[{department:'NOMBDEP',province:'NOMBPROV',district:'NOMBDIST'}[level]];
       const counts=new Map(M.group(filtered,r=>M.geo(r)[level]).map(x=>[M.norm(x.label),x.count]));
-      if(!map)map=L.map('executiveMap',{attributionControl:false,scrollWheelZoom:false,minZoom:4,maxZoom:15,zoomSnap:.25});
+      if(!map){map=L.map('executiveMap',{attributionControl:false,scrollWheelZoom:false,minZoom:4,maxZoom:15,zoomSnap:.25});mapResize=new ResizeObserver(()=>{if(!map)return;map.invalidateSize();if(layer&&layer.getBounds().isValid())map.fitBounds(layer.getBounds(),{padding:[30,30],maxZoom:14,animate:false});});mapResize.observe(map.getContainer());}
       if(layer)layer.remove();layer=L.featureGroup().addTo(map);
       const info=$('[data-map-hover]');info.textContent=`${names[level]} de ${f.province||f.department||'Perú'} · ${fmt(total)} registros. Seleccione un territorio para explorar.`;
       $('[data-map-back]').hidden=level==='department';$('[data-map-back]').textContent=level==='district'?'← Volver a '+f.department:'← Volver al Perú';
@@ -148,6 +148,6 @@
   for(const button of root.querySelectorAll('[data-grain]'))button.addEventListener('click',()=>{grain=button.dataset.grain;root.querySelectorAll('[data-grain]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));if(loaded)trend(filters());});
   $('[data-records]').addEventListener('click',()=>{if(loaded&&identity()===loadedIdentity)window.openConsultaFromDashboard?.(cat().id,filters());});
   window.loadGeneralDashboard=load;
-  window.resetExecutiveDashboard=()=>{turn++;loaded=false;loadedIdentity='';rows=[];clearVisuals();$('form').reset();$('[name="category"]').value='detenidos';options($('[name="unit"]'),[],'Todas las autorizadas');geographic();specific();$('.dash-status').textContent='';$('[data-scope]').textContent='';$('[data-chips]').replaceChildren();$('[data-updated]').textContent='Consulta según permisos de su cuenta';if(map){map.remove();map=null;}root.removeAttribute('aria-busy');};
+  window.resetExecutiveDashboard=()=>{turn++;loaded=false;loadedIdentity='';rows=[];clearVisuals();$('form').reset();$('[name="category"]').value='detenidos';options($('[name="unit"]'),[],'Todas las autorizadas');geographic();specific();$('.dash-status').textContent='';$('[data-scope]').textContent='';$('[data-chips]').replaceChildren();$('[data-updated]').textContent='Consulta según permisos de su cuenta';if(map){mapResize?.disconnect();mapResize=null;map.remove();map=null;}root.removeAttribute('aria-busy');};
   geographic();specific();if(currentProfile?.activo&&root.classList.contains('active'))load();
 })();
