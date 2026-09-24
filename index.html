@@ -17,21 +17,24 @@
 <link rel="stylesheet" href="frontend/css/desaparecidos.css?v=20260923" />
   <link rel="stylesheet" href="frontend/css/historico.css?v=20260923-historico">
   <link rel="stylesheet" href="frontend/css/mobile.css?v=20260924-map">
+  <link rel="stylesheet" href="frontend/css/login.css?v=20260924-campaign">
 </head>
 <body>
-  <section class="login-screen" id="loginScreen">
-    <div class="login-brand"><img class="institution-logo" src="frontend/assets/logo-diriptim.png" alt="Escudo DIRIPTIM PNP"><strong>Dirección de Investigación de Trata de Personas y Tráfico Ilícito de Migrantes</strong><small>Acceso institucional seguro</small></div>
+  <section class="login-screen" id="loginScreen" aria-label="Acceso a Estadística DIRITPTIM">
+    <div class="login-story"><p class="login-mission">PREVENIR<br>INVESTIGAR<br>PROTEGER<br>RESCATAR</p><div class="login-campaign"><h2>UNIDOS <br><em>CONTRA</em> <br>LA TRATA <br>DE PERSONAS</h2><p>PERSONAS NO SON MERCANCÍA</p></div><div class="login-values"><div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="3"/><path d="M5 22v-5a7 7 0 0 1 14 0v5M2 11l3-2m17 2-3-2"/></svg><span>PROTECCIÓN DE VÍCTIMAS</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 7 7"/></svg><span>INVESTIGACIÓN ESPECIALIZADA</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 4v7c0 5-9 9-9 9s-9-4-9-9V6zM7 12l3 3 7-7"/></svg><span>TRABAJO INTERINSTITUCIONAL</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 12 5-7 5 2 5-2 5 7-7 8-5-2-4-4M7 5l-2 8m12-8 2 8M8 11l4-3 4 4-4 4"/></svg><span>POR UN PERÚ SIN EXPLOTACIÓN</span></div></div></div>
     <form class="login-card" id="loginForm">
-      <span class="login-lock">🔒</span>
-      <h1>Iniciar sesión</h1>
-      <p>Ingrese con la cuenta asignada por el admin.</p>
-      <label>Nombre de usuario<input id="username" type="text" value="amejia" autocomplete="username" required></label>
-      <label>Contraseña<div class="password-field"><input id="password" type="password" autocomplete="current-password" required><button type="button" id="togglePassword" aria-label="Mostrar contraseña">Ver</button></div></label>
+      <div class="login-identity"><img src="frontend/assets/logo-diriptim.png" alt="Escudo DIRITPTIM PNP" width="225" height="225"><h1>DIRITPTIM · PNP</h1><p>Dirección de Investigación de Trata de Personas<br>y Tráfico Ilícito de Migrantes</p></div>
+      <div class="login-divider">ESTADÍSTICA DIRITPTIM</div>
+      <label>Usuario institucional<input id="username" type="text" placeholder="Ingrese su usuario institucional" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+      <label>Contraseña<div class="password-field"><input id="password" type="password" placeholder="Ingrese su contraseña" autocomplete="current-password" required><button type="button" id="togglePassword" aria-label="Mostrar contraseña">Ver</button></div></label>
+      <details class="login-assistance"><summary>¿Olvidaste tu contraseña?</summary><p>Solicita al administrador general o al estadístico de dirección que restablezca tu contraseña desde la gestión de usuarios.</p></details>
       <p class="login-error" id="loginError" role="alert"></p>
-      <button class="primary login-button" id="loginButton" type="submit">Ingresar al sistema</button>
-      <small class="demo-note">El acceso se valida de forma segura mediante Supabase.</small>
+      <button class="primary login-button" id="loginButton" type="submit">INGRESAR AL SISTEMA</button>
+      <p class="login-trust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 4v7c0 5-9 9-9 9s-9-4-9-9V6zM7 12l3 3 7-7"/></svg>ACCESO EXCLUSIVO PARA PERSONAL AUTORIZADO</p>
     </form>
-    <p class="login-footer">Uso exclusivo para personal autorizado</p>
+    <div class="login-motto">DIOS,<br>PATRIA<br>Y LEY</div>
+    <div class="login-signature">POLICÍA NACIONAL DEL PERÚ<br>DIRECCIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS<br>Y TRÁFICO ILÍCITO DE MIGRANTES</div>
+    <div class="login-dignity">COMPROMETIDOS CON LA DIGNIDAD HUMANA</div>
   </section>
   <aside class="sidebar">
     <button class="sidebar-collapse" id="sidebarCollapse" type="button" aria-label="Contraer menú lateral" aria-expanded="true" title="Contraer menú lateral"><span aria-hidden="true">☰</span></button>
