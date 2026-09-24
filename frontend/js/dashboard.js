@@ -38,6 +38,7 @@
   }
   function clearVisuals(){filtered=[];$('[data-kpis]').replaceChildren();$('[data-trend]').replaceChildren();$('[data-brief]').replaceChildren();$('[data-profile]').replaceChildren();$('[data-units]').replaceChildren();$('[data-territory-ranking]').replaceChildren();$('[data-map-note]').textContent='';if(layer){layer.remove();layer=null;}mapTurn++;$('[data-records]').disabled=true;}
   async function load(){
+    window.loadProductionOverview?.();
     const token=++turn,who=identity(),c=cat(),old=loaded&&loadedIdentity===who;loaded=false;rows=[];clearVisuals();
     $('[data-scope]').textContent=`${nombrePerfil(currentProfile?.rol)} · ${currentProfile?.unidad||''}`;
     $('.dash-status').textContent='Consultando la producción autorizada…';$('[data-updated]').textContent='Actualizando…';root.setAttribute('aria-busy','true');
@@ -148,6 +149,6 @@
   for(const button of root.querySelectorAll('[data-grain]'))button.addEventListener('click',()=>{grain=button.dataset.grain;root.querySelectorAll('[data-grain]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));if(loaded)trend(filters());});
   $('[data-records]').addEventListener('click',()=>{if(loaded&&identity()===loadedIdentity)window.openConsultaFromDashboard?.(cat().id,filters());});
   window.loadGeneralDashboard=load;
-  window.resetExecutiveDashboard=()=>{turn++;loaded=false;loadedIdentity='';rows=[];clearVisuals();$('form').reset();$('[name="category"]').value='detenidos';options($('[name="unit"]'),[],'Todas las autorizadas');geographic();specific();$('.dash-status').textContent='';$('[data-scope]').textContent='';$('[data-chips]').replaceChildren();$('[data-updated]').textContent='Consulta según permisos de su cuenta';if(map){mapResize?.disconnect();mapResize=null;map.remove();map=null;}root.removeAttribute('aria-busy');};
+  window.resetExecutiveDashboard=()=>{window.resetProductionOverview?.();turn++;loaded=false;loadedIdentity='';rows=[];clearVisuals();$('form').reset();$('[name="category"]').value='detenidos';options($('[name="unit"]'),[],'Todas las autorizadas');geographic();specific();$('.dash-status').textContent='';$('[data-scope]').textContent='';$('[data-chips]').replaceChildren();$('[data-updated]').textContent='Consulta según permisos de su cuenta';if(map){mapResize?.disconnect();mapResize=null;map.remove();map=null;}root.removeAttribute('aria-busy');};
   geographic();specific();if(currentProfile?.activo&&root.classList.contains('active'))load();
 })();
