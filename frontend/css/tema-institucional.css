@@ -40,3 +40,11 @@
 .dash-map .leaflet-interactive{cursor:pointer;pointer-events:auto}
 .dash-region-tooltip{border:1px solid #adc5ca;box-shadow:0 4px 18px #1d46552b;border-radius:9px;background:white}
 .dash-map .leaflet-tooltip-pane{z-index:650;pointer-events:none}
+.dash-territory-marker{pointer-events:none!important;display:block!important;visibility:visible!important;background:none!important;border:0!important}
+.dash-territory-label{color:#173b43;text-align:center;font-size:10px;font-weight:700;line-height:1.15;text-shadow:0 1px 2px white,1px 0 2px white,-1px 0 2px white;pointer-events:none}
+.dash-territory-label span{display:block;white-space:normal;overflow-wrap:normal}
+.dash-territory-label strong{display:block;font-size:12px;margin-top:2px}
+.dash-map-card [data-map-back]{margin-bottom:12px;padding:10px 14px;border:1px solid #bfd5d8;border-radius:8px;background:#f4f9fa}
+.dash-map-card [data-map-back][hidden]{display:none}
+.dash-map-card .dash-map{height:650px}
+@media(max-width:760px){.dash-map-card .dash-map{height:540px}.dash-territory-label{font-size:8px}.dash-territory-label strong{font-size:10px}}
