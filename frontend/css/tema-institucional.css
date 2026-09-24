@@ -22,3 +22,21 @@
 .dash-kpis .dash-kpi{color:#164d32}
 .dash-kpis .dash-kpi .dash-kpi-label{color:#367358}
 .dash-kpis .dash-kpi .dash-kpi-icon{color:#367358}
+
+/* Acentos complementarios y cartografía con porcentajes legibles. */
+.executive-dashboard .dash-card{background:#fff;border-top-color:#b6d9ce}
+.executive-dashboard .dash-kpis article:nth-child(2){background:linear-gradient(130deg,#e4effc,#f4f8ff);border-color:#c5d9ef}
+.executive-dashboard .dash-kpis article:nth-child(3){background:linear-gradient(130deg,#fff0d5,#fffaf0);border-color:#edd4a9}
+.executive-dashboard .dash-kpis article:nth-child(2) .dash-kpi-label{color:#416b91}
+.executive-dashboard .dash-kpis article:nth-child(3) .dash-kpi-label{color:#886526}
+.executive-dashboard .dash-brief{background:linear-gradient(135deg,#fff2db,#fffaf1);border-color:#ebd5ad}
+.dash-profile-grid .dash-card:nth-child(2n){border-top-color:#91b6e0}
+.dash-profile-grid .dash-card:nth-child(3n){border-top-color:#e6ba74}
+.dash-profile-grid .dash-card:nth-child(2n) .dash-bar-track>i{background:linear-gradient(90deg,#6a9bd2,#a8c9ef)!important}
+.dash-profile-grid .dash-card:nth-child(3n) .dash-bar-track>i{background:linear-gradient(90deg,#d5a149,#efd29a)!important}
+.dash-map-hover{min-height:46px;margin:0 0 12px;padding:12px 15px;border-radius:10px;background:#eef5fa;color:#274c55;font-size:12px;line-height:1.6}
+.dash-region-label{pointer-events:none!important;text-align:center;background:none;border:0}
+.dash-region-percent{display:inline-block;background:#ffffffed;border:1px solid #b8c9cb;border-radius:5px;padding:2px 4px;font-size:10px;font-weight:750;color:#234450;line-height:15px;box-shadow:0 1px 4px #163b4220;white-space:nowrap;pointer-events:none}
+.dash-map .leaflet-interactive{cursor:pointer;pointer-events:auto}
+.dash-region-tooltip{border:1px solid #adc5ca;box-shadow:0 4px 18px #1d46552b;border-radius:9px;background:white}
+.dash-map .leaflet-tooltip-pane{z-index:650;pointer-events:none}
