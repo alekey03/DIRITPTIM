@@ -1,0 +1,15 @@
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
+const path=require('path');const base=process.env.DIRITPTIM_ROOT||path.resolve(__dirname,'..');
+const code=fs.readFileSync(path.join(base,'frontend/js/overview.js'),'utf8');
+const model=fs.readFileSync(path.join(base,'frontend/js/consulta-modelo.js'),'utf8');
+const ctx={window:{HistoricoProduccion:{normalize:r=>({unit:r.unidad,data:r.datos})}},console,Intl,Map,Set};vm.createContext(ctx);vm.runInContext(model,ctx);
+ctx.Q=ctx.window.ConsultaModelo;
+vm.runInContext("const format=n=>new Intl.NumberFormat('es-PE',{maximumFractionDigits:2}).format(n);"+code.slice(code.indexOf(' const number='),code.indexOf(' function clear()'))+';this.metric=metric;',ctx);
+const parents=new Map([['p1',{id:'p1',unidad:'TRATA'}],['p2',{id:'p2',unidad:'OTRA'}]]);
+const c={id:'celulares',table:'intervencion_complementarios',fields:[]};
+const rows=[{intervencion_id:'p1',unidad:'OTRA',datos:{cantidad:3}},{intervencion_id:'p2',datos:{cantidad:8}},{historical:true,unidad:'TRATA',datos:{cantidad:4}}];
+assert.equal(ctx.metric(rows,c,parents,'TRATA').value,'7');assert.equal(ctx.metric(rows,c,parents,'OTRA').value,'8');assert.equal(ctx.metric(rows,c,parents,'').value,'15');assert.equal(ctx.metric(rows,c,parents,'VACIA').value,'0');
+const group={id:'banda',table:'intervencion_grupos'};const m=ctx.metric([{intervencion_id:'p1',intervencion_grupo_integrantes:[{},{}]},{intervencion_id:'p2',intervencion_grupo_integrantes:[{}]}],group,parents,'TRATA');assert.equal(m.value,'1');assert.equal(m.detail,'grupos · 2 integrantes');
+assert.equal(ctx.metric([{unidad:'TRATA',datos:{soles:100}},{unidad:'OTRA',datos:{soles:900}}],{id:'dinero',table:'intervencion_complementarios'},parents,'TRATA').value,'S/ 100');
+assert.match(code,/scopeOwner!==who/);assert.match(code,/select.value=chosen/);assert.match(code,/cache=next;failedTables=failed/);assert.match(code,/scopeOwner===identity\(\)/);
+console.log('PASS: dependencia propia y heredada, históricos, cantidades, grupos, dinero, cero y total; conservación de selección y aislamiento de sesión.');
