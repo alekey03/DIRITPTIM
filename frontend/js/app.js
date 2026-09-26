@@ -16,6 +16,7 @@ let pendingMarkFiles = [];
 let pendingDocumentFiles = [];
 let dashboardRecords = [];
 let duplicateApprovedSignature = '';
+let enrolmentSaving=false, pendingEnrolmentId=null;
 const capturePreviewUrls = { marksFiles: [], documentsFiles: [] };
 
 function escapeHtml(value) {
@@ -71,6 +72,7 @@ async function uploadRecordFiles(recordId) {
   let uploaded=0,failed=0;const errors=[];
   for(const group of groups)for(const file of group.files){
     try {
+      if(file.type&&!file.type.startsWith('image/'))throw new Error('Seleccione una fotografía, no un documento PDF u otro archivo.');
       if(file.size>25*1024*1024)throw new Error('La imagen supera los 25 MB.');
       let state=photoUploadStates.get(file);
       if(!state||state.recordId!==recordId){state={recordId,path:`${photoUnitFolder(currentProfile.unidad)}/${recordId}/${crypto.randomUUID()}.jpg`,stored:false,confirmed:false};photoUploadStates.set(file,state);}
@@ -93,27 +95,31 @@ async function uploadRecordFiles(recordId) {
   return {uploaded,failed,errors};
 }
 
+let recordListTurn=0;
 async function loadRecords() {
+  const loadToken=++recordListTurn,who=currentProfile?.id;
   const result = document.getElementById('recordsResult');
   result.innerHTML = '<div class="empty-state"><span>▤</span><h3>Cargando registros…</h3><p>Consultando la base de datos segura.</p></div>';
 
-  let query = supabaseClient
-    .from('fichas')
-    .select('id, codigo, apellido_paterno, apellido_materno, nombres, tipo_documento, numero_documento, fecha_nacimiento, edad_registro, nacionalidad, fecha_intervencion, creado_en, departamento_registro, unidad')
-    .order('creado_en', { ascending: false })
-    .limit(100);
-
   const dateFrom = document.getElementById('recordDateFrom').value;
   const dateTo = document.getElementById('recordDateTo').value;
-  if (dateFrom) query = query.gte('fecha_intervencion', dateFrom);
-  if (dateTo) query = query.lte('fecha_intervencion', dateTo);
-
-  const { data, error } = await query;
-  if (error) {
-    console.error(error);
-    result.innerHTML = '<p class="records-error">No se pudieron consultar los registros.</p>';
-    return;
-  }
+  if(dateFrom&&dateTo&&dateFrom>dateTo){result.textContent='La fecha inicial no puede ser posterior a la fecha final.';return;}
+  const data=[];let cursor=null;
+  try {
+    for(;;){
+      let query=supabaseClient.from('fichas').select('id, codigo, apellido_paterno, apellido_materno, nombres, tipo_documento, numero_documento, fecha_nacimiento, edad_registro, nacionalidad, fecha_intervencion, creado_en, departamento_registro, unidad').order('id').limit(500);
+      if(cursor)query=query.gt('id',cursor);
+      if(dateFrom)query=query.gte('fecha_intervencion',dateFrom);
+      if(dateTo)query=query.lte('fecha_intervencion',dateTo);
+      const {data:page,error}=await query;
+      if(loadToken!==recordListTurn||who!==currentProfile?.id)return;
+      if(error)throw error;
+      if(!page?.length)break;
+      const next=page[page.length-1].id;if(next===cursor)throw new Error('No se pudo completar la consulta.');
+      data.push(...page);cursor=next;
+    }
+    data.sort((a,b)=>String(b.creado_en).localeCompare(String(a.creado_en)));
+  }catch(error){result.textContent='No se pudieron consultar los registros. Reintente cuando vuelva la conexión.';return;}
 
   const search = document.getElementById('recordSearch').value.trim().toLocaleLowerCase('es');
   const nationality = document.getElementById('recordNationality').value;
@@ -139,7 +145,7 @@ async function loadRecords() {
     return;
   }
 
-  const rows = filtered.map(record => `
+  const rows = filtered.slice(0,100).map(record => `
     <tr>
       <td><span class="record-code">${escapeHtml(record.codigo)}</span></td>
       <td><span class="record-name">${escapeHtml(`${record.apellido_paterno} ${record.apellido_materno}, ${record.nombres}`)}</span></td>
@@ -151,7 +157,7 @@ async function loadRecords() {
     </tr>`).join('');
 
   result.innerHTML = `
-    <div class="records-count"><strong>${filtered.length} registro${filtered.length === 1 ? '' : 's'}</strong><span>Máximo 100 resultados</span></div>
+    <div class="records-count"><strong>${filtered.length} registro${filtered.length === 1 ? '' : 's'}</strong><span>Mostrando ${Math.min(filtered.length,100)} de ${filtered.length} coincidencias. Puede precisar los filtros.</span></div>
     <div class="table-wrap"><table><thead><tr><th>Código</th><th>Persona</th><th>Documento</th><th>Intervención</th><th>Departamento registrador</th><th>Área registradora</th><th>Acciones</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 
   result.querySelectorAll('.view-record').forEach(button => {
@@ -200,6 +206,7 @@ async function loadRecordImages(recordId) {
 }
 
 async function openRecord(recordId) {
+  document.getElementById('printRecordButton').disabled=true;printSheet.replaceChildren();
   recordDetail.innerHTML = '<div class="empty-state"><h3>Cargando ficha…</h3></div>';
   recordModal.showModal();
 
@@ -220,11 +227,11 @@ async function openRecord(recordId) {
   try { images=await loadRecordImages(recordId); } catch(error) { recordDetail.textContent=error.message;printSheet.replaceChildren();return; }
   document.getElementById('printRecordButton').disabled=false;
   const mainPhoto = images.find(image => image.tipo === 'foto_principal');
-  const tattooImages = images.filter(image => image.tipo === 'tatuaje');
+  const tattooImages = images.filter(image => ['tatuaje','documento'].includes(image.tipo));
   const tattooGallery = tattooImages.length
     ? tattooImages.map((image, index) => `
         <figure class="print-evidence-item">
-          <img src="${escapeHtml(image.url)}" alt="Fotografía de tatuaje o cicatriz ${index + 1}">
+          <img src="${escapeHtml(image.url)}" alt="${image.tipo==='documento'?'Documento':'Tatuaje o cicatriz'} ${index + 1}">
           <figcaption>Imagen ${index + 1} · Tatuaje o cicatriz registrada</figcaption>
         </figure>`).join('')
     : '<div class="print-evidence-empty">No se adjuntaron fotografías de tatuajes o cicatrices.</div>';
@@ -306,7 +313,7 @@ async function openRecord(recordId) {
     <div class="print-signatures"><div>Firma de la persona registrada</div><div>Firma del responsable</div></div>
     </div>
     <div class="print-page print-evidence-page">
-      <header class="print-header"><h1>Registro fotográfico</h1><p>Tatuajes y cicatrices &nbsp;|&nbsp; Código: ${escapeHtml(record.codigo)}</p></header>
+      <header class="print-header"><h1>Registro fotográfico</h1><p>Tatuajes, cicatrices y documentos &nbsp;|&nbsp; Código: ${escapeHtml(record.codigo)}</p></header>
       <section class="print-evidence-description"><b>Descripción registrada</b><p>${escapeHtml(record.cicatrices_tatuajes || 'Sin descripción registrada')}</p></section>
       <div class="print-evidence-grid count-${Math.min(tattooImages.length, 6)}">${tattooGallery}</div>
       <p class="print-evidence-footer">Anexo fotográfico correspondiente a la ficha voluntaria de identificación.</p>
@@ -413,6 +420,10 @@ document.getElementById('closeRecordButton').addEventListener('click', () => rec
 document.getElementById('printRecordButton').addEventListener('click', async () => {
   const button=document.getElementById('printRecordButton');button.disabled=true;
   try {
+    if(!selectedRecord)throw new Error('Abra una ficha antes de exportar.');
+    await openRecord(selectedRecord.id);
+    if(button.disabled||!printSheet.children.length)throw new Error('No se pudo preparar la ficha con sus fotografías. Vuelva a abrirla.');
+    button.disabled=true;
     await Promise.all([...printSheet.querySelectorAll('img')].map(image=>new Promise((resolve,reject)=>{
       const timer=setTimeout(()=>{cleanup();reject(new Error('La fotografía tarda en cargar. Abra nuevamente la ficha e intente exportar.'));},20000);
       const cleanup=()=>{clearTimeout(timer);image.removeEventListener('load',done);image.removeEventListener('error',done);};
@@ -1163,6 +1174,7 @@ document.querySelectorAll('.add-more-photo').forEach(button => button.addEventLi
   document.getElementById(button.dataset.for)?.click();
 }));
 form.addEventListener('reset', () => {
+  pendingEnrolmentId=null;
   pendingMarkFiles.length = 0;
   pendingDocumentFiles.length = 0;
   renderCapturedFiles('marksFiles', pendingMarkFiles, 'marksPreview', 'marksFileStatus', 'Abrir cámara o elegir imágenes');
@@ -1222,8 +1234,7 @@ async function findPossibleDuplicates(values) {
   }
   const { data, error } = await query;
   if (error) {
-    console.error(error);
-    return [];
+    throw new Error('No se pudieron verificar coincidencias. Sus datos siguen en pantalla; reintente cuando vuelva la conexión.');
   }
   return data || [];
 }
@@ -1254,7 +1265,11 @@ function requestDuplicateConfirmation(matches) {
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
-  if (!form.reportValidity()) return;
+  if(enrolmentSaving||!form.reportValidity())return;
+  enrolmentSaving=true;registerButton.disabled=true;
+  const blocked=[...form.querySelectorAll('input,select,textarea,button'),document.getElementById('clearBtn'),document.getElementById('cancelEditButton')].filter(Boolean).map(el=>[el,el.disabled]);
+
+  try {
 
   if (!currentProfile) {
     alert('La sesión no está autorizada. Vuelva a iniciar sesión.');
@@ -1267,6 +1282,7 @@ form.addEventListener('submit', async event => {
   }
 
   const values = Object.fromEntries(new FormData(form).entries());
+  blocked.forEach(([el])=>el.disabled=true);
   const signature = duplicateSignature(values);
   if (!editingRecordId && signature !== duplicateApprovedSignature) {
     status.textContent = 'Verificando posibles registros anteriores…';
@@ -1325,6 +1341,11 @@ form.addEventListener('submit', async event => {
   };
 
   let saveResult;
+  if(!editingRecordId&&pendingEnrolmentId){
+    const {data:existing,error:recoveryError}=await supabaseClient.from('fichas').select('id,codigo').eq('id',pendingEnrolmentId).maybeSingle();
+    if(recoveryError)throw new Error('No se pudo confirmar el intento anterior. No cierre la ficha; reintente al recuperar la conexión.');
+    if(existing){editingRecordId=existing.id;editingRecordCode=existing.codigo;editingAuditReason='Recuperación de guardado interrumpido';}
+  }
   if (editingRecordId) {
     const editableRecord = { ...record, actualizado_en: new Date().toISOString() };
     delete editableRecord.codigo;
@@ -1333,7 +1354,7 @@ form.addEventListener('submit', async event => {
     delete editableRecord.departamento_registro;
     saveResult = await supabaseClient.from('fichas').update(editableRecord).eq('id', editingRecordId).select('id, codigo').single();
   } else {
-    saveResult = await supabaseClient.from('fichas').insert(record).select('id, codigo').single();
+    saveResult = await supabaseClient.from('fichas').insert({...record,id:pendingEnrolmentId||(pendingEnrolmentId=crypto.randomUUID())}).select('id, codigo').single();
   }
   const { data: savedRecord, error } = saveResult;
 
@@ -1345,6 +1366,7 @@ form.addEventListener('submit', async event => {
     return;
   }
 
+  pendingEnrolmentId=null;
   if (editingRecordId) {
     const { data: reasonSaved, error: reasonError } = await supabaseClient.rpc('asignar_motivo_auditoria', { p_tabla: 'fichas', p_registro_id: editingRecordId, p_motivo: editingAuditReason });
     if (reasonError || !reasonSaved) {
@@ -1353,6 +1375,7 @@ form.addEventListener('submit', async event => {
     }
   }
 
+  editingRecordId=savedRecord.id;editingRecordCode=savedRecord.codigo||editingRecordCode||codigo;
   status.textContent = 'Ficha guardada. Subiendo fotografías…';
   const fileResult = await uploadRecordFiles(savedRecord.id);
   registerButton.disabled = false;
@@ -1379,6 +1402,13 @@ form.addEventListener('submit', async event => {
     : `Ficha ${savedCode} guardada con ${fileResult.uploaded} archivo(s).`;
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2800);
+  }catch(error){
+    console.error('Guardado de ficha:',error.message);
+    status.textContent=(error.message||'No se completó el guardado.')+' Sus datos y fotos permanecen en pantalla. Reintente sin cerrar ni recargar.';
+  }finally{
+    enrolmentSaving=false;blocked.forEach(([el,disabled])=>el.disabled=disabled);registerButton.disabled=false;
+    if(registerButton.textContent==='Guardando…')registerButton.textContent=editingRecordId?'Guardar cambios':'Registrar ficha';
+  }
 });
 
 document.getElementById('clearBtn').addEventListener('click', () => {
