@@ -476,10 +476,11 @@ async function loadCurrentProfile(userId) {
   document.querySelectorAll('.admin-only').forEach(element => {
     element.classList.toggle('visible', element.dataset.view === 'usersView' ? puedeCrearUsuarios() : data.rol === 'administrador');
   });
-  document.querySelectorAll('.seguimiento-access').forEach(el => { el.hidden = !['administrador','estadistico_direccion','estadistico_jefatura'].includes(data.rol); });
+  document.querySelectorAll('.seguimiento-access').forEach(el => { el.hidden = !['administrador','estadistico_direccion','estadistico_jefatura','visualizador'].includes(data.rol); });
+  document.body.classList.toggle('viewer-only',data.rol==='visualizador');
   window.updateDeclaracionDiaria?.();
   const isAdministrator = data.rol === 'administrador';
-  const assignedScope = isAdministrator || data.rol === 'estadistico_direccion'
+  const assignedScope = isAdministrator || ['estadistico_direccion','visualizador'].includes(data.rol)
     ? 'Ámbito nacional'
     : (data.unidad || 'Dependencia no asignada');
   document.getElementById('institutionName').textContent = 'DIRITPTIM';
@@ -677,7 +678,7 @@ const pageTitles = {
   detaineeRecordsView: ['CONSULTA', 'Registros de detenidos'],
   operativoResultsView: ['INTERVENCIONES', 'Resultados del operativo'],
   operativoView: ['INTERVENCIONES', 'Registro del operativo'],
-  operativoRecordsView: ['INTERVENCIONES', 'Borradores de operativos'],
+  operativoRecordsView: ['INTERVENCIONES', 'Operativos registrados'],
   usersView: ['ADMINISTRACIÓN', 'Gestión de usuarios'],
   auditView: ['SEGURIDAD', 'Auditoría del sistema']
 };
@@ -757,13 +758,14 @@ document.getElementById('togglePassword').addEventListener('click', event => {
   event.currentTarget.textContent = visible ? 'Ver' : 'Ocultar';
 });
 
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-  await supabaseClient.auth.signOut();
+window.signOutAccount = async () => {
+  const {error}=await supabaseClient.auth.signOut();
+  if(error){alert('No se pudo cerrar sesión. Compruebe su conexión y vuelva a intentarlo.');return;}
   currentProfile = null;
   window.clearProtectedCatalogs?.();
   resetMainView();
   loginScreen.classList.remove('hidden');
-});
+};
 
 supabaseClient.auth.getSession().then(({ data }) => {
   if (!data.session) return;
@@ -785,15 +787,15 @@ function configureUserTerritory({ preserveArea = true, initialArea = null } = {}
  const scope=document.getElementById('newUserScope'),dept=document.getElementById('newUserDepartment'),unit=document.getElementById('newUserUnit'),hint=document.getElementById('userDependencyHint');
  const selected=preserveArea?(initialArea??unit.value):'';
  scope.disabled=true;dept.disabled=true;dept.required=false;
- const national=['administrador','estadistico_direccion'].includes(role),jef=role==='estadistico_jefatura';
+ const national=['administrador','estadistico_direccion','visualizador'].includes(role),jef=role==='estadistico_jefatura';
  scope.value=national?'NACIONAL':role==='estadistico_division'?'SEDE_CENTRAL':'DESCONCENTRADO';
  unit.disabled=national||jef;
  document.getElementById('userUnitField').hidden=national||jef;
  document.getElementById('userUnitLabel').textContent=role==='estadistico_division'?'División asignada':'DEPITPTIM asignado';
  if(national||jef){
-  const value=role==='administrador'?'ADMINISTRACIÓN GENERAL DIRITPTIM':jef?'JEFDDITP':'ESTADÍSTICA DE DIRECCIÓN DIRITPTIM';
+  const value=role==='visualizador'?'VISUALIZACIÓN NACIONAL DIRITPTIM':role==='administrador'?'ADMINISTRACIÓN GENERAL DIRITPTIM':jef?'JEFDDITP':'ESTADÍSTICA DE DIRECCIÓN DIRITPTIM';
   unit.replaceChildren(new Option(jef?'JEFATURA · LOS 23 DEPITPTIM':value,value));dept.value='NACIONAL';
-  hint.textContent=role==='administrador'?'Cuenta única de administración general.':jef?'Registra, consulta, edita y elimina producción de los 23 DEPITPTIM. No crea usuarios.':'Alcance nacional: producción, reportes y dashboard. Puede crear usuarios. Máximo dos cuentas activas.';
+  hint.textContent=role==='visualizador'?'Lectura nacional: solo Dashboard y Seguimiento. No registra, edita, elimina ni administra usuarios.':role==='administrador'?'Cuenta única de administración general.':jef?'Registra, consulta, edita y elimina producción de los 23 DEPITPTIM. No crea usuarios.':'Alcance nacional: producción, reportes y dashboard. Puede crear usuarios. Máximo dos cuentas activas.';
  }else{
   const choices=DEPENDENCIAS_INSTITUCIONALES.filter(d=>d.ambito===scope.value);
   unit.replaceChildren(new Option(role==='estadistico_division'?'Seleccionar división':'JEFDDITP · seleccionar DEPITPTIM',''),...choices.map(d=>new Option(d.unidad,d.unidad)));
@@ -960,8 +962,9 @@ userForm.addEventListener('submit', async event => {
 document.querySelectorAll('[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     const target = button.dataset.view;
+    if(currentProfile?.rol==='visualizador'&&!['generalDashboardView','seguimientoView'].includes(target))return;
     if (window.guardDesaparecidos && !window.guardDesaparecidos(target)) return;
-    if (target === 'seguimientoView' && (!currentProfile?.activo || !['administrador','estadistico_direccion','estadistico_jefatura'].includes(currentProfile.rol))) return;
+    if (target === 'seguimientoView' && (!currentProfile?.activo || !['administrador','estadistico_direccion','estadistico_jefatura','visualizador'].includes(currentProfile.rol))) return;
     if (target === 'detaineeFormView' && !button.dataset.fromOperativo && window.prepareStandaloneDetainee?.() === false) return;
     const parentGroup = button.closest('.nav-group');
     if (parentGroup) {

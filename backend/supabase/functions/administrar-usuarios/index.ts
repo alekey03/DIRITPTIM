@@ -44,13 +44,13 @@ export default {
         if(deleteError){await ctx.supabaseAdmin.from('perfiles').insert(fullProfile);throw deleteError;}
         return Response.json({ ok: true });
       }
-      const roles = ['administrador','estadistico_direccion','estadistico_division','estadistico_jefatura','estadistico_depitptim'];
+      const roles = ['administrador','estadistico_direccion','estadistico_division','estadistico_jefatura','estadistico_depitptim','visualizador'];
       if (!roles.includes(body.rol)) throw new Error('Rol no válido.');
       if (!body.nombres?.trim() || !body.apellidos?.trim() || !body.unidad?.trim()) throw new Error('Complete los datos obligatorios.');
-      const national=['administrador','estadistico_direccion'].includes(body.rol);
+      const national=['administrador','estadistico_direccion','visualizador'].includes(body.rol);
       const jef=body.rol==='estadistico_jefatura';
       const ambito=national?'NACIONAL':body.rol==='estadistico_division'?'SEDE_CENTRAL':'DESCONCENTRADO';
-      const unidad=body.rol==='administrador'?'ADMINISTRACIÓN GENERAL DIRITPTIM':body.rol==='estadistico_direccion'?'ESTADÍSTICA DE DIRECCIÓN DIRITPTIM':jef?'JEFDDITP':String(body.unidad||'').trim().toUpperCase();
+      const unidad=body.rol==='visualizador'?'VISUALIZACIÓN NACIONAL DIRITPTIM':body.rol==='administrador'?'ADMINISTRACIÓN GENERAL DIRITPTIM':body.rol==='estadistico_direccion'?'ESTADÍSTICA DE DIRECCIÓN DIRITPTIM':jef?'JEFDDITP':String(body.unidad||'').trim().toUpperCase();
       const dependency=DEPENDENCIAS_INSTITUCIONALES.find(d=>d.unidad===unidad && d.ambito===ambito);
       if(!national && !jef && !dependency) throw new Error('Seleccione una dependencia válida para el perfil estadístico.');
       const departamento=national||jef?'NACIONAL':dependency.departamento;

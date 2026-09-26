@@ -1,0 +1,73 @@
+const {PGlite}=require('@electric-sql/pglite');
+const fs=require('fs'),path=require('path'),assert=require('assert/strict');
+const source=path.resolve(__dirname,'..'),stage=source;
+const read=n=>fs.readFileSync(path.join(source,'backend/supabase/migrations',n),'utf8');
+const db=new PGlite(),id=n=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
+const actor=async n=>{await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[n?id(n):'']);if(n)await db.exec('set role authenticated');};
+(async()=>{
+ await db.exec(`create role authenticated;create role anon;create schema auth;
+ create type rol_usuario as enum ('administrador','supervisor','operador');
+ create table perfiles(id uuid primary key,usuario text,rol rol_usuario,activo boolean,unidad text,departamento text,ambito text,nombres text,apellidos text);
+ create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create function es_administrador() returns boolean language sql stable security definer as $$select exists(select 1 from public.perfiles where id=auth.uid() and activo and rol='administrador')$$;
+ create function usuario_activo() returns boolean language sql stable security definer as $$select coalesce((select activo from public.perfiles where id=auth.uid()),false)$$;
+ create function unidad_actual() returns text language sql stable security definer as $$select unidad from public.perfiles where id=auth.uid() and activo$$;
+ grant usage on schema auth to authenticated;grant select on perfiles to authenticated;
+ create table fichas(id uuid primary key,unidad text,creado_por uuid);create table archivos(id uuid primary key,ficha_id uuid,creado_por uuid);
+ alter table perfiles enable row level security;
+ create policy perfiles_lectura on perfiles for select to authenticated using(id=auth.uid() or es_administrador());
+ `);
+ await db.exec(read('202609060001_modulo_detenidos.sql').replace(/create extension if not exists pg_trgm;/i,'').replace(/create index if not exists [^;]+using gin[^;]+;/gi,''));
+ await db.exec(`alter table detenciones add column departamento_registro text,add column rol_organizacion text;
+ create table auditoria_eventos(id bigserial primary key,tabla text,registro_id text,usuario_id uuid,accion text,motivo text);
+ create function validar_dependencia_perfil() returns trigger language plpgsql as $$begin return new;end$$;
+ create trigger validar_dependencia_perfil before insert or update on perfiles for each row execute function validar_dependencia_perfil();`);
+ for(const file of fs.readdirSync(path.join(source,'backend/supabase/migrations')).filter(n=>n.endsWith('.sql') && n>='202609140001' && n<'202609230019' && !n.includes('dependencias_institucionales') && !n.includes('016_bienes')).sort()){console.log('apply',file);await db.exec(read(file));}
+ await db.exec(fs.readFileSync(path.join(stage,'backend/supabase/migrations/202609230019_roles_estadisticos.sql'),'utf8'));
+ await db.exec(fs.readFileSync(path.join(stage,'backend/supabase/migrations/202609230020_permisos_estadisticos.sql'),'utf8'));
+ const central='DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS';
+ const profiles=[[1,'administrador','administrador',true,'x'],[2,'direccion1','estadistico_direccion',true,'x'],[3,'direccion2','estadistico_direccion',true,'x'],[4,'jefatura','estadistico_jefatura',true,'x'],[5,'cusco','estadistico_depitptim',true,'DEPITPTIM CUSCO'],[6,'lima','estadistico_division',true,central],[7,'piura','estadistico_depitptim',true,'DEPITPTIM PIURA']];
+ for(const [n,u,r,a,unit] of profiles)await db.query('insert into perfiles(id,usuario,rol,activo,unidad) values($1,$2,$3,$4,$5)',[id(n),u,r,a,unit]);
+ await assert.rejects(db.query('insert into perfiles(id,usuario,rol,activo,unidad) values($1,$2,$3,true,$4)',[id(9),'tercero','estadistico_direccion','x']));
+ await assert.rejects(db.query('insert into perfiles(id,usuario,rol,activo,unidad) values($1,$2,$3,true,$4)',[id(9),'otroadmin','administrador','x']));
+ await assert.rejects(db.exec("update perfiles set activo=false where usuario='administrador'"));
+ await assert.rejects(db.query('insert into perfiles(id,usuario,rol,activo,unidad) values($1,$2,$3,true,$4)',[id(9),'mal','estadistico_depitptim',central]));
+ for(const n of [5,6,7]){await actor(n);await db.query("insert into intervenciones(id,tipo,fecha) values($1,'operativo','2026-09-23')",[id(100+n)]);await db.query('insert into intervencion_operativos(intervencion_id) values($1)',[id(100+n)]);}
+ for(const [n,total] of [[1,3],[2,3],[4,2],[5,1],[6,1],[7,1]]){await actor(n);assert.equal((await db.query('select count(*)::int n from intervenciones')).rows[0].n,total);}
+ await actor(5);
+ let drug=(await db.query("select guardar_droga_operativo($1,$2,0,'kg_marihuana',2,null) r",[id(200),id(105)])).rows[0].r;
+ await assert.rejects(db.query('update intervenciones set fecha=$1 where id=$2',['2026-09-22',id(105)]));
+ await assert.rejects(db.query("select guardar_droga_operativo($1,$2,1,'kg_marihuana',3,null)",[id(200),id(105)]));
+ assert.equal((await db.query('delete from intervencion_drogas where id=$1 returning id',[id(200)])).rows.length,0);
+ await actor(4);await db.query("select guardar_droga_operativo($1,$2,1,'kg_marihuana',3,null)",[id(200),id(105)]);
+ assert.equal((await db.query('select cantidad from intervencion_drogas where id=$1',[id(200)])).rows[0].cantidad,'3');
+ await assert.rejects(db.query("select guardar_droga_operativo($1,$2,0,'kg_marihuana',3,null)",[id(201),id(106)]));
+ await db.query('update intervenciones set fecha=$1 where id=$2',['2026-09-22',id(105)]);
+ await actor(2);await db.query('update intervenciones set fecha=$1 where id=$2',['2026-09-21',id(106)]);
+ await actor(6);assert.equal((await db.query('select puede_crear_usuarios() ok')).rows[0].ok,false);await assert.rejects(db.exec("update perfiles set rol='administrador' where id=auth.uid()"));
+ await actor(2);assert.equal((await db.query('select puede_crear_usuarios() ok')).rows[0].ok,true);await assert.rejects(db.exec("update perfiles set rol='administrador' where id=auth.uid()"));
+ await actor(4);assert.equal((await db.query('select puede_crear_usuarios() ok')).rows[0].ok,false);
+ await actor(null);
+ await db.exec('create schema storage;create table storage.objects(id uuid);alter table storage.objects enable row level security;');
+ for(const n of ['202609230022_seguimiento_diario.sql','202609230023_seguimiento_resumen.sql','202609230024_seguimiento_administrador.sql']) await db.exec(read(n));
+ await db.exec(fs.readFileSync(path.join(source,'backend/supabase/migrations/202609260002_rol_visualizador.sql'),'utf8'));
+ await db.exec(fs.readFileSync(path.join(source,'backend/supabase/migrations/202609260003_visualizador_permisos.sql'),'utf8'));
+ await db.query("insert into perfiles(id,usuario,rol,activo,unidad) values($1,'jefe','visualizador',true,'x')",[id(9)]);
+ await actor(9);
+ assert.equal((await db.query('select count(*)::int n from intervenciones')).rows[0].n,3);
+ assert.equal((await db.query('select puede_crear_usuarios() ok')).rows[0].ok,false);
+ assert.equal((await db.query('select puede_editar_unidad($1) ok',[central])).rows[0].ok,false);
+ assert.equal((await db.query('select unidad from perfiles where id=auth.uid()')).rows[0].unidad,'VISUALIZACIÓN NACIONAL DIRITPTIM');
+ assert.ok((await db.query("select consultar_seguimiento('2026-09-23') r")).rows[0].r);
+ await assert.rejects(db.query("insert into intervenciones(id,tipo,fecha) values($1,'operativo','2026-09-23')",[id(999)]));
+ assert.equal((await db.query('delete from intervenciones where id=$1 returning id',[id(105)])).rows.length,0);
+ await assert.rejects(db.query("select guardar_droga_operativo($1,$2,0,'kg_marihuana',1,null)",[id(299),id(105)]));
+ // A security-definer mutation is also stopped by the read-only trigger.
+ await actor(null);await db.exec("create function test_definer_write() returns void language sql security definer as $$update intervenciones set fecha='2026-09-20'$$;grant execute on function test_definer_write() to authenticated;");
+ await actor(9);await assert.rejects(db.exec('select test_definer_write()'));
+ console.log('PASS Visualizador: national reads and Seguimiento; cannot create users, edit, delete, register or mutate through security-definer.');
+ console.log('PASS: four profiles, two direction seats, protected root, national/division/23 department scope, new result registration, denied local editing/deletion, manager edits, denied cross-scope writes and direct profile escalation.');
+})().catch(e=>{console.error(e.message,e.code,e.where,e.internalQuery);process.exitCode=1}).finally(()=>db.close());
+
+
+

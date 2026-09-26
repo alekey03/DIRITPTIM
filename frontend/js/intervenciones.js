@@ -78,7 +78,7 @@
       if (turn !== epoch) return;
       const unavailable = ['PGRST202', '42P01'].includes(error.code);
       message(unavailable ? 'El registro de operativos todavía no está habilitado en el servidor. Sus datos siguen en este formulario.' :
-        error.code === '40001' ? 'Este operativo cambió desde que lo abrió. Sus cambios siguen aquí; abra el registro actualizado desde Borradores antes de editarlo nuevamente.' :
+        error.code === '40001' ? 'Este operativo cambió desde que lo abrió. Sus cambios siguen aquí; abra el registro actualizado desde Operativos registrados antes de editarlo nuevamente.' :
         `No se confirmó el guardado. ${error.message || 'Compruebe la conexión y vuelva a intentarlo.'}`);
     } finally {
       if (turn === epoch) { busy = false; lock(readOnly); saveButton.textContent = 'Guardar borrador'; }
@@ -88,7 +88,7 @@
     if (busy || (dirty && !confirm('Tiene cambios sin guardar. ¿Desea descartarlos y abrir este borrador?'))) return;
     const turn = ++listRequest, session = epoch;
     busy = true; lock(true);
-    listStatus.textContent = 'Abriendo borrador…';
+    listStatus.textContent = 'Abriendo operativo…';
     try {
       const { data, error } = await supabaseClient.from('intervenciones')
         .select('*,intervencion_operativos(*)').eq('id', recordId).single();
@@ -113,7 +113,7 @@
       message(readOnly ? 'Consulta del borrador. Su cuenta no tiene permiso para editar este registro.' : 'Borrador abierto. Puede continuar completándolo.');
       listStatus.textContent = '';
     } catch (error) {
-      if (session === epoch && turn === listRequest) listStatus.textContent = `No se pudo abrir el borrador. ${error.message || ''}`;
+      if (session === epoch && turn === listRequest) listStatus.textContent = `No se pudo abrir el operativo. ${error.message || ''}`;
     } finally {
       if (session === epoch) { busy = false; lock(readOnly); }
     }
@@ -141,6 +141,10 @@
         button.addEventListener('click', () => record.historical?window.HistoricoProduccion.open(record.id,false,window.loadOperativos):openRecord(record.id)); action.appendChild(button);
         const resultsButton = document.createElement('button'); resultsButton.type = 'button'; resultsButton.className = 'table-action'; resultsButton.textContent = 'Resultados';
         resultsButton.addEventListener('click', () => record.historical?window.HistoricoProduccion.open(record.id):window.openOperativoResults?.(record.id)); action.appendChild(resultsButton);
+        if(currentProfile?.activo&&['administrador','estadistico_direccion'].includes(currentProfile.rol)){
+          const remove=document.createElement('button');remove.type='button';remove.className='table-action';remove.style.color='#a43f43';remove.textContent='Eliminar';
+          remove.addEventListener('click',()=>{if(busy||dirty){listStatus.textContent='Guarde o descarte los cambios del operativo abierto antes de eliminar.';return;}window.confirmDeleteOperativo?.(record,async()=>{if(id===record.id)window.resetOperativoModule();page=0;await window.loadOperativos();listStatus.textContent='Operativo eliminado. La acción quedó registrada en auditoría.';});});action.appendChild(remove);
+        }
         row.appendChild(action); rows.appendChild(row);
       }
       prev.disabled = page === 0; next.disabled = data.length <= 25;
@@ -149,7 +153,7 @@
     } catch (error) {
       if (session === epoch && turn === listRequest) {
         prev.disabled = page === 0;
-        listStatus.textContent = `No se pudieron consultar los borradores. ${error.message || 'Reintente.'}`;
+        listStatus.textContent = `No se pudieron consultar los operativos. ${error.message || 'Reintente.'}`;
       }
     }
   };

@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="frontend/css/login.css?v=20260924-campaign">
   <link rel="stylesheet" href="frontend/css/executive.css?v=20260924-navy">
   <link rel="stylesheet" href="frontend/css/overview.css?v=20260926-unit">
+  <link rel="stylesheet" href="frontend/css/account-menu.css?v=20260926">
 </head>
 <body>
   <section class="login-screen" id="loginScreen" aria-label="Acceso a Estadística DIRITPTIM">
@@ -416,7 +417,7 @@
       <button type="button" id="openLinkedDetaineeView" data-view="detaineeFormView" data-from-operativo="true" hidden></button>
     </section>
     <section id="operativoRecordsView" class="view records-view">
-      <div class="records-toolbar"><div><h2>Borradores de operativos</h2><p>Registros disponibles según sus permisos. Todavía no forman un reporte final.</p></div><button type="button" class="secondary" id="refreshOperativos">Actualizar</button></div>
+      <div class="records-toolbar"><div><h2>Operativos registrados</h2><p>Consulte y gestione los operativos de su ámbito autorizado.</p></div><button type="button" class="secondary" id="refreshOperativos">Actualizar</button></div>
       <p id="operativosListStatus" role="status"></p><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>NI principal</th><th>Dependencia</th><th>Lugar</th><th>Acción</th></tr></thead><tbody id="operativosRows"></tbody></table></div>
       <div class="operativo-actions"><button type="button" class="secondary" id="operativosPrev">Anterior</button><span id="operativosPage"></span><button type="button" class="secondary" id="operativosNext">Siguiente</button></div>
     </section>
@@ -489,11 +490,13 @@
 <script src="frontend/js/catalogos-ui.js?v=20260923-editor-mapa"></script>
   <script src="frontend/js/mapa.js?v=20260910-map-v5"></script>
   <script src="frontend/js/dependencias.js?v=20260923-roles"></script>
-  <script src="frontend/js/perfiles-estadisticos.js?v=20260923-roles"></script>
-  <script src="frontend/js/app.js?v=20260926-audit"></script>
+  <script src="frontend/js/perfiles-estadisticos.js?v=20260926-visualizador"></script>
+  <script src="frontend/js/app.js?v=20260926-operativos"></script>
+  <script src="frontend/js/account-menu.js?v=20260926"></script>
   <script src="frontend/js/auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="frontend/js/detenidos.js?v=20260923-captura"></script>
-  <script src="frontend/js/intervenciones.js?v=20260923-historico"></script>
+  <script src="frontend/js/eliminar-operativo.js?v=20260926"></script>
+  <script src="frontend/js/intervenciones.js?v=20260926-eliminar"></script>
   <script src="frontend/js/materiales-catalogo.js?v=20260915-materiales-v1"></script>
   <script src="frontend/js/materiales.js?v=20260923-captura"></script>
   <script src="frontend/js/vehiculos-catalogo.js?v=20260915-vehiculos-v1"></script>
@@ -526,7 +529,7 @@
   <script src="frontend/js/produccion-catalogo.js?v=20260923-historico"></script>
   <script src="frontend/js/produccion-modelo.js?v=20260923-historico"></script>
   <script src="frontend/js/produccion.js?v=20260923-historico"></script>
-  <script src="frontend/js/seguimiento.js?v=20260923-denuncias"></script>
+  <script src="frontend/js/seguimiento.js?v=20260926-visualizador"></script>
   <script src="frontend/js/declaracion-diaria.js?v=20260923"></script>
 <script src="frontend/js/desaparecidos.js?v=20260923"></script>
   <script src="frontend/js/mobile.js?v=20260924-map"></script>
