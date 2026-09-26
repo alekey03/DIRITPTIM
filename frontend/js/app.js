@@ -32,7 +32,13 @@ function formatDate(value) {
 async function compressImage(file) {
   const maxDimension = 1600;
   const targetBytes = 700 * 1024;
-  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  let bitmap;
+  try { bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+  catch (_) {
+    const url=URL.createObjectURL(file);
+    try { bitmap=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('No se pudo leer la foto. Use una imagen JPG, PNG o WebP.'));img.src=url;}); }
+    finally { URL.revokeObjectURL(url); }
+  }
   const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.round(bitmap.width * scale));
@@ -42,7 +48,7 @@ async function compressImage(file) {
   context.fillStyle = '#ffffff';
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
+  bitmap.close?.();
 
   let quality = 0.82;
   let blob;
@@ -55,63 +61,36 @@ async function compressImage(file) {
   return blob;
 }
 
+// Stable paths make retries safe even when a network response is lost.
+const photoUploadStates = new WeakMap();
+function photoUnitFolder(unit) {
+  return 'u-' + [...new TextEncoder().encode(unit)].map(n=>n.toString(16).padStart(2,'0')).join('');
+}
 async function uploadRecordFiles(recordId) {
-  const groups = [
-    { files: [...photo.files], type: 'foto_principal' },
-    { files: pendingMarkFiles, type: 'tatuaje' },
-    { files: pendingDocumentFiles, type: 'documento' }
-  ];
-  const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
-  const uploadedMetadata = [];
-  let failed = 0;
-
-  for (const group of groups) {
-    for (const file of group.files) {
-      if (!allowedTypes.has(file.type) || file.size > 25 * 1024 * 1024) {
-        failed += 1;
-        continue;
-      }
-
-      try {
-        const compressedFile = await compressImage(file);
-        const path = `${currentProfile.unidad}/${recordId}/${crypto.randomUUID()}.jpg`;
-        const { error: uploadError } = await supabaseClient.storage
-          .from('ficha-archivos')
-          .upload(path, compressedFile, { contentType: 'image/jpeg', upsert: false });
-        if (uploadError) throw uploadError;
-        uploadedMetadata.push({
-          ficha_id: recordId,
-          tipo: group.type,
-          ruta_privada: path,
-          creado_por: currentProfile.id
-        });
-      } catch (error) {
-        console.error(error);
-        failed += 1;
-      }
-    }
-  }
-
-  if (uploadedMetadata.length) {
+  const groups=[{files:[...photo.files],type:'foto_principal'},{files:pendingMarkFiles,type:'tatuaje'},{files:pendingDocumentFiles,type:'documento'}];
+  let uploaded=0,failed=0;const errors=[];
+  for(const group of groups)for(const file of group.files){
     try {
-      const { error: metadataError } = await supabaseClient.from('archivos').insert(uploadedMetadata);
-      if (metadataError) {
-        console.error(metadataError);
-        try {
-          const { error: cleanupError } = await supabaseClient.storage.from('ficha-archivos').remove(uploadedMetadata.map(item => item.ruta_privada));
-          if (cleanupError) console.error(cleanupError);
-        } catch (cleanupError) { console.error(cleanupError); }
-        return { uploaded: 0, failed: failed + uploadedMetadata.length };
+      if(file.size>25*1024*1024)throw new Error('La imagen supera los 25 MB.');
+      let state=photoUploadStates.get(file);
+      if(!state||state.recordId!==recordId){state={recordId,path:`${photoUnitFolder(currentProfile.unidad)}/${recordId}/${crypto.randomUUID()}.jpg`,stored:false,confirmed:false};photoUploadStates.set(file,state);}
+      if(state.confirmed){uploaded++;continue;}
+      if(!state.stored){
+        const blob=await compressImage(file);
+        const {error}=await supabaseClient.storage.from('ficha-archivos').upload(state.path,blob,{contentType:'image/jpeg',upsert:false});
+        if(error&&!['409','Duplicate'].includes(String(error.statusCode||error.code))&&!/already exists|duplicate/i.test(error.message||''))throw error;
+        state.stored=true;
       }
-    } catch (error) {
-      // Si se pierde la respuesta, los metadatos podrían haberse guardado.
-      // No borrar imágenes cuyo resultado no se puede confirmar.
-      console.error(error);
-      return { uploaded: 0, failed: failed + uploadedMetadata.length };
-    }
+      const {data:existing,error:readError}=await supabaseClient.from('archivos').select('ruta_privada').eq('ficha_id',recordId).eq('ruta_privada',state.path);
+      if(readError)throw readError;
+      if(!existing?.length){
+        const {error}=await supabaseClient.from('archivos').insert({ficha_id:recordId,tipo:group.type,ruta_privada:state.path,creado_por:currentProfile.id});
+        if(error)throw error;
+      }
+      state.confirmed=true;uploaded++;
+    }catch(error){failed++;errors.push(error.message||'Error de conexión con Supabase');console.error('Carga de fotografía:',error.message);}
   }
-
-  return { uploaded: uploadedMetadata.length, failed };
+  return {uploaded,failed,errors};
 }
 
 async function loadRecords() {
@@ -201,7 +180,7 @@ async function loadRecordImages(recordId) {
 
   if (error) {
     console.error(error);
-    return [];
+    throw new Error('No se pudieron consultar las fotografías en Supabase. Vuelva a abrir la ficha.');
   }
 
   const images = [];
@@ -212,7 +191,7 @@ async function loadRecordImages(recordId) {
 
     if (signedUrlError) {
       console.error(signedUrlError);
-      continue;
+      throw new Error('No se pudo acceder a una fotografía guardada en Supabase. Vuelva a abrir la ficha.');
     }
 
     images.push({ ...file, url: data.signedUrl });
@@ -236,7 +215,10 @@ async function openRecord(recordId) {
     return;
   }
 
-  const images = await loadRecordImages(recordId);
+  let images;
+  document.getElementById('printRecordButton').disabled=true;
+  try { images=await loadRecordImages(recordId); } catch(error) { recordDetail.textContent=error.message;printSheet.replaceChildren();return; }
+  document.getElementById('printRecordButton').disabled=false;
   const mainPhoto = images.find(image => image.tipo === 'foto_principal');
   const tattooImages = images.filter(image => image.tipo === 'tatuaje');
   const tattooGallery = tattooImages.length
@@ -429,14 +411,16 @@ document.getElementById('deleteRecordButton').addEventListener('click', async ()
 document.getElementById('closeRecordModal').addEventListener('click', () => recordModal.close());
 document.getElementById('closeRecordButton').addEventListener('click', () => recordModal.close());
 document.getElementById('printRecordButton').addEventListener('click', async () => {
-  const pendingImages = [...printSheet.querySelectorAll('img')]
-    .filter(image => !image.complete)
-    .map(image => new Promise(resolve => {
-      image.addEventListener('load', resolve, { once: true });
-      image.addEventListener('error', resolve, { once: true });
-    }));
-  await Promise.all(pendingImages);
-  window.print();
+  const button=document.getElementById('printRecordButton');button.disabled=true;
+  try {
+    await Promise.all([...printSheet.querySelectorAll('img')].map(image=>new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>{cleanup();reject(new Error('La fotografía tarda en cargar. Abra nuevamente la ficha e intente exportar.'));},20000);
+      const cleanup=()=>{clearTimeout(timer);image.removeEventListener('load',done);image.removeEventListener('error',done);};
+      const done=()=>{cleanup();image.naturalWidth?resolve():reject(new Error('No se pudo cargar una fotografía. Abra nuevamente la ficha para renovar el acceso e intente exportar.'));};
+      if(image.complete)done();else{image.addEventListener('load',done);image.addEventListener('error',done);}
+    })));
+    window.print();
+  }catch(error){alert(error.message);}finally{button.disabled=false;}
 });
 
 const SUPABASE_URL = 'https://dbneehfdhnzldzpxrmas.supabase.co';
@@ -1372,6 +1356,13 @@ form.addEventListener('submit', async event => {
   status.textContent = 'Ficha guardada. Subiendo fotografías…';
   const fileResult = await uploadRecordFiles(savedRecord.id);
   registerButton.disabled = false;
+  if(fileResult.failed){
+    editingRecordId=savedRecord.id;editingRecordCode=savedRecord.codigo||editingRecordCode||codigo;
+    editingAuditReason=editingAuditReason||'Reintento de fotografías pendientes';
+    registerButton.textContent='Reintentar fotografías pendientes';
+    status.textContent=`Ficha ${editingRecordCode} guardada. Hay ${fileResult.failed} fotografía(s) pendiente(s): ${fileResult.errors[0]}. Sus fotos siguen en este formulario; pulse Reintentar. No cierre ni recargue esta página.`;
+    return;
+  }
   registerButton.textContent = 'Registrar ficha';
   const savedCode = editingRecordCode || codigo;
   editingRecordId = null;
