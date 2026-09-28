@@ -16,8 +16,8 @@
  const open=id=>{const form=root.querySelector('.dash-filter-panel'),select=form.querySelector('[name="category"]');form.classList.remove('mobile-filters-closed');const toggle=form.previousElementSibling;if(toggle?.classList.contains('mobile-filter-toggle')){toggle.setAttribute('aria-expanded','true');toggle.textContent='Ocultar filtros de consulta';}form.reset();select.value=id;const unit=form.querySelector('[name="unit"]'),chosen=$('[data-summary-unit]').value;if(chosen&&![...unit.options].some(o=>o.value===chosen))unit.add(new Option(chosen,chosen));unit.value=chosen;select.dispatchEvent(new Event('change',{bubbles:true}));form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});};
  $('[data-core]').onclick=()=>open('operativos');
  for(const c of cats.filter(c=>c.id!=='operativos')){const b=el('button',null,'production-tile');b.type='button';b.dataset.category=c.id;b.innerHTML='<span class="production-tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">'+icon(c)+'</svg></span>';b.append(el('span',c.id==='victimas'?'Víctimas de trata':c.title,'production-tile-title'),el('strong','—','production-tile-value'),el('small','Consultando…','production-tile-detail'));b.onclick=()=>open(c.id);b.disabled=true;cards.set(c.id,b);$(featured.includes(c.id)?'[data-summary-featured]':'[data-summary-all]').append(b);}
- const descriptions={detenidos:'Personas detenidas por diversos delitos.',rq:'Personas capturadas por requisitoria judicial.',banda:'Bandas criminales registradas',organizacion:'Organizaciones criminales registradas',victimas:'Víctimas y presuntas víctimas de trata de personas.',celulares:'Equipos celulares registrados en las intervenciones.',migraciones:'Personas intervenidas por la Ley de Migraciones.',personas_ubicadas:'Personas ubicadas por las dependencias del ámbito autorizado.'};
- const describe=(c,m)=>descriptions[c.id]?(descriptions[c.id]+(c.table==='intervencion_grupos'?' · '+m.detail.replace('grupos · ',''):c.id==='celulares'?' '+m.detail.replace(/^unidades · /,''): '')):m.detail;
+ const descriptions={detenidos:'Personas detenidas por diversos delitos.',rq:'Personas capturadas por requisitoria judicial.',banda:'Bandas criminales registradas',organizacion:'Organizaciones criminales registradas',victimas:'Víctimas y presuntas víctimas de trata de personas.',celulares:'Equipos celulares registrados en las intervenciones.',migraciones:'Personas intervenidas por la Ley de Migraciones.',dinero:'Dinero registrado en las intervenciones.',personas_ubicadas:'Personas ubicadas por las dependencias del ámbito autorizado.'};
+ const describe=(c,m)=>descriptions[c.id]?(descriptions[c.id]+(c.table==='intervencion_grupos'?' · '+m.detail.replace('grupos · ',''):c.id==='celulares'?' '+m.detail.replace(/^unidades · /,''):c.id==='dinero'?' '+m.detail: '')):m.detail;
  const number=v=>{if(v==null||v==='')return null;const n=Number(v);return Number.isFinite(n)&&n>=0?n:null;};
  function metric(records,c,parents=new Map(),unit=''){const rows=records.map(r=>Q.normalize(r,c,parents)).filter(r=>!unit||r.unit===unit),sum=k=>rows.reduce((n,r)=>n+(number(r.data[k])??0),0);let value=format(rows.length),detail='registros';
   if(c.table==='intervencion_grupos')detail='grupos · '+format(sum('integrantes'))+' integrantes';
@@ -28,7 +28,13 @@
   if(!rows.length)detail='Sin registros';return {value,detail,hasData:rows.length>0};
  }
  function layoutSummary(){
-  const visible=featured.map(id=>cards.get(id)).filter(b=>b&&!b.hidden),half=Math.ceil(visible.length/2),stage=$('.production-stage');
+  const primary=featured.filter(id=>cards.has(id)&&!cards.get(id).hidden);
+  const priority=[...new Set(['dinero','menores','expulsados','prostitucion','desaparecidos',...cats.map(c=>c.id)])];
+  const extras=priority.filter(id=>!featured.includes(id)&&cards.has(id)&&!cards.get(id).hidden&&!cards.get(id).disabled);
+  const selected=[...primary,...extras].slice(0,8),selectedSet=new Set(selected);
+  const groups=[[$('[data-summary-featured]'),selected],[$('[data-summary-all]'),cats.map(c=>c.id).filter(id=>cards.has(id)&&!selectedSet.has(id))]];
+  for(const [host,ids]of groups)ids.forEach((id,i)=>{const card=cards.get(id);if(host.children[i]!==card)host.insertBefore(card,host.children[i]||null);});
+  const visible=selected.map(id=>cards.get(id)),half=Math.ceil(visible.length/2),stage=$('.production-stage');
   stage.style.setProperty('--summary-rows',Math.max(1,half));
   visible.forEach((b,i)=>{b.dataset.side=i<half?'left':'right';b.style.setProperty('--summary-row',i<half?i+1:i-half+1);});
   stage.classList.toggle('production-no-core',$('[data-core]').hidden);

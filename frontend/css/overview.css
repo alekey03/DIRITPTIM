@@ -57,3 +57,7 @@
  .production-featured [data-side=left] .production-tile-detail{grid-column:1}
  .production-featured .production-tile[data-side=right]{grid-template-columns:auto minmax(0,1fr)}
 }
+
+.production-featured .production-tile[data-category=dinero]{--ribbon:#a38b52;--ribbon-end:#887444}
+.production-featured .production-tile[data-category=dinero] .production-tile-value{font-size:clamp(18px,1.65vw,27px)}
+@media(max-width:760px){.production-featured .production-tile{order:0!important}}
