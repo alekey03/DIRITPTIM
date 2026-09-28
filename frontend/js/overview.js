@@ -31,7 +31,7 @@
   const primary=featured.filter(id=>cards.has(id)&&!cards.get(id).hidden);
   const priority=[...new Set(['dinero','menores','expulsados','prostitucion','desaparecidos',...cats.map(c=>c.id)])];
   const extras=priority.filter(id=>!featured.includes(id)&&cards.has(id)&&!cards.get(id).hidden&&!cards.get(id).disabled);
-  const selected=[...primary,...extras].slice(0,8),selectedSet=new Set(selected);
+  const selected=[...primary,...extras].slice(0,10),selectedSet=new Set(selected);
   const groups=[[$('[data-summary-featured]'),selected],[$('[data-summary-all]'),cats.map(c=>c.id).filter(id=>cards.has(id)&&!selectedSet.has(id))]];
   for(const [host,ids]of groups)ids.forEach((id,i)=>{const card=cards.get(id);if(host.children[i]!==card)host.insertBefore(card,host.children[i]||null);});
   const visible=selected.map(id=>cards.get(id)),half=Math.ceil(visible.length/2),stage=$('.production-stage');
