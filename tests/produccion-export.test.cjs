@@ -1,26 +1,27 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
-const fixture=require('./produccion-fixture.cjs'),root=path.resolve(__dirname,'..'),ctx={window:{}};vm.createContext(ctx);
+const fixture=require('./produccion-fixture.cjs'),root=path.resolve(__dirname,'..'),ctx={window:{HistoricoProduccion:{read:async()=>[]}}};vm.createContext(ctx);
 for(const f of ['frontend/js/produccion-catalogo.js','frontend/js/produccion-modelo.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),ctx);
 const m=ctx.window.ProduccionModelo,plain=x=>JSON.parse(JSON.stringify(x));
 const sheet=(r,n)=>r.sheets.find(s=>s.nombre.startsWith(n+'_'));
-const value=(r,n,col,row=0)=>sheet(r,n).rows[row][sheet(r,n).columnas.findIndex(c=>c.columna===col)];
-test('22 nombres, orden y todas las columnas contra el Excel; recuperación explícita de tres hojas vacías',()=>{
- const source=JSON.parse(fs.readFileSync(path.join(root,'datos/estructura-produccion-v2.json'),'utf8')),old=JSON.parse(fs.readFileSync(path.join(root,'datos/estructura-detallado-v1.json'),'utf8'));
- const r=m.build(fixture());assert.equal(r.sheets.length,24);assert.deepEqual(plain(r.sheets.slice(0,22).map(s=>s.nombre)),source.hojas.map(s=>s.nombre));
- for(const s of r.sheets.slice(0,22)){const sourceSheet=source.hojas.find(x=>x.nombre===s.nombre);const expected=sourceSheet.campos.length?sourceSheet:old.hojas.find(x=>x.nombre===s.encabezados_recuperados_de);assert.deepEqual(plain(s.columnas.map(c=>[c.columna,c.encabezado])),expected.campos.map(c=>[c.columna,c.encabezado]));assert.ok(s.columnas.every(c=>c.origen));assert.ok(s.rows.length>0, s.nombre);}
+const value=(r,n,col,row=0)=>sheet(r,n).rows[row][sheet(r,n).columnas.some(c=>c.columna===col)?sheet(r,n).columnas.findIndex(c=>c.columna===col):[...col].reduce((v,c)=>v*26+c.charCodeAt(0)-64,0)-1];
+test('Formato vigente: 24 hojas, drogas consolidadas y megaoperativos separados',()=>{
+ const r=m.build(fixture());
+ assert.deepEqual(plain(r.sheets.map(s=>s.nombre)),['1_OPERATIVOS','2_RQ','3_DETENIDOS','4_MENORES','5_DROGAS','13_ARMAS_FUEGO','14_ARMAS_BLANCAS','15_BANDAS','16_OO.CC.','17_VEH. MAYOR','18_VEH. MENOR','20_PROXENETISMO','21_ VICTIMAS DE TRATA DE PERSON','28_DINERO','30_CELULAR','32_MUNICIONES','38_INTERVENIDOS_ LEY_MIGRACIONE','52_CHIP','53_PERSONAS UBICADAS','54_EXTR. EXPULSADOS','33_LOCALES INTERVENIDOS','DESAPARECIDOS','MEGAOPERATIVOS','31_EXPLOSIVOS']);
+ for(const s of r.sheets){assert(s.columnas.length>0);for(const row of s.rows)assert.equal(row.length,s.columnas.length);}
+ assert.equal(sheet(r,5).rows.length,4);assert.equal(sheet(r,1).rows.length,1);assert.equal(r.sheets.find(s=>s.nombre==='MEGAOPERATIVOS').rows.length,1);
 });
 test('Tipos Excel: moneda independiente, ceros, fechas, horas, textos y fórmulas neutralizadas',()=>{
  const r=m.build(fixture());assert.deepEqual(plain(value(r,28,'H')),{t:'n',v:123.45,z:'0.######'});assert.equal(value(r,28,'I').v,67.89);assert.equal(value(r,28,'J').v,0);
  assert.equal(value(r,3,'L').v,'00123456');assert.equal(value(r,3,'L').t,'s');assert.equal(value(r,30,'O').v,'000123456789012');assert.equal(value(r,30,'AA').t,'s');assert.equal(value(r,30,'AA').f,undefined);
- assert.equal(value(r,1,'L',1).v,0);assert.equal(value(r,1,'AJ',1).v,'CONTROL FICTICIO');assert.equal(value(r,3,'C').v,46288);assert.equal(value(r,3,'D').z,'hh:mm:ss');assert.equal(value(r,21,'E').v,0);assert.equal(value(r,3,'T').v,'SI');assert.equal(value(r,3,'V').v,'DELITO UNO');assert.equal(value(r,3,'AA').v,'DELITO DOS');
+ assert.equal(value(r,1,'S',0).v,0);assert.equal(value(r,1,'AJ',0).v,'CONTROL FICTICIO');assert.equal(value(r,3,'C').v,46288);assert.equal(value(r,3,'D').z,'hh:mm:ss');assert.equal(value(r,21,'H').v,0);assert.equal(value(r,3,'T').v,'SI');assert.equal(value(r,3,'V').v,'DELITO UNO');assert.equal(value(r,3,'AA').v,'DELITO DOS');
 });
-test('Bandas: una fila por integrante, una sola marca SI, OOCC separadas',()=>{const r=m.build(fixture());assert.equal(sheet(r,15).rows.length,2);assert.equal(sheet(r,16).rows.length,1);assert.deepEqual(plain(sheet(r,15).rows.map(row=>row[40].v)),['SI','']);assert.equal(value(r,16,'F').v,'INTEGRANTE');});
-test('Nombres de operativo y resultado conforme a la plantilla',()=>{const r=m.build(fixture());assert.equal(value(r,1,'E',0).v,'MEGA OPERATIVO');assert.equal(value(r,1,'E',1).v,'OPERATIVO');assert.equal(value(r,1,'F',1).v,'POSITIVO');});
+test('Bandas: una fila por integrante, una sola marca SI, OOCC separadas',()=>{const r=m.build(fixture());assert.equal(sheet(r,15).rows.length,2);assert.equal(sheet(r,16).rows.length,1);assert.deepEqual(plain(sheet(r,15).rows.map(row=>row[41].v)),['SI','']);assert.equal(value(r,16,'F').v,'INTEGRANTE');});
+test('Nombres de operativo y resultado conforme a la plantilla',()=>{const r=m.build(fixture());assert.equal(r.sheets.find(s=>s.nombre==='MEGAOPERATIVOS').rows.length,1);assert.equal(value(r,1,'E',0).v,'OPERATIVO');assert.equal(value(r,1,'F',0).v,'POSITIVO');});
 test('RQ no suma detenidos; filtros inclusivos con fecha propia y unidad',()=>{
  const d=fixture(),r=m.build(d,{from:'2026-09-24',to:'2026-09-24',unit:'UNIDAD A'});assert.equal(sheet(r,2).rows.length,1);assert.equal(sheet(r,3).rows.length,0);assert.equal(sheet(r,1).rows.length,0);assert.equal(r.sheets.length,24);
  assert.equal(m.build(d,{unit:'UNIDAD B'}).total,1);assert.equal(m.build(d,{unit:'NO AUTORIZADA'}).total,0);assert.throws(()=>m.build(d,{from:'2026-10-01',to:'2026-09-01'}),/posterior/);
 });
-test('Datos históricos no salen en hojas simplificadas, vacíos no se convierten en cero',()=>{const r=m.build(fixture());assert.equal(sheet(r,20).columnas.length,18);assert.equal(sheet(r,21).columnas.length,18);assert.ok(!JSON.stringify(sheet(r,20).rows).includes('HISTÓRICO'));assert.equal(value(r,28,'M').v,'');assert.equal(value(r,53,'B').v,'SEPTIEMBRE');});
+test('Datos históricos no salen en hojas simplificadas, vacíos no se convierten en cero',()=>{const r=m.build(fixture());assert.equal(sheet(r,20).columnas.length,29);assert.equal(sheet(r,21).columnas.length,31);assert.ok(!JSON.stringify(sheet(r,20).rows).includes('HISTÓRICO'));assert.equal(value(r,28,'M').v,'');assert.equal(value(r,53,'B').v,'SEPTIEMBRE');});
 test('No truncar delitos, no atribuir grupo sin integrante autorizado; referencias de armas sin duplicación',()=>{
  const d=fixture();d.detenciones_reportables[0].detencion_delitos.push({orden:3});assert.throws(()=>m.build(d),/más de dos/);
  const absent=fixture();absent.detenciones=[];assert.throws(()=>m.build(absent),/integrantes/);

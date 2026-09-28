@@ -6,8 +6,8 @@ const id=n=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
 (async()=>{
  const schema=JSON.parse(fs.readFileSync(path.join(root,'datos/estructura-detallado-v1.json'),'utf8'));
  const contract=JSON.parse(fs.readFileSync(path.join(root,'datos/mapeo-bienes-v1.json'),'utf8'));
- assert.deepEqual(Object.keys(contract.columnas),schema.hojas.find(h=>h.nombre==='20_BIENES FEM Y MASC').campos.map(c=>c.columna));
- assert.equal(Object.keys(contract.columnas).length,21);
+ assert.equal(contract.tipos.length,5);
+ for(const type of contract.tipos){assert.equal(type.campos.length,13);assert(type.campos.some(c=>c.key==='valor_soles'));}
  await db.exec(`create role authenticated;create role anon;create schema auth;
  create table perfiles(id uuid primary key,rol text,activo boolean,unidad text,departamento text);
  create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;

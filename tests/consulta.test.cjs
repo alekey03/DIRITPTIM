@@ -1,5 +1,5 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
-const context={window:{}};vm.createContext(context);
+const context={window:{HistoricoProduccion:{read:async()=>[],groupRows:rows=>rows}}};vm.createContext(context);
 for(const file of ['frontend/js/complementarios-catalogo.js','frontend/js/requisitoriados-catalogo.js','frontend/js/prostitucion-catalogo.js','frontend/js/victimas-catalogo.js','frontend/js/menores-catalogo.js','frontend/js/materiales-catalogo.js','frontend/js/vehiculos-catalogo.js','frontend/js/consulta-modelo.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),context);
 const m=context.window.ConsultaModelo,cats=m.categories(),drug=cats.find(c=>c.id==='drogas');
 const parents=new Map([['op-a',{id:'op-a',fecha:'2026-09-15',unidad:'A',departamento:'LIMA',nota_sicpip:'NI-001'}],['op-b',{id:'op-b',fecha:'2026-08-10',unidad:'B',departamento:'CUSCO'}]]);

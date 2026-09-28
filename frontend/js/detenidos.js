@@ -29,7 +29,16 @@ function nullable(value) {
 function isDetaineeAdmin() { return esGestorProduccion(); }
 function setDetaineeField(name, value) {
   const field = detaineeForm.elements.namedItem(name);
-  if (field) field.value = value ?? '';
+  if (!field) return;
+  // An old free-text value must survive opening and saving an unrelated correction.
+  if (name === 'situacionActual' && field.tagName === 'SELECT') {
+    for (const option of Array.from(field.options)) if (option.dataset.legacy) option.remove();
+    if (value && !Array.from(field.options).some(option => option.value === String(value))) {
+      const option = new Option(String(value) + ' · valor original', String(value));
+      option.dataset.legacy = 'true'; field.add(option);
+    }
+  }
+  field.value = value ?? '';
 }
 function detailField(label, value) {
   return `<div class="detail-field"><small>${escapeHtml(label)}</small><strong>${escapeHtml(value === null || value === undefined || value === '' ? '—' : String(value))}</strong></div>`;

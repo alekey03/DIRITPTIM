@@ -40,7 +40,10 @@
   }
   const fields=config.campos;
   const byLabel=pattern=>fields.find(f=>pattern.test(norm(f.label)))?.key;
-  for(const [key,name] of Object.entries({genero:'genero',nacionalidad:'nacionalidad',tipo_documento:'tipoDocumento',motivo_detencion:'motivoDetencion'})){
+  const sharedControls={genero:'genero',nacionalidad:'nacionalidad',tipo_documento:'tipoDocumento',motivo_detencion:'motivoDetencion',situacion_actual:'situacionActual'};
+  const situationKey=byLabel(/^SITUACION ACTUAL DEL DETENIDO$/);
+  if(situationKey)sharedControls[situationKey]='situacionActual';
+  for(const [key,name] of Object.entries(sharedControls)){
    const source=document.querySelector('#detaineeForm select[name="'+name+'"]');
    if(inputs.has(key)&&source)fill(select(key),Array.from(source.options).filter(o=>o.value).map(o=>({value:o.value})),r.datos[key]);
   }
