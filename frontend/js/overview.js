@@ -25,9 +25,20 @@
   if(['celulares','chips'].includes(c.id)||c.table==='intervencion_drogas'||(c.table==='intervencion_materiales'&&c.fields.some(f=>f.key==='cantidad'))){const missing=rows.filter(r=>number(r.data.cantidad)===null).length;value=format(sum('cantidad'));detail=(c.table==='intervencion_drogas'?(c.type.startsWith('kg_')?'kg':'envoltorios'):'unidades')+' · '+format(rows.length)+' registros'+(missing?' · '+missing+' sin cantidad':'');}
   if(c.id==='dinero'){value='S/ '+format(sum('soles'));detail='USD '+format(sum('dolares'))+' · EUR '+format(sum('euros'));}
   if(c.id==='victimas'){const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();const rescued=rows.filter(r=>norm(r.data.situacion).includes('RESCATAD')).length,presumed=rows.filter(r=>norm(r.data.situacion).includes('PRESUNTA')).length;detail=rescued+' rescatadas · '+presumed+' presuntas'+(rows.length-rescued-presumed?' · '+(rows.length-rescued-presumed)+' sin clasificar':'');}
-  if(!rows.length)detail='Sin registros';return {value,detail};
+  if(!rows.length)detail='Sin registros';return {value,detail,hasData:rows.length>0};
  }
- function clear(){for(const b of cards.values()){b.querySelector('strong').textContent='—';b.querySelector('small').textContent='Consultando…';b.disabled=true;b.classList.remove('production-failed');}$('[data-core-count]').textContent='—';$('[data-core-mega]').textContent='Consultando megaoperativos…';$('[data-core]').disabled=true;}
+ function layoutSummary(){
+  const visible=featured.map(id=>cards.get(id)).filter(b=>b&&!b.hidden),half=Math.ceil(visible.length/2),stage=$('.production-stage');
+  stage.style.setProperty('--summary-rows',Math.max(1,half));
+  visible.forEach((b,i)=>{b.dataset.side=i<half?'left':'right';b.style.setProperty('--summary-row',i<half?i+1:i-half+1);});
+  stage.classList.toggle('production-no-core',$('[data-core]').hidden);
+  stage.hidden=!visible.length&&$('[data-core]').hidden;
+  const anyOther=[...cards.values()].some(b=>b.parentElement===$('[data-summary-all]')&&!b.hidden);
+  $('.production-divider').hidden=!anyOther;$('[data-summary-all]').hidden=!anyOther;
+  $('[data-summary-empty]').hidden=!stage.hidden||anyOther;
+ }
+ const empty=el('p','No hay registros para esta dependencia.','production-empty');empty.dataset.summaryEmpty='';empty.hidden=true;$('.production-stage').before(empty);
+ function clear(){for(const b of cards.values()){b.querySelector('strong').textContent='—';b.querySelector('small').textContent='Consultando…';b.hidden=false;b.disabled=true;b.classList.remove('production-failed');}$('[data-core-count]').textContent='—';$('[data-core-mega]').textContent='Consultando megaoperativos…';$('[data-core]').disabled=true;$('[data-core]').hidden=false;layoutSummary();}
  function renderSummary(){
   const parents=new Map((cache.get('intervenciones')||[]).map(r=>[r.id,r]));
   const units=new Set();for(const c of cats)for(const r of cache.get(c.table)||[]){const u=Q.normalize(r,c,parents).unit;if(u)units.add(u);}
@@ -38,15 +49,16 @@
   $('[data-summary-scope]').textContent='Todas las categorías · '+(chosen||'Todas las dependencias autorizadas')+' · todo el historial';
   for(const c of cats){
    const b=cards.get(c.id);if(failedTables.has(c.table)){
-    if(c.id==='operativos'){$('[data-core-count]').textContent='—';$('[data-core]').disabled=true;}
-    if(b){b.querySelector('strong').textContent='—';b.querySelector('small').textContent='No disponible · reintentando automáticamente';b.disabled=true;b.classList.add('production-failed');}
-    if(c.id==='megaoperativos')$('[data-core-mega]').textContent='Megaoperativos: consulta no disponible';continue;
+    if(c.id==='operativos'){$('[data-core]').hidden=false;$('[data-core-count]').textContent='—';$('[data-core]').disabled=true;}
+    if(b){b.hidden=false;b.querySelector('strong').textContent='—';b.querySelector('small').textContent='No disponible · reintentando automáticamente';b.disabled=true;b.classList.add('production-failed');}
+    if(c.id==='megaoperativos'){$('[data-core-mega]').hidden=false;$('[data-core-mega]').textContent='Megaoperativos: consulta no disponible';}continue;
    }
    const records=cache.get(c.table)||[],relevant=c.type?records.filter(r=>r.tipo===c.type):records,m=metric(relevant,c,parents,chosen);
-   if(c.id==='operativos'){$('[data-core-count]').textContent=m.value;$('[data-core]').disabled=false;}
-   else{b.querySelector('strong').textContent=m.value;b.querySelector('small').textContent=describe(c,m);b.disabled=false;b.classList.remove('production-failed');}
-   if(c.id==='megaoperativos')$('[data-core-mega]').textContent=m.value+' megaoperativos · categoría separada';
+   if(c.id==='operativos'){$('[data-core]').hidden=!m.hasData;$('[data-core-count]').textContent=m.value;$('[data-core]').disabled=false;}
+   else{b.hidden=!m.hasData;b.querySelector('strong').textContent=m.value;b.querySelector('small').textContent=describe(c,m);b.disabled=false;b.classList.remove('production-failed');}
+   if(c.id==='megaoperativos'){$('[data-core-mega]').hidden=!m.hasData;$('[data-core-mega]').textContent=m.value+' megaoperativos · categoría separada';}
   }
+  layoutSummary();
  }
  async function load(force=false,quiet=false){const who=identity();if(!currentProfile?.activo)return;if(!force&&whoLoaded===who)return;
   if(scopeOwner!==who){cache.clear();$('[data-summary-unit]').value='';scopeOwner=who;quiet=false;}
