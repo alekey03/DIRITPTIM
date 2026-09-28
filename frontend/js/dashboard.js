@@ -104,7 +104,7 @@
       $('[data-map-title]').textContent='Distribución por '+({department:'departamento',province:'provincia',district:'distrito'})[level];
       $('[data-map-place]').textContent=f.province||f.department||'PERÚ';
       const color=n=>!n?'#e7ecef':n/Math.max(total,1)<.05?'#66c99a':n/total<.1?'#c7dd77':n/total<.2?'#f4ba58':'#e87770';
-      const labelLimit=level==='department'?5:8;
+      const labelLimit=level==='department'?10:8;
       const labelNames=new Set(features.map(feature=>M.norm(nameOf(feature))).filter(name=>(counts.get(name)||0)>0).sort((a,b)=>(counts.get(b)||0)-(counts.get(a)||0)||a.localeCompare(b)).slice(0,labelLimit));
       const mapLabels=[];
       const geoLayer=L.geoJSON({type:'FeatureCollection',features},{interactive:true,style:feature=>({fillColor:color(counts.get(M.norm(nameOf(feature)))||0),color:'#fff',weight:1.4,fillOpacity:.95}),onEachFeature:(feature,shape)=>{
