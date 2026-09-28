@@ -393,3 +393,10 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 .material-person-data{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:#526878}
 
 .sidebar .nav-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:27px;margin-right:8px}.sidebar .nav-icon svg{width:21px;height:21px;display:block}.sidebar .nav-submenu .nav-icon svg{width:18px;height:18px}
+
+/* Compact account actions; password changes remain in Edit. */
+#usersResult th:last-child,#usersResult td:last-child{width:1%;white-space:nowrap}
+#usersResult .state{white-space:nowrap}
+#usersResult .user-actions{flex-wrap:nowrap;gap:4px}
+#usersResult .user-actions .table-action{margin:0;padding:7px 8px;white-space:nowrap;border-radius:6px}
+#usersResult .user-actions .table-action:not(:disabled):hover{background:#edf2f6}

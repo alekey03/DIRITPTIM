@@ -868,18 +868,13 @@ async function loadUsers() {
     <td>${escapeHtml(profile.departamento || (profile.rol === 'administrador' ? 'NACIONAL' : '—'))}</td>
     <td>${escapeHtml(profile.unidad)}</td>
     <td><span class="state ${profile.activo ? '' : 'inactive'}">● ${profile.activo ? 'Activo' : 'Desactivado'}</span></td>
-    <td>${currentProfile.rol==='administrador'?`<div class="user-actions"><button class="table-action edit-user" data-user-id="${escapeHtml(profile.id)}" type="button">Editar</button><button class="table-action password-user" data-user-id="${escapeHtml(profile.id)}" type="button">Contraseña</button><button class="table-action toggle-user" data-user-id="${escapeHtml(profile.id)}" type="button">${profile.activo ? 'Desactivar' : 'Activar'}</button><button class="table-action delete-user" data-user-id="${escapeHtml(profile.id)}" type="button" ${profile.id === currentProfile.id ? 'disabled title="No puede eliminar su propia cuenta"' : ''}>Eliminar</button></div>`:'Creación de usuarios'}</td>
+    <td>${currentProfile.rol==='administrador'?`<div class="user-actions"><button class="table-action edit-user" data-user-id="${escapeHtml(profile.id)}" type="button">Editar</button><button class="table-action toggle-user" data-user-id="${escapeHtml(profile.id)}" type="button">${profile.activo ? 'Desactivar' : 'Activar'}</button><button class="table-action delete-user" data-user-id="${escapeHtml(profile.id)}" type="button" ${profile.id === currentProfile.id ? 'disabled title="No puede eliminar su propia cuenta"' : ''}>Eliminar</button></div>`:'Creación de usuarios'}</td>
   </tr>`).join('');
   result.innerHTML = users.length
     ? `<div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Rol</th><th>Ámbito</th><th>Departamento</th><th>Área o dependencia</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>${rows}</tbody></table></div>`
     : '<div class="empty-state"><span>⌕</span><h3>No se encontraron usuarios</h3></div>';
   result.querySelectorAll('.edit-user').forEach(button => button.addEventListener('click', () => {
     openUserForm(data.find(profile => profile.id === button.dataset.userId));
-  }));
-  result.querySelectorAll('.password-user').forEach(button => button.addEventListener('click', () => {
-    openUserForm(data.find(profile => profile.id === button.dataset.userId));
-    document.getElementById('newUserPassword').focus();
-    document.getElementById('userFormMessage').textContent = 'Escriba la nueva contraseña (mínimo 8 caracteres) y pulse Guardar cambios.';
   }));
   result.querySelectorAll('.toggle-user').forEach(button => button.addEventListener('click', async () => {
     const profile = data.find(item => item.id === button.dataset.userId);
