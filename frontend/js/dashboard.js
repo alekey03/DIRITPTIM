@@ -104,6 +104,9 @@
       $('[data-map-title]').textContent='Distribución por '+({department:'departamento',province:'provincia',district:'distrito'})[level];
       $('[data-map-place]').textContent=f.province||f.department||'PERÚ';
       const color=n=>!n?'#e7ecef':n/Math.max(total,1)<.05?'#66c99a':n/total<.1?'#c7dd77':n/total<.2?'#f4ba58':'#e87770';
+      const labelLimit=level==='department'?5:8;
+      const labelNames=new Set(features.map(feature=>M.norm(nameOf(feature))).filter(name=>(counts.get(name)||0)>0).sort((a,b)=>(counts.get(b)||0)-(counts.get(a)||0)||a.localeCompare(b)).slice(0,labelLimit));
+      const mapLabels=[];
       const geoLayer=L.geoJSON({type:'FeatureCollection',features},{interactive:true,style:feature=>({fillColor:color(counts.get(M.norm(nameOf(feature)))||0),color:'#fff',weight:1.4,fillOpacity:.95}),onEachFeature:(feature,shape)=>{
         const name=nameOf(feature),n=counts.get(M.norm(name))||0,tip=make('div',null,'dash-map-tip');tip.append(make('strong',name),make('span',`${fmt(n)} registros · ${pct(n,total)}`));shape.bindTooltip(tip,{sticky:true,className:'dash-region-tooltip',opacity:1});
         const show=()=>{shape.setStyle({weight:3,color:'#274c55'});info.textContent=`${name} · ${fmt(n)} registros · ${pct(n,total)} del total seleccionado`;};
@@ -115,14 +118,25 @@
         };
         shape.on('click',select);shape.on('mouseover',show);shape.on('mouseout',hide);
         shape.on('add',()=>{const path=shape.getElement();if(path){path.setAttribute('tabindex','0');path.setAttribute('role','button');path.setAttribute('aria-label',`${name}: ${n} registros, ${pct(n,total)}. Explorar ${level==='department'?'provincias':level==='province'?'distritos':'distrito'}`);path.style.pointerEvents='auto';path.addEventListener('focus',()=>{show();shape.openTooltip(shape.getBounds().getCenter());});path.addEventListener('blur',hide);path.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}});}});
-        const label=make('div',null,'dash-territory-label');label.append(make('span',name),make('strong',pct(n,total)));
-        L.marker(shape.getBounds().getCenter(),{interactive:false,keyboard:false,icon:L.divIcon({className:'dash-territory-marker',html:label,iconSize:[86,34],iconAnchor:[43,17]})}).addTo(layer);
+        if(labelNames.has(M.norm(name))){
+          const label=make('div',null,'dash-territory-label');label.append(make('span',name),make('strong',pct(n,total)));
+          const marker=L.marker(shape.getBounds().getCenter(),{interactive:false,keyboard:false,icon:L.divIcon({className:'dash-territory-marker',html:label,iconSize:[86,34],iconAnchor:[43,17]})}).addTo(layer);
+          mapLabels.push({marker,label,count:n});
+        }
       }}).addTo(layer);
+      // Keep the largest values first and hide labels that would overlap at this zoom.
+      const arrangeLabels=()=>{const occupied=[];for(const item of mapLabels.sort((a,b)=>b.count-a.count)){
+        const element=item.marker.getElement();if(!element)continue;element.style.visibility='visible';
+        const range=document.createRange();range.selectNodeContents(item.label);const rect=range.getBoundingClientRect();const overlaps=occupied.some(r=>rect.left<r.right+8&&rect.right>r.left-8&&rect.top<r.bottom+8&&rect.bottom>r.top-8);
+        element.style.visibility=overlaps?'hidden':'visible';if(!overlaps)occupied.push(rect);
+      }};
+      map.on('moveend zoomend resize',arrangeLabels);layer.on('remove',()=>map.off('moveend zoomend resize',arrangeLabels));
       map.invalidateSize({pan:false});
       const bounds=f.district&&level==='district'?L.geoJSON(features.filter(x=>M.norm(nameOf(x))===M.norm(f.district))).getBounds():geoLayer.getBounds();
       if(bounds.isValid())map.fitBounds(bounds,{padding:[30,30],maxZoom:level==='department'?6:level==='province'?10:14,animate:true,duration:.5});
+      arrangeLabels();
       const recognized=new Set(features.map(x=>M.norm(nameOf(x)))),located=filtered.filter(r=>recognized.has(M.norm(M.geo(r)[level]))).length;
-      $('[data-map-note]').textContent=`${fmt(located)} de ${fmt(total)} registros ubicados en este nivel. ${fmt(total-located)} sin ubicación cartográfica reconocida. Porcentajes sobre el total filtrado; los colores indican participación, no riesgo.`;
+      $('[data-map-note]').textContent=`${fmt(located)} de ${fmt(total)} registros ubicados en este nivel. ${fmt(total-located)} sin ubicación cartográfica reconocida. Se destacan los porcentajes más altos sin superponer etiquetas. Pase el cursor o pulse un territorio para ver su detalle. Porcentajes sobre el total filtrado; los colores indican participación, no riesgo.`;
       if(!features.length)info.textContent='No hay cartografía disponible para esta selección. Use Volver para cambiar de territorio.';
     }catch(e){if(version===mapTurn)$('[data-map-note]').textContent=e.message;}
   }
