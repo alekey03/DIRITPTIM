@@ -1,5 +1,5 @@
 (() => {
-  const catalog = [{tipo:'prostitucion',titulo:'Persona registrada',descripcion:'Edad, género y nacionalidad según el formato actualizado',campos:window.PROSTITUCION_CATALOGO.campos}];
+  const catalog = [{tipo:'prostitucion',titulo:'Persona registrada',descripcion:'Nombres, apellidos, documento y datos de la persona',campos:window.PROSTITUCION_CATALOGO.campos}];
   const $ = id => document.getElementById(id);
   const form=$('prostitucionForm'), inputs=$('prostitucionInputs'), status=$('prostitucionStatus'), list=$('prostitucionRecords');
   let context=null, bridge=null, readOnly=true, busy=false, dirty=false, epoch=0, shown=25, editing=null, selected=null, retry=null;

@@ -1,5 +1,5 @@
 window.PROSTITUCION_CATALOGO = {
-  "version": 2,
+  "version": 3,
   "hoja": "20_PROXENETISMO",
   "campos": [
     {
@@ -14,6 +14,51 @@ window.PROSTITUCION_CATALOGO = {
       "label": "Hora de intervención",
       "type": "time",
       "group": "hecho",
+      "required": false
+    },
+    {
+      "key": "apellido_paterno",
+      "label": "Apellido paterno",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "apellido_materno",
+      "label": "Apellido materno",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "nombres",
+      "label": "Nombres",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "tipo_documento",
+      "label": "Tipo de documento",
+      "type": "text",
+      "group": "identidad",
+      "required": false,
+      "options": [
+        "DNI",
+        "CARNET DE EXTRANJERIA",
+        "CEDULA DE IDENTIDAD",
+        "SDPV",
+        "SALVO CONDUCTO",
+        "LAISER PASSER",
+        "PTP(PERMISO TEMPORAL PERMANENCIA)",
+        "PASAPORTE"
+      ]
+    },
+    {
+      "key": "numero_documento",
+      "label": "Número de documento",
+      "type": "text",
+      "group": "identidad",
       "required": false
     },
     {
@@ -332,51 +377,5 @@ window.PROSTITUCION_CATALOGO = {
     "Número de documento conservado como texto, incluidos ceros iniciales.",
     "Sin fotografías. Edad según TOTAL_EDAD de la plantilla: 2 a 100."
   ],
-  "camposHistoricos": [
-    {
-      "key": "apellido_paterno",
-      "label": "Apellido paterno",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    },
-    {
-      "key": "apellido_materno",
-      "label": "Apellido materno",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    },
-    {
-      "key": "nombres",
-      "label": "Nombres",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    },
-    {
-      "key": "tipo_documento",
-      "label": "Tipo de documento",
-      "type": "text",
-      "group": "identidad",
-      "required": false,
-      "options": [
-        "DNI",
-        "CARNET DE EXTRANJERIA",
-        "CEDULA DE IDENTIDAD",
-        "SDPV",
-        "SALVO CONDUCTO",
-        "LAISER PASSER",
-        "PTP(PERMISO TEMPORAL PERMANENCIA)",
-        "PASAPORTE"
-      ]
-    },
-    {
-      "key": "numero_documento",
-      "label": "Número de documento",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    }
-  ]
+  "camposHistoricos": []
 };

@@ -91,6 +91,15 @@ window.initializeDetaineeForm = function initializeDetaineeForm() {
   if (!crimeList.children.length) addCrimeRow();
 };
 
+function lockDetaineeNote(locked) {
+  const input = detaineeForm.elements.namedItem('notaSicpip');
+  input.readOnly = locked;
+  input.title = locked ? 'La NI pertenece al operativo. Se modifica desde el operativo.' : '';
+  let hint = document.getElementById('detaineeNoteHint');
+  if (!hint) { hint = document.createElement('small'); hint.id = 'detaineeNoteHint'; input.after(hint); }
+  hint.textContent = locked ? 'NI del operativo · no editable en el detenido.' : '';
+}
+
 async function saveDetainee(event) {
   event.preventDefault();
   const status = document.getElementById('detaineeStatus');
@@ -119,7 +128,7 @@ async function saveDetainee(event) {
       es_funcionario_publico: detaineeValue('esFuncionario') === 'true', entidad_publica: detaineeValue('esFuncionario') === 'true' ? nullable(detaineeValue('entidadPublica')) : null, detalle_entidad_publica: detaineeValue('esFuncionario') === 'true' ? nullable(detaineeValue('detalleEntidad')) : null, motivo_detencion: nullable(detaineeValue('motivoDetencion')),
       direccion_policial: nullable(detaineeValue('direccionPolicial')), direccion_especializada_region: nullable(detaineeValue('direccionRegion')), division_policial: nullable(detaineeValue('divisionPolicial')), departamento_policial: nullable(detaineeValue('departamentoPolicial')), unidad_area_equipo: nullable(detaineeValue('unidadArea')),
       integra_organizacion: belongsToOrganization, tipo_organizacion: belongsToOrganization ? organizationType : null, rol_organizacion: nullable(organizationRole), nombre_organizacion: nullable(organizationName), situacion_actual: nullable(detaineeValue('situacionActual')), documento_libertad: nullable(detaineeValue('documentoLibertad')), documento_disposicion: nullable(detaineeValue('documentoDisposicion')),
-      fiscal_nombre: nullable(detaineeValue('fiscalNombre')), fiscalia: nullable(detaineeValue('fiscalia')), disposicion_direccion: nullable(detaineeValue('disposicionDireccion')), disposicion_region: nullable(detaineeValue('disposicionRegion')), disposicion_division: nullable(detaineeValue('disposicionDivision')), disposicion_departamento: nullable(detaineeValue('disposicionDepartamento')), disposicion_unidad: nullable(detaineeValue('disposicionUnidad')), nota_sicpip: nullable(detaineeValue('notaSicpip')),
+      fiscal_nombre: nullable(detaineeValue('fiscalNombre')), fiscalia: nullable(detaineeValue('fiscalia')), disposicion_direccion: nullable(detaineeValue('disposicionDireccion')), disposicion_region: nullable(detaineeValue('disposicionRegion')), disposicion_division: nullable(detaineeValue('disposicionDivision')), disposicion_departamento: nullable(detaineeValue('disposicionDepartamento')), disposicion_unidad: nullable(detaineeValue('disposicionUnidad')), nota_sicpip: linkedOperativo ? linkedOperativo.nota_sicpip : selectedDetainee?.intervencion_id ? selectedDetainee.nota_sicpip : nullable(detaineeValue('notaSicpip')),
       departamento_registro: currentProfile.departamento, unidad: currentProfile.unidad, creado_por: currentProfile.id
     };
 
@@ -194,14 +203,22 @@ async function openDetaineeRecord(id) {
   document.getElementById('deleteDetaineeButton').classList.toggle('hidden-control', !isDetaineeAdmin());
 }
 
-function beginDetaineeEdit() {
+async function beginDetaineeEdit() {
   if (!selectedDetainee || !isDetaineeAdmin()) return;
+  if (selectedDetainee.intervencion_id) {
+    const record = selectedDetainee;
+    const { data: parent, error } = await supabaseClient.from('intervenciones').select('nota_sicpip').eq('id', record.intervencion_id).single();
+    if (selectedDetainee !== record || !currentProfile?.activo) return;
+    if (error || !parent) return alert('No se pudo consultar la NI del operativo. Vuelva a abrir el registro.');
+    record.nota_sicpip = parent.nota_sicpip;
+  }
   const reason = prompt('Indique el motivo de la modificación. Este texto quedará guardado en Auditoría:');
   if (!reason?.trim()) return alert('El motivo es obligatorio para editar un detenido.');
   window.clearDetaineeOperativo?.();
   editingDetaineeId = selectedDetainee.id; editingDetaineeReason = reason.trim(); const p = selectedDetainee.personas || {}; const weapon = selectedDetainee.detencion_armas?.[0] || {};
   const values = { apellidoPaterno:p.apellido_paterno,apellidoMaterno:p.apellido_materno,nombres:p.nombres,edad:p.edad,genero:p.genero,nacionalidad:p.nacionalidad,tipoDocumento:p.tipo_documento,numeroDocumento:p.numero_documento,fecha:selectedDetainee.fecha,hora:selectedDetainee.hora,motivoDetencion:selectedDetainee.motivo_detencion,esFuncionario:String(Boolean(selectedDetainee.es_funcionario_publico)),entidadPublica:selectedDetainee.entidad_publica,detalleEntidad:selectedDetainee.detalle_entidad_publica,direccionPolicial:selectedDetainee.direccion_policial,direccionRegion:selectedDetainee.direccion_especializada_region,divisionPolicial:selectedDetainee.division_policial,departamentoPolicial:selectedDetainee.departamento_policial,unidadArea:selectedDetainee.unidad_area_equipo,integraOrganizacion:selectedDetainee.integra_organizacion ? (selectedDetainee.tipo_organizacion || '') : 'false',rolOrganizacion:selectedDetainee.rol_organizacion,nombreOrganizacion:selectedDetainee.nombre_organizacion,armaCategoria:weapon.categoria,armaTipo:weapon.tipo,armaCantidad:weapon.cantidad||1,armaObservacion:weapon.observacion,situacionActual:selectedDetainee.situacion_actual,documentoLibertad:selectedDetainee.documento_libertad,documentoDisposicion:selectedDetainee.documento_disposicion,fiscalNombre:selectedDetainee.fiscal_nombre,fiscalia:selectedDetainee.fiscalia,disposicionDireccion:selectedDetainee.disposicion_direccion,disposicionRegion:selectedDetainee.disposicion_region,disposicionDivision:selectedDetainee.disposicion_division,disposicionDepartamento:selectedDetainee.disposicion_departamento,disposicionUnidad:selectedDetainee.disposicion_unidad,notaSicpip:selectedDetainee.nota_sicpip};
   Object.entries(values).forEach(([name,value]) => setDetaineeField(name,value));
+  lockDetaineeNote(Boolean(selectedDetainee.intervencion_id));
   syncDetaineePublicEntity();
   window.setDetaineeDependencies?.({ departamento:p.departamento,provincia:p.provincia,distrito:p.distrito,direccion_policial:selectedDetainee.direccion_policial,direccion_especializada_region:selectedDetainee.direccion_especializada_region,division_policial:selectedDetainee.division_policial,departamento_policial:selectedDetainee.departamento_policial,unidad_area_equipo:selectedDetainee.unidad_area_equipo,disposicion_direccion:selectedDetainee.disposicion_direccion,disposicion_region:selectedDetainee.disposicion_region,disposicion_division:selectedDetainee.disposicion_division,disposicion_departamento:selectedDetainee.disposicion_departamento,disposicion_unidad:selectedDetainee.disposicion_unidad,integra_organizacion:selectedDetainee.integra_organizacion,tipo_organizacion:selectedDetainee.tipo_organizacion,rol_organizacion:selectedDetainee.rol_organizacion,nombre_organizacion:selectedDetainee.nombre_organizacion,arma_categoria:weapon.categoria,arma_tipo:weapon.tipo });
   crimeList.innerHTML=''; (selectedDetainee.detencion_delitos?.length ? selectedDetainee.detencion_delitos.sort((a,b)=>a.orden-b.orden) : [{}]).forEach(addCrimeRow);
@@ -273,7 +290,7 @@ window.initializeDetaineeForm();
   const standalone=document.getElementById('detaineeFormView');
   const inline=document.createElement('div');inline.id='inlineDetaineeHost';inline.className='detainee-view';inline.hidden=true;document.getElementById('linkedDetaineesPanel').append(inline);
   function unmount(){if(!inline.hidden){standalone.append(...inline.childNodes);inline.hidden=true;}document.getElementById('addLinkedDetainee').hidden=false;}
-  window.clearDetaineeOperativo = () => { operativo = null; banner.hidden = true; unmount(); };
+  window.clearDetaineeOperativo = () => { operativo = null; banner.hidden = true; lockDetaineeNote(false); unmount(); };
   window.DetaineeInline={get dirty(){return !inline.hidden&&changed;},get busy(){return !inline.hidden&&saving;},discard(){return !this.busy&&(!this.dirty||confirm('Hay un detenido sin guardar. ¿Desea descartar sus cambios?'));},close(){if(!inline.hidden)window.resetDetaineeWorkflow();}};
   detaineeForm.addEventListener('input', () => { changed = true; });
   detaineeForm.addEventListener('change', () => { changed = true; });
@@ -300,7 +317,7 @@ window.initializeDetaineeForm();
     window.resetDetaineeWorkflow(); operativo = { ...record }; banner.hidden = false;
     document.getElementById('detaineeOperativoLabel').textContent = `${record.fecha?.split('-').reverse().join('/')} · ${record.unidad}`;
     setDetaineeField('fecha', record.fecha); setDetaineeField('hora', record.hora);
-    setDetaineeField('notaSicpip', record.nota_sicpip); setDetaineeField('unidadArea', record.unidad_area_equipo);
+    setDetaineeField('notaSicpip', record.nota_sicpip); lockDetaineeNote(true); setDetaineeField('unidadArea', record.unidad_area_equipo);
     window.setDetaineeDependencies?.({ direccion_policial: record.direccion_policial, direccion_especializada_region: record.direccion_especializada_region, division_policial: record.division_policial, departamento_policial: record.departamento_policial, unidad_area_equipo: record.unidad_area_equipo });
     detaineeForm.querySelectorAll('.profile-registration-department').forEach(input => { input.value = record.departamento_registro; });
     detaineeForm.querySelectorAll('.profile-registration-area').forEach(input => { input.value = record.unidad; });

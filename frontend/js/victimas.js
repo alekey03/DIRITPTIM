@@ -1,5 +1,5 @@
 (() => {
-  const catalog = [{tipo:'victima',titulo:'Víctima de trata',descripcion:'Edad, género y nacionalidad según el formato actualizado',campos:window.VICTIMAS_CATALOGO.campos}];
+  const catalog = [{tipo:'victima',titulo:'Víctima de trata',descripcion:'Nombres, apellidos, documento y datos de la persona',campos:window.VICTIMAS_CATALOGO.campos}];
   const $ = id => document.getElementById(id);
   const form=$('victimForm'), inputs=$('victimInputs'), status=$('victimStatus'), list=$('victimRecords');
   let context=null, bridge=null, readOnly=true, busy=false, dirty=false, epoch=0, shown=25, editing=null, selected=null, retry=null;

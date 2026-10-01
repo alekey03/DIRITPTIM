@@ -1,5 +1,5 @@
 window.VICTIMAS_CATALOGO = {
-  "version": 2,
+  "version": 3,
   "hoja": "21_ VICTIMAS DE TRATA DE PERSON",
   "campos": [
     {
@@ -15,6 +15,44 @@ window.VICTIMAS_CATALOGO = {
       "type": "time",
       "group": "hecho",
       "required": false
+    },
+    {
+      "key": "apellido_paterno",
+      "label": "Apellido paterno",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "apellido_materno",
+      "label": "Apellido materno",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "nombres",
+      "label": "Nombres",
+      "type": "text",
+      "group": "identidad",
+      "required": false
+    },
+    {
+      "key": "tipo_documento",
+      "label": "Tipo de documento",
+      "type": "text",
+      "group": "identidad",
+      "required": false,
+      "options": [
+        "DNI",
+        "CARNET DE EXTRANJERIA",
+        "CEDULA DE IDENTIDAD",
+        "SDPV",
+        "SALVO CONDUCTO",
+        "LAISER PASSER",
+        "PTP(PERMISO TEMPORAL PERMANENCIA)",
+        "PASAPORTE"
+      ]
     },
     {
       "key": "edad",
@@ -295,6 +333,13 @@ window.VICTIMAS_CATALOGO = {
         "ZAMBIA",
         "ZIMBABWE"
       ]
+    },
+    {
+      "key": "numero_documento",
+      "label": "Número de documento",
+      "type": "text",
+      "group": "identidad",
+      "required": false
     }
   ],
   "columnas": {
@@ -335,27 +380,6 @@ window.VICTIMAS_CATALOGO = {
   ],
   "camposHistoricos": [
     {
-      "key": "apellido_paterno",
-      "label": "Apellido paterno",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    },
-    {
-      "key": "apellido_materno",
-      "label": "Apellido materno",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    },
-    {
-      "key": "nombres",
-      "label": "Nombres",
-      "type": "text",
-      "group": "identidad",
-      "required": false
-    },
-    {
       "key": "condicion_edad",
       "label": "Condición de edad",
       "type": "text",
@@ -380,23 +404,6 @@ window.VICTIMAS_CATALOGO = {
       "type": "text",
       "group": "proteccion",
       "required": false
-    },
-    {
-      "key": "tipo_documento",
-      "label": "Tipo de documento",
-      "type": "text",
-      "group": "identidad",
-      "required": false,
-      "options": [
-        "DNI",
-        "CARNET DE EXTRANJERIA",
-        "CEDULA DE IDENTIDAD",
-        "SDPV",
-        "SALVO CONDUCTO",
-        "LAISER PASSER",
-        "PTP(PERMISO TEMPORAL PERMANENCIA)",
-        "PASAPORTE"
-      ]
     }
   ]
 };
