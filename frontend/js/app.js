@@ -738,7 +738,9 @@ document.getElementById('loginForm').addEventListener('submit', async event => {
     return;
   }
 
+  if (!window.IdleSession.start(data.user.id, true, expireIdleSession)) return;
   const profileLoaded = await loadCurrentProfile(data.user.id);
+  if (!window.IdleSession.check()) { currentProfile = null; return; }
   if (!profileLoaded) {
     await supabaseClient.auth.signOut();
     loginError.textContent = profileLoadFailure || 'La cuenta no tiene un perfil activo autorizado.';
@@ -758,9 +760,24 @@ document.getElementById('togglePassword').addEventListener('click', event => {
   event.currentTarget.textContent = visible ? 'Ver' : 'Ocultar';
 });
 
+function expireIdleSession() {
+  currentProfile = null;
+  loginScreen.classList.remove('hidden');
+  document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
+  window.clearProtectedCatalogs?.();
+  resetMainView();
+  loginError.textContent = 'Su sesión se cerró tras 30 minutos de inactividad. Inicie sesión nuevamente.';
+  loginError.classList.add('show');
+  // Lock the UI immediately, including when the network is unavailable.
+  // The persisted expired marker prevents automatic restoration after reload.
+  loginButton.disabled = true;
+  void supabaseClient.auth.signOut({ scope: 'local' }).catch(() => {}).finally(() => { loginButton.disabled = false; });
+}
+
 window.signOutAccount = async () => {
   const {error}=await supabaseClient.auth.signOut();
   if(error){alert('No se pudo cerrar sesión. Compruebe su conexión y vuelva a intentarlo.');return;}
+  window.IdleSession.stop();
   currentProfile = null;
   window.clearProtectedCatalogs?.();
   resetMainView();
@@ -769,7 +786,9 @@ window.signOutAccount = async () => {
 
 supabaseClient.auth.getSession().then(({ data }) => {
   if (!data.session) return;
+  if (!window.IdleSession.start(data.session.user.id, false, expireIdleSession)) return;
   loadCurrentProfile(data.session.user.id).then(profileLoaded => {
+    if (!window.IdleSession.check()) { currentProfile = null; return; }
     if (profileLoaded) {
       resetMainView();
       loginScreen.classList.add('hidden');
