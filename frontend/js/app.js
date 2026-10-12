@@ -721,21 +721,28 @@ document.getElementById('loginForm').addEventListener('submit', async event => {
   if (!username || username === 'admin' || username === 'administrador') {
     loginError.textContent = 'Usuario o contraseña incorrectos.';
     loginError.classList.add('show');
-    loginButton.disabled = false;
+    window.TurnstileLogin?.update();
     loginButton.textContent = 'Ingresar al sistema';
     return;
   }
-  const accountUsername = username === 'amejia' ? 'administrador' : username;
-  const email = `${accountUsername}@mejia.local`;
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-  loginButton.disabled = false;
-  loginButton.textContent = 'Ingresar al sistema';
-
-  if (error) {
-    loginError.textContent = 'Usuario o contraseña incorrectos.';
+  let data;
+  try {
+    if (!window.TurnstileLogin) throw new Error('No se pudo cargar la verificación de seguridad. Recarga la página.');
+    const result = await window.TurnstileLogin.signIn(supabaseClient, username, password);
+    if (result.error) throw new Error(result.error.code === 'captcha_failed'
+      ? 'La verificación de seguridad venció o no es válida. Inténtalo nuevamente.'
+      : result.error.status === 429 ? 'Demasiados intentos. Espera unos minutos.'
+      : 'Usuario o contraseña incorrectos.');
+    if (!result.data?.user) throw new Error('No se pudo confirmar la sesión. Inténtalo nuevamente.');
+    data = result.data;
+  } catch (error) {
+    loginError.textContent = error.name === 'TimeoutError' || error.name === 'TypeError'
+      ? 'No se pudo conectar. Revisa tu conexión e inténtalo nuevamente.' : error.message;
     loginError.classList.add('show');
     return;
+  } finally {
+    loginButton.textContent = 'Ingresar al sistema';
+    window.TurnstileLogin?.update();
   }
 
   if (!window.IdleSession.start(data.user.id, true, expireIdleSession)) return;
@@ -771,13 +778,14 @@ function expireIdleSession() {
   // Lock the UI immediately, including when the network is unavailable.
   // The persisted expired marker prevents automatic restoration after reload.
   loginButton.disabled = true;
-  void supabaseClient.auth.signOut({ scope: 'local' }).catch(() => {}).finally(() => { loginButton.disabled = false; });
+  void supabaseClient.auth.signOut({ scope: 'local' }).catch(() => {}).finally(() => { window.TurnstileLogin?.reset(); });
 }
 
 window.signOutAccount = async () => {
   const {error}=await supabaseClient.auth.signOut();
   if(error){alert('No se pudo cerrar sesión. Compruebe su conexión y vuelva a intentarlo.');return;}
   window.IdleSession.stop();
+  window.TurnstileLogin?.reset();
   currentProfile = null;
   window.clearProtectedCatalogs?.();
   resetMainView();
