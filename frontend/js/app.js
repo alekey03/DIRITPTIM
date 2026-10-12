@@ -490,7 +490,7 @@ async function loadCurrentProfile(userId) {
   document.querySelectorAll('.profile-registration-department').forEach(input => { input.defaultValue = input.value = data.departamento || 'SIN ASIGNAR'; });
   document.querySelectorAll('.profile-registration-area').forEach(input => { input.defaultValue = input.value = data.unidad || 'SIN ASIGNAR'; });
   document.querySelector('.avatar').textContent = data.nombres.slice(0, 1).toUpperCase() + data.apellidos.slice(0, 1).toUpperCase();
-  document.title = `${assignedScope} | DIRITPTIM`;
+  document.title = 'DIRITPTIM Estadistica';
   return true;
 }
 
