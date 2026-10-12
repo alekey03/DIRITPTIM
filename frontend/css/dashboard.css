@@ -32,3 +32,10 @@
 .dash-filter-panel{border-color:#d6e7dc}.dash-filter-panel select,.dash-filter-panel input{background:#f6fbf7}
 
 .dash-kpis article{background:linear-gradient(135deg,#e2f3e8,#f9fcfa);border-color:#cae4d4}.dash-text-button{color:#367358}.dash-category-label select{background:#edf8ef;border-color:#bad8c4;color:#28563c}
+
+/* Analytical charts: scoped away from the main summary and map. */
+.dash-chart-switch{display:flex;gap:4px;justify-content:flex-end;margin:0 0 12px}.dash-chart-switch button{border:1px solid #d8e2ec;background:#f4f7fa;color:#526d82;border-radius:7px;padding:6px 12px;font-size:11px}.dash-chart-switch button[aria-pressed="true"]{background:#345b78;color:white;border-color:#345b78}
+.dash-ring-chart{width:180px;max-width:48%;flex-shrink:0}.dash-donut-legend>div{display:flex;align-items:center;gap:8px;padding:10px 0;font-size:11px}.dash-donut-legend>div i{width:9px;height:9px;flex-shrink:0;border-radius:3px}.dash-donut-legend>div strong{margin-left:auto}
+[data-profile] .dash-bar-track,[data-units] .dash-bar-track{height:12px;border-radius:5px;background:#edf2f6}[data-profile] .dash-bar-track i,[data-units] .dash-bar-track i{height:12px;background:linear-gradient(90deg,#345f85,#69a5b7);border-radius:5px}
+.executive-dashboard [data-profile] .dash-bar-row:nth-of-type(3n) .dash-bar-track i,.executive-dashboard [data-units] .dash-bar-row:nth-of-type(3n) .dash-bar-track i{background:linear-gradient(90deg,#a98a4d,#d4b97d)!important}.executive-dashboard [data-profile] .dash-bar-row:nth-of-type(3n + 2) .dash-bar-track i,.executive-dashboard [data-units] .dash-bar-row:nth-of-type(3n + 2) .dash-bar-track i{background:linear-gradient(90deg,#477f7f,#80b5ab)!important}
+@media(max-width:600px){.dash-ring-chart{width:150px}.dash-donut-wrap{gap:12px}.dash-donut-legend{min-width:150px}.dash-chart-switch{justify-content:flex-start}}

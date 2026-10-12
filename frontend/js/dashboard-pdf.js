@@ -24,7 +24,7 @@
       .dash-donut-wrap{display:flex;gap:22px;align-items:center}.dash-donut{width:135px;height:135px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}.dash-donut>div{width:98px;height:98px;background:white;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}.dash-donut strong{font-size:23px}.dash-donut-legend>div{display:flex;gap:8px;margin:12px 0}.dash-donut-legend i{width:9px;height:9px;display:inline-block}.dash-currency{display:flex;justify-content:space-between;padding:10px}
       .report-map{width:100%;height:310px}.dash-map-legend{display:flex;flex-wrap:wrap;gap:8px;font-size:10px}.dash-map-legend i{display:inline-block;width:10px;height:10px;margin-right:3px}.dash-map-hover{font-size:11px}.dash-territory-label{font-size:10px}
       footer{border-top:1px solid #ccd7df;margin-top:20px;padding-top:10px;color:#607080;font-size:10px}
-      @media print{body{margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.report-controls{display:none}#dashTerritory,#dashProfile{break-before:page}h3,header{break-after:avoid}}
+      @media print{body{margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.report-controls{display:none}.report-analysis{break-before:page}h3,header{break-after:avoid}}
       @media screen and (max-width:700px){body{margin:12px}.dash-overview-grid,.dash-territory-grid,.dash-profile-grid{grid-template-columns:1fr}}
     `;
     const controls=add('div',null);controls.className='report-controls';
@@ -38,7 +38,7 @@
     for(const source of root.querySelectorAll(':scope > .dash-section')){
       const clone=source.cloneNode(true);
       clone.querySelectorAll('button').forEach(b=>{if(b.matches('.dash-bar-row,.dash-donut-legend button')){const div=d.createElement('div');div.className=b.className;div.append(...b.childNodes);b.replaceWith(div);}else b.remove();});
-      clone.querySelectorAll('.dash-toggle,.dash-badge').forEach(e=>e.remove());
+      clone.querySelectorAll('.dash-toggle,.dash-chart-switch,.dash-badge').forEach(e=>e.remove());
       const map=clone.querySelector('.dash-map');
       if(map){
         const original=source.querySelector('.dash-map svg');
@@ -59,6 +59,15 @@
       clone.querySelectorAll('p').forEach(p=>{p.textContent=p.textContent.replace('Toque una región para filtrar. Pase el cursor para ver su participación.','Participación territorial de los registros seleccionados.').replace('Seleccione una categoría del gráfico para filtrar.','Distribución de los registros seleccionados.').replace('Seleccione un territorio para explorar.','').replace('Se destacan los porcentajes más altos sin superponer etiquetas. Pase el cursor o pulse un territorio para ver su detalle.','Se destacan los porcentajes más altos.');});
       d.body.append(clone);
     }
+    const analysis=add('section',null);analysis.className='report-analysis';
+    const overview=d.querySelector('.dash-overview-grid'),profile=d.getElementById('dashProfile'),units=d.querySelector('.dash-units');
+    if(overview)analysis.append(overview);if(units)analysis.append(units);if(profile)analysis.append(profile);
+    const extra=add('style',null,d.head);extra.textContent=`
+      .dash-ring-chart{width:160px;max-width:45%;flex-shrink:0}.dash-donut-legend{flex:1}.dash-donut-legend strong{margin-left:auto}.dash-bar-track{height:10px}.dash-bar-track i{height:10px;background:#427e9d}.dash-bar-row:nth-of-type(3n) .dash-bar-track i{background:#b79b5c}.dash-bar-row:nth-of-type(3n + 2) .dash-bar-track i{background:#57958f}
+      .report-analysis{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}.report-analysis>.dash-overview-grid{display:block}.report-analysis .dash-brief{margin-top:10px}.report-analysis>#dashProfile{grid-column:1/-1}.report-analysis .dash-profile-grid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}.report-analysis .dash-section{margin:0}
+      @media print{@page{margin:9mm}body{font-size:10px}.report-head{margin-bottom:10px;padding-bottom:6px}.report-head p{margin:4px 0}.report-head h1{font-size:22px}.dash-section{margin:10px 0}.dash-section-heading{margin-bottom:6px}article{padding:10px}.dash-kpi{padding:10px}.dash-kpi strong{font-size:24px;margin-top:4px}.dash-territory-grid{margin-top:8px}.report-map{height:275px}.dash-bar-row{margin:7px 0;gap:3px}h3{font-size:13px;margin:6px 0}.report-analysis{gap:10px}.report-analysis .dash-profile-grid{gap:10px;margin-top:6px}.report-analysis .dash-donut-wrap{gap:8px;flex-wrap:wrap}.report-analysis .dash-ring-chart{width:110px;max-width:42%}.report-analysis .dash-donut-legend>div{margin:6px 0}.report-analysis .dash-brief>div{display:flex;gap:12px;flex-wrap:wrap}.report-analysis .dash-brief>div>div{flex:1;min-width:110px}.report-analysis .dash-brief p{margin:4px 0;font-size:9px}.report-analysis .dash-overview-grid{margin-top:0}.report-analysis .dash-footnote{font-size:8px}.report-analysis .dash-profile-grid article{break-inside:avoid}footer{font-size:8px}}
+      @media screen and (max-width:700px){.report-analysis{grid-template-columns:1fr}.report-analysis .dash-profile-grid{grid-template-columns:1fr}}
+    `;
     add('footer','Fuente: registros del sistema DIRITPTIM, según filtros y permisos de la cuenta. Incluye registros guardados y borradores. Los porcentajes representan participación, no tasas de criminalidad.');
 
     return report;
