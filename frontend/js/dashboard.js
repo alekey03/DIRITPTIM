@@ -168,7 +168,7 @@
   $('form').addEventListener('change',e=>{if(e.target.name==='category'){for(const n of ['province','district'])$(`[name="${n}"]`).value='';specific();load();return;}if(e.target.name==='department'){$('[name="province"]').value='';$('[name="district"]').value='';}if(e.target.name==='province')$('[name="district"]').value='';if(['department','province'].includes(e.target.name))geographic();apply();});
   $('[data-export-pdf]').addEventListener('click',()=>{
     if(!loaded||identity()!==loadedIdentity||!currentProfile?.activo)return;
-    try { if($('[data-export-pdf]').disabled)return; window.exportDashboardReport(root,cat().title); }
+    try { if($('[data-export-pdf]').disabled)return; window.openDashboardExport(root,cat().id); }
     catch(e){$('.dash-status').textContent=`No se pudo preparar el PDF. ${e.message||'Intente nuevamente.'}`;}
   });
   $('[data-refresh]').addEventListener('click',load);
