@@ -6,7 +6,7 @@
   const identity=()=>JSON.stringify([currentProfile?.id,currentProfile?.rol,currentProfile?.unidad,currentProfile?.activo]);
   root.classList.add('executive-dashboard');
   root.innerHTML=`
-  <header class="dash-hero"><div class="dash-orbit" aria-hidden="true"></div><div class="dash-hero-copy"><span class="dash-eyebrow">ESTADISTICA DIRITPTIM</span><h2>Producción en perspectiva</h2><p>Del resultado operativo a una visión para decidir.</p><div class="dash-access"><span aria-hidden="true">●</span><span data-scope></span></div></div><div class="dash-hero-actions records-toolbar"><button type="button" class="secondary" data-refresh>↻ Actualizar datos</button><small data-updated>Consulta según permisos de su cuenta</small></div></header>
+  <header class="dash-hero"><div class="dash-orbit" aria-hidden="true"></div><div class="dash-hero-copy"><span class="dash-eyebrow">ESTADISTICA DIRITPTIM</span><h2>Producción en perspectiva</h2><p>Del resultado operativo a una visión para decidir.</p><div class="dash-access"><span aria-hidden="true">●</span><span data-scope></span></div></div><div class="dash-hero-actions records-toolbar"><button type="button" class="secondary" data-export-pdf disabled>⇩ Exportar resumen PDF</button><button type="button" class="secondary" data-refresh>↻ Actualizar datos</button><small data-updated>Consulta según permisos de su cuenta</small></div></header>
   <nav class="dash-section-nav" aria-label="Secciones del dashboard"><a href="#dashOverview">01 / Panorama</a><a href="#dashTerritory">02 / Territorio</a><a href="#dashProfile">03 / Composición</a><span>Datos guardados · incluye borradores</span></nav>
   <form class="dash-filter-panel" aria-label="Filtros del dashboard"><div class="dash-filter-heading"><div><span class="dash-eyebrow">EXPLORAR PRODUCCIÓN</span><h3>¿Qué resultado desea analizar?</h3></div><button class="dash-text-button" type="button" data-clear>Restablecer filtros ↺</button></div><div class="dash-filter-grid"><label class="dash-category-label">Categoría<select name="category"></select></label><label>Desde<input name="from" type="date"></label><label>Hasta<input name="to" type="date"></label><label>Dependencia<select name="unit"><option value="">Todas las autorizadas</option></select></label></div><div class="dash-location-heading">Lugar de intervención <small>Seleccione un territorio para profundizar</small></div><div class="dash-filter-grid dash-geo-filters"><label>Departamento<select name="department"></select></label><label>Provincia<select name="province"></select></label><label>Distrito<select name="district"></select></label></div><div class="dash-specific" data-specific></div><div class="dash-filter-footer"><div class="dash-chips" data-chips></div><button class="primary" type="submit">Aplicar filtros</button></div></form>
   <p class="dash-status" role="status" aria-live="polite"></p>
@@ -36,7 +36,7 @@
     if(c.id==='dinero'){const select=make('select');select.name='currency';options(select,[...M.amounts.map(([value,label])=>({value,label})),{value:'dinero_otro',label:'Otra moneda'}],'Todas las monedas');select.value=old.currency||'';add('Tipo de moneda',select);host.append(make('p','Los importes se muestran por moneda; no se suman monedas diferentes.','dash-specific-note'));}
     if(!host.children.length)host.hidden=true;else host.hidden=false;
   }
-  function clearVisuals(){filtered=[];$('[data-kpis]').replaceChildren();$('[data-trend]').replaceChildren();$('[data-brief]').replaceChildren();$('[data-profile]').replaceChildren();$('[data-units]').replaceChildren();$('[data-territory-ranking]').replaceChildren();$('[data-map-note]').textContent='';if(layer){layer.remove();layer=null;}mapTurn++;$('[data-records]').disabled=true;}
+  function clearVisuals(){$('[data-export-pdf]').disabled=true;filtered=[];$('[data-kpis]').replaceChildren();$('[data-trend]').replaceChildren();$('[data-brief]').replaceChildren();$('[data-profile]').replaceChildren();$('[data-units]').replaceChildren();$('[data-territory-ranking]').replaceChildren();$('[data-map-note]').textContent='';if(layer){layer.remove();layer=null;}mapTurn++;$('[data-records]').disabled=true;}
   async function load(settings={}){
     const quiet=settings.quiet===true;
     window.loadProductionOverview?.();
@@ -145,7 +145,7 @@
     const f=filters(),c=cat();clearVisuals();
     if(f.from&&f.to&&f.from>f.to){$('.dash-status').textContent='La fecha inicial no puede ser posterior a la fecha final.';return;}
     if(f.ageMin!==undefined&&f.ageMin!==''&&f.ageMax!==''&&Number(f.ageMin)>Number(f.ageMax)){$('.dash-status').textContent='La edad mínima no puede ser mayor que la edad máxima.';return;}
-    filtered=M.filter(rows,f);chips(f);$('[data-category-title]').textContent=c.title;$('[data-records]').disabled=false;
+    filtered=M.filter(rows,f);chips(f);$('[data-export-pdf]').disabled=false;$('[data-category-title]').textContent=c.title;$('[data-records]').disabled=false;
     $('.dash-status').textContent=`${fmt(filtered.length)} de ${fmt(rows.length)} registros autorizados coinciden con su selección.${filtered.length?'':' No hay resultados con estos filtros.'}`;
     const symbols=['▤','↗','⌂','∑','∑','∑'];M.totals(filtered,c,f).forEach(([label,n],i)=>{const a=make('article',null,`dash-kpi ${i===0?'dash-kpi-main':''}`);a.append(make('span',symbols[i]||'∑','dash-kpi-icon'),make('span',label,'dash-kpi-label'),make('strong',fmt(n)));$('[data-kpis]').append(a);});
     trend(f);composition();
@@ -157,6 +157,11 @@
   }
   $('form').addEventListener('submit',e=>{e.preventDefault();apply();});
   $('form').addEventListener('change',e=>{if(e.target.name==='category'){for(const n of ['province','district'])$(`[name="${n}"]`).value='';specific();load();return;}if(e.target.name==='department'){$('[name="province"]').value='';$('[name="district"]').value='';}if(e.target.name==='province')$('[name="district"]').value='';if(['department','province'].includes(e.target.name))geographic();apply();});
+  $('[data-export-pdf]').addEventListener('click',()=>{
+    if(!loaded||identity()!==loadedIdentity||!currentProfile?.activo)return;
+    try { if($('[data-export-pdf]').disabled)return; window.exportDashboardReport(root,cat().title); }
+    catch(e){$('.dash-status').textContent=`No se pudo preparar el PDF. ${e.message||'Intente nuevamente.'}`;}
+  });
   $('[data-refresh]').addEventListener('click',load);
   $('[data-clear]').addEventListener('click',()=>{const id=cat().id;$('form').reset();$('[name="category"]').value=id;geographic();specific();apply();});
   $('[data-map-back]').addEventListener('click',()=>{if(v('province')){$('[name="province"]').value='';$('[name="district"]').value='';}else{for(const k of ['department','province','district'])$(`[name="${k}"]`).value='';}geographic();apply();});
