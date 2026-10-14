@@ -2,6 +2,7 @@
 (() => {
   const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replaceAll('_',' ').trim().toUpperCase();
   const clean=v=>String(v??'').replaceAll('_',' ').trim();
+  const distinct=values=>[...new Map(values.map(clean).filter(Boolean).map(v=>[norm(v),v])).values()].sort((a,b)=>a.localeCompare(b,'es'));
   const age=r=>r.data.edad==null||String(r.data.edad).trim()===''?null:Number.isFinite(Number(r.data.edad))?Number(r.data.edad):null;
   const ageBand=r=>age(r)==null?'Sin registrar':age(r)<18?'Menores de 18':age(r)<30?'18–29':age(r)<45?'30–44':age(r)<60?'45–59':'60 a más';
   const geo=r=>r.geography?Object.fromEntries(Object.entries(r.geography).map(([k,v])=>[k,clean(v)])):({department:clean(r.place.split(' / ')[0]),province:clean(r.place.split(' / ')[1]),district:clean(r.place.split(' / ')[2])});
@@ -40,5 +41,5 @@
     if(c.id==='dinero'&&f.currency)list=list.filter(([label])=>!['Soles (S/)','Dólares (USD)','Euros (EUR)'].includes(label)||({soles:'Soles (S/)',dolares:'Dólares (USD)',euros:'Euros (EUR)'})[f.currency]===label);
     return list;
   }
-  window.DashboardModelo={norm,clean,age,ageBand,geo,amounts,facets,filter,group,timeline,totals};
+  window.DashboardModelo={norm,clean,distinct,age,ageBand,geo,amounts,facets,filter,group,timeline,totals};
 })();

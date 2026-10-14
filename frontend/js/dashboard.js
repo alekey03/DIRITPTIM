@@ -16,13 +16,14 @@
   <section class="dash-section dash-card dash-units"><header><div><span class="dash-eyebrow">CONTRIBUCIÓN OPERATIVA</span><h3>Resultados por dependencia</h3><p>Cantidad de registros de la categoría seleccionada, no una evaluación de desempeño.</p></div></header><div data-units></div></section>
   <footer class="dash-footer"><span>DIRITPTIM · Producción policial</span><span>El alcance de los datos depende del perfil y la unidad asignada.</span></footer>`;
   const $=q=>root.querySelector(q),v=k=>$(`[name="${k}"]`).value,cat=()=>categories.find(c=>c.id===v('category'));
-  function options(select,values,placeholder){const previous=select.value;select.replaceChildren(new Option(placeholder,''),...values.map(x=>new Option(x.label??x,x.value??x)));if([...select.options].some(o=>o.value===previous))select.value=previous;}
+  function selectValue(select,value){const option=[...select.options].find(o=>o.value===value)||[...select.options].find(o=>M.norm(o.value)===M.norm(value));select.value=option?.value||'';}
+  function options(select,values,placeholder){const previous=select.value,seen=new Set();const entries=values.filter(x=>{const key=['unit','currency'].includes(select.name)?(x.value??x):M.norm(x.value??x);if(seen.has(key))return false;seen.add(key);return true;});select.replaceChildren(new Option(placeholder,''),...entries.map(x=>new Option(M.clean(x.label??x),x.value??M.clean(x))));selectValue(select,previous);}
   const groups=[['Operaciones',c=>c.table==='intervenciones'],['Personas',c=>['desaparecidos','detenidos','rq','prostitucion','victimas','menores','migraciones','personas_ubicadas','ubicadas','expulsados'].includes(c.id)],['Grupos criminales',c=>c.table==='intervencion_grupos'],['Drogas',c=>c.table==='intervencion_drogas'],['Bienes y otros resultados',()=>true]];
   const assigned=new Set();for(const [name,test]of groups){const group=make('optgroup');group.label=name;for(const c of categories)if(!assigned.has(c.id)&&test(c)){group.append(new Option(c.title,c.id));assigned.add(c.id);}if(group.children.length)$('[name="category"]').append(group);}$('[name="category"]').value='detenidos';
   function filters(){const f=Object.fromEntries(['from','to','unit','department','province','district'].map(k=>[k,v(k)]));f.facets={};for(const input of $('[data-specific]').querySelectorAll('[name]')){if(input.dataset.facet)f.facets[input.dataset.facet]=input.value;else f[input.name]=input.value;}return f;}
   function unique(key,source=rows){return [...new Set(source.map(key).map(M.clean).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));}
   function geographic(){
-    options($('[name="department"]'),[...new Set([...unique(r=>M.geo(r).department),...((window.CATALOGO_UBIGEO||[]).map(x=>x.value)),v('department')].filter(Boolean))],'Todo el territorio autorizado');
+    options($('[name="department"]'),M.distinct([...unique(r=>M.geo(r).department),...((window.CATALOGO_UBIGEO||[]).map(x=>x.value)),v('department')]),'Todo el territorio autorizado');
     const deps=rows.filter(r=>!v('department')||M.norm(M.geo(r).department)===M.norm(v('department')));
     options($('[name="province"]'),v('department')?[...new Set([...unique(r=>M.geo(r).province,deps),v('province')].filter(Boolean))]:[],'Todas las provincias');$('[name="province"]').disabled=!v('department');
     const provs=deps.filter(r=>!v('province')||M.norm(M.geo(r).province)===M.norm(v('province')));
@@ -31,7 +32,7 @@
   function specific(preserve=false){
     const old=preserve?filters():{},host=$('[data-specific]');host.replaceChildren();const c=cat();
     const add=(label,input)=>{const l=make('label',label);l.append(input);host.append(l);return input;};
-    for(const field of M.facets(c)){const select=make('select');select.name=`facet_${field.key}`;select.dataset.facet=field.key;options(select,[...unique(r=>r.data[field.key]).map(x=>({value:x,label:x})),{value:'__missing__',label:'Sin registrar'}],'Todos');select.value=old.facets?.[field.key]||'';add(field.label,select);}
+    for(const field of M.facets(c)){const select=make('select');select.name=`facet_${field.key}`;select.dataset.facet=field.key;options(select,[...unique(r=>r.data[field.key]).map(x=>({value:x,label:x})),{value:'__missing__',label:'Sin registrar'}],'Todos');selectValue(select,old.facets?.[field.key]||'');add(field.label,select);}
     if(c.fields.some(f=>f.key==='edad'))for(const [name,label]of [['ageMin','Edad desde'],['ageMax','Edad hasta']]){const input=make('input');input.type='number';input.min='0';input.max='120';input.step='1';input.name=name;input.placeholder=name==='ageMin'?'Ej. 18':'Ej. 60';input.value=old[name]||'';add(label,input);}
     if(c.id==='dinero'){const select=make('select');select.name='currency';options(select,[...M.amounts.map(([value,label])=>({value,label})),{value:'dinero_otro',label:'Otra moneda'}],'Todas las monedas');select.value=old.currency||'';add('Tipo de moneda',select);host.append(make('p','Los importes se muestran por moneda; no se suman monedas diferentes.','dash-specific-note'));}
     if(!host.children.length)host.hidden=true;else host.hidden=false;
@@ -63,7 +64,7 @@
     if(items.length>limit)host.append(make('p',`Se muestran los ${limit} principales de ${items.length} grupos. Los porcentajes usan todos los registros filtrados.`,'dash-footnote'));
   }
   function apply(){if(!$('form').reportValidity())return;render();}
-  function selectFacet(key,label){const input=$(`[data-facet="${key}"]`);if(input){input.value=label==='Sin registrar'?'__missing__':label;apply();}}
+  function selectFacet(key,label){const input=$(`[data-facet="${key}"]`);if(input){selectValue(input,label==='Sin registrar'?'__missing__':label);apply();}}
   function chips(f){const host=$('[data-chips]');host.replaceChildren();for(const input of $('form').querySelectorAll('input,select'))if(input.name!=='category'&&input.value){const label=input.closest('label')?.firstChild?.textContent||input.name,b=make('button',`${label}: ${input.selectedOptions?.[0]?.textContent||input.value} ×`,'dash-chip');b.type='button';b.addEventListener('click',()=>{input.value='';if(['department','province'].includes(input.name))geographic();apply();});host.append(b);}if(!host.children.length)host.append(make('span','Todos los registros autorizados de esta categoría.','dash-filter-hint'));}
   function trend(f){
     const host=$('[data-trend]');host.replaceChildren();const items=M.timeline(filtered,grain,f.from,f.to);
@@ -161,7 +162,7 @@
     const territories=M.group(filtered,r=>M.geo(r).department),top=territories.filter(x=>x.label!=='Sin registrar')[0],dated=filtered.filter(r=>r.date),dates=dated.map(r=>r.date).sort();
     const brief=$('[data-brief]');for(const [label,text]of [['CONCENTRACIÓN',top?`${top.label} reúne el ${pct(top.count,filtered.length)} de los registros.`:'Sin ubicación suficiente para identificar una concentración.'],['COBERTURA',`${new Set(filtered.map(r=>r.unit).filter(Boolean)).size} dependencias con registros en esta selección.`],['PERIODO OBSERVADO',dates.length?`${dates[0].slice(0,10)} al ${dates.at(-1).slice(0,10)}`:'Sin fechas registradas.']]){const d=make('div');d.append(make('small',label),make('p',text));brief.append(d);}
     const level=f.province?'district':f.department?'province':'department';$('[data-territory-level]').textContent=`${({department:'Departamentos',province:'Provincias',district:'Distritos'})[level]} · participación sobre ${fmt(filtered.length)} registros`;
-    bars($('[data-territory-ranking]'),M.group(filtered,r=>M.geo(r)[level]),filtered.length,label=>{if(label==='Sin registrar')return;const select=$(`[name="${level}"]`);if([...select.options].some(o=>o.value===label)){select.value=label;geographic();apply();}},10);
+    bars($('[data-territory-ranking]'),M.group(filtered,r=>M.geo(r)[level]),filtered.length,label=>{if(label==='Sin registrar')return;const select=$(`[name="${level}"]`);selectValue(select,label);if(select.value){geographic();apply();}},10);
     bars($('[data-units]'),M.group(filtered,r=>r.unit),filtered.length,label=>{$('[name="unit"]').value=label;apply();},12);drawMap();
   }
   $('form').addEventListener('submit',e=>{e.preventDefault();apply();});

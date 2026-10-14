@@ -48,8 +48,8 @@
     if(category.table==='intervencion_vehiculos') out[0][0]='Vehículos / maquinaria registrados';
     if(category.table==='intervencion_grupos')out[0][0]=category.type==='banda'?'Bandas criminales':'Organizaciones criminales';
     if(category.table==='intervencion_grupos')out.push(['Vínculos de integrantes',rows.reduce((n,r)=>n+Number(r.data.integrantes||0),0)]);
-    if(category.id==='prostitucion')out.push(['Femenino',rows.filter(r=>r.data.genero==='FEMENINO').length],['Masculino',rows.filter(r=>r.data.genero==='MASCULINO').length],['Género sin registrar',rows.filter(r=>!r.data.genero).length]);
-    if(category.id==='victimas')out.push(['Menores de edad',rows.filter(r=>r.data.edad!=null&&Number(r.data.edad)<18).length],['Mayores de edad',rows.filter(r=>r.data.edad!=null&&Number(r.data.edad)>=18).length]);
+    if(category.id==='prostitucion')out.push(['Femenino',rows.filter(r=>normalizeText(r.data.genero)==='femenino').length],['Masculino',rows.filter(r=>normalizeText(r.data.genero)==='masculino').length],['Género sin registrar',rows.filter(r=>!normalizeText(r.data.genero)).length]);
+    if(category.id==='victimas'){const ages=rows.map(r=>r.data.edad).filter(v=>v!=null&&String(v).trim()!==''&&Number.isFinite(Number(v))&&Number(v)>=0).map(Number);out.push(['Menores de edad',ages.filter(n=>n<18).length],['Mayores de edad',ages.filter(n=>n>=18).length]);}
     return out;
   }
   async function readAll(client, category, alive=()=>true) {
