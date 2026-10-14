@@ -481,7 +481,7 @@ async function loadCurrentProfile(userId) {
   window.updateDeclaracionDiaria?.();
   const isAdministrator = data.rol === 'administrador';
   const assignedScope = isAdministrator || ['estadistico_direccion','visualizador'].includes(data.rol)
-    ? 'Ámbito nacional'
+    ? 'Estadística Nacional'
     : (data.unidad || 'Dependencia no asignada');
   document.getElementById('institutionName').textContent = 'DIRITPTIM';
   document.getElementById('institutionScope').textContent = assignedScope;
