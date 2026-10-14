@@ -462,7 +462,7 @@
     <div class="record-modal-card">
       <div class="modal-heading"><div><h2>Detalle de la ficha</h2><p id="recordModalCode">Consultando registro…</p></div><button id="closeRecordModal" aria-label="Cerrar">×</button></div>
       <div id="recordDetail" class="record-detail"></div>
-      <div class="modal-actions"><button class="danger hidden-control" id="deleteRecordButton">Eliminar</button><button class="secondary" id="closeRecordButton">Cerrar</button><button class="secondary" id="editRecordButton">Editar ficha</button><button class="primary" id="printRecordButton">Exportar PDF</button></div>
+      <div class="modal-actions"><button class="danger hidden-control" id="deleteRecordButton">Eliminar</button><button class="secondary" id="closeRecordButton">Cerrar</button><button class="secondary" id="editRecordButton">Editar ficha</button><button class="primary" id="printRecordButton">Descargar PDF</button></div>
     </div>
   </dialog>
   <dialog id="detaineeRecordModal" class="record-dialog">
@@ -493,7 +493,9 @@
   <script src="frontend/js/perfiles-estadisticos.js?v=20260926-visualizador"></script>
   <script src="frontend/js/session-idle.js?v=20260930"></script>
   <script src="frontend/js/login-turnstile.js?v=20261012-turnstile"></script>
-  <script src="frontend/js/app.js?v=20261012-turnstile"></script>
+  <script src="frontend/vendor/jspdf-4.2.1.umd.min.js"></script>
+  <script src="frontend/js/ficha-pdf.js?v=20261013-descarga"></script>
+  <script src="frontend/js/app.js?v=20261013-descarga"></script>
   <script src="frontend/js/account-menu.js?v=20260926"></script>
   <script src="frontend/js/auditoria.js?v=20260915-enrolamiento-v1"></script>
   <script src="frontend/js/detenidos.js?v=20260930-identidad-ni"></script>

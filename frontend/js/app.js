@@ -430,7 +430,7 @@ document.getElementById('printRecordButton').addEventListener('click', async () 
       const done=()=>{cleanup();image.naturalWidth?resolve():reject(new Error('No se pudo cargar una fotografía. Abra nuevamente la ficha para renovar el acceso e intente exportar.'));};
       if(image.complete)done();else{image.addEventListener('load',done);image.addEventListener('error',done);}
     })));
-    window.print();
+    await window.FichaPDF.download(printSheet, selectedRecord.codigo);
   }catch(error){alert(error.message);}finally{button.disabled=false;}
 });
 
