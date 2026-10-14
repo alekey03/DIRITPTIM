@@ -83,3 +83,9 @@ body:has(#loginScreen:not(.hidden)){overflow:hidden}@media(max-width:900px){#log
  #loginScreen{padding-left:6px;padding-right:6px}
  #loginScreen .login-card{padding-left:8px!important;padding-right:8px!important}
 }
+/* Give the desktop panel more presence when there is spare vertical room. */
+@media(min-width:901px) and (min-height:760px){
+ #loginScreen .login-card{min-height:calc(100dvh - 130px);display:flex;flex-direction:column;justify-content:center}
+ #loginScreen .login-divider{margin-top:auto;margin-bottom:18px;padding-top:18px}
+ #loginScreen .login-trust{margin-top:auto!important;padding-top:14px}
+}
