@@ -8,6 +8,11 @@ const loginError = document.getElementById('loginError');
 const loginButton = document.getElementById('loginButton');
 const registerButton = document.getElementById('registerButton');
 let currentProfile = null;
+function puedeAccederEnrolamiento(profile = currentProfile) {
+  return Boolean(profile?.activo && (profile.rol === 'administrador' ||
+    (profile.rol === 'estadistico_division' && profile.unidad === 'DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS')));
+}
+
 let selectedRecord = null;
 let editingRecordId = null;
 let editingRecordCode = null;
@@ -97,6 +102,7 @@ async function uploadRecordFiles(recordId) {
 
 let recordListTurn=0;
 async function loadRecords() {
+  if (!puedeAccederEnrolamiento()) return;
   const loadToken=++recordListTurn,who=currentProfile?.id;
   const result = document.getElementById('recordsResult');
   result.innerHTML = '<div class="empty-state"><span>▤</span><h3>Cargando registros…</h3><p>Consultando la base de datos segura.</p></div>';
@@ -478,6 +484,7 @@ async function loadCurrentProfile(userId) {
   });
   document.querySelectorAll('.seguimiento-access').forEach(el => { el.hidden = !['administrador','estadistico_direccion','estadistico_jefatura','visualizador'].includes(data.rol); });
   document.body.classList.toggle('viewer-only',data.rol==='visualizador');
+  document.querySelector('[data-nav-group="victims"]').hidden = !puedeAccederEnrolamiento(data);
   window.updateDeclaracionDiaria?.();
   const isAdministrator = data.rol === 'administrador';
   const assignedScope = isAdministrator || ['estadistico_direccion','visualizador'].includes(data.rol)
@@ -631,6 +638,7 @@ function renderDashboard() {
 }
 
 async function loadDashboard() {
+  if (!puedeAccederEnrolamiento()) return;
   const dashboardStatus = document.getElementById('dashboardStatus');
   dashboardStatus.textContent = 'Consultando información…';
   dashboardStatus.classList.add('visible');
@@ -984,6 +992,7 @@ userForm.addEventListener('submit', async event => {
 document.querySelectorAll('[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     const target = button.dataset.view;
+    if (['dashboardView','formView','recordsView'].includes(target) && !puedeAccederEnrolamiento()) return;
     if(currentProfile?.rol==='visualizador'&&!['generalDashboardView','seguimientoView'].includes(target))return;
     if (window.guardDesaparecidos && !window.guardDesaparecidos(target)) return;
     if (target === 'seguimientoView' && (!currentProfile?.activo || !['administrador','estadistico_direccion','estadistico_jefatura','visualizador'].includes(currentProfile.rol))) return;
@@ -1296,7 +1305,7 @@ form.addEventListener('submit', async event => {
 
   try {
 
-  if (!currentProfile) {
+  if (!puedeAccederEnrolamiento()) {
     alert('La sesión no está autorizada. Vuelva a iniciar sesión.');
     loginScreen.classList.remove('hidden');
     return;

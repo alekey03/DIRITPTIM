@@ -27,3 +27,5 @@ main .card{border-color:#dce4eb;box-shadow:0 2px 10px #18344703;border-radius:11
  body:not(.sidebar-collapsed) .sidebar>.brand small{font-size:10px;line-height:1.4}
  body:not(.sidebar-collapsed) .sidebar-collapse{top:28px;right:10px}
 }
+
+.sidebar [data-nav-group="victims"][hidden]{display:none!important}
