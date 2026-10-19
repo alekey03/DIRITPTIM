@@ -10,6 +10,11 @@ const DEPENDENCIAS_INSTITUCIONALES = [
     "departamento": "LIMA"
   },
   {
+    "unidad": "DIVISIÓN DE INTELIGENCIA",
+    "ambito": "SEDE_CENTRAL",
+    "departamento": "LIMA"
+  },
+  {
     "unidad": "DIVISIÓN DE INVESTIGACIÓN Y BÚSQUEDA DE PERSONAS DESAPARECIDAS",
     "ambito": "SEDE_CENTRAL",
     "departamento": "LIMA"
