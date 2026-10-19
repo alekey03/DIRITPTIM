@@ -32,6 +32,8 @@
         if(field.options){control.append(new Option('Seleccionar',''));for(const v of field.options)control.append(new Option(v,v));}
         else{control.type=field.type;control.maxLength=2000;control.autocomplete='off';if(field.type==='number'){control.min='0';control.max='120';control.step='1';}}
         control.required=field.required;control.readOnly=!!field.computed;control.value=record?.datos[field.key]??(field.key==='fecha'?context.fecha:field.key==='hora'?context.hora:'');control.disabled=view;
+        if (['fecha','hora'].includes(field.key)) { control.value=context[field.key]||''; control.readOnly=true; control.title='Dato heredado del operativo; se modifica en el operativo.'; }
+
         label.append(control);grid.append(label);
       }
       inputs.append(section);

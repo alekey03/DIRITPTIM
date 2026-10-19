@@ -6,7 +6,30 @@
   const rows = document.getElementById('operativosRows');
   const listStatus = document.getElementById('operativosListStatus');
   const catalogs = window.bindOperativoCatalogs(form);
-  const unit = form.elements.namedItem('intervencion.unidad_area_equipo');
+  const supportRows = document.getElementById('operativoSupportRows');
+  const supportKeys = ['direccion_policial','direccion_especializada_region','division_policial','departamento_policial','unidad_area_equipo'];
+  const supportLabels = ['Dirección policial','Dirección especializada / región / frente policial','División / jefatura','Departamento policial','Unidad / área / equipo'];
+  function addSupport(values = {}) {
+    if (supportRows.children.length >= 10) return message('Puede registrar hasta 10 unidades de apoyo.');
+    const row = document.createElement('div'); row.className = 'operativo-support-row';
+    const grid = document.createElement('div'); grid.className = 'grid cols-3';
+    const selects = supportKeys.map((key,index) => {
+      const label = document.createElement('label'); label.textContent = supportLabels[index];
+      const select = document.createElement('select'); select.dataset.supportKey = key;
+      select.required = true; label.append(select); grid.append(label); return select;
+    });
+    row.append(grid);
+    const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'secondary'; remove.textContent = 'Quitar unidad de apoyo';
+    remove.addEventListener('click', () => { row.remove(); changed(); }); row.append(remove); supportRows.append(row);
+    const cascade = window.bindOperativoSupport(selects);
+    if (Object.keys(values).length) cascade.set(supportKeys.map(key => values[key]));
+  }
+  document.getElementById('addOperativoSupport').addEventListener('click', () => { addSupport(); changed(); });
+  // Counters are non-negative integers; coordinates keep their signed decimal format.
+  form.querySelectorAll('[data-integer]').forEach(input => {
+    input.addEventListener('keydown', event => { if (['e','E','+','-','.',','].includes(event.key)) event.preventDefault(); });
+    input.addEventListener('paste', event => { if (!/^\d*$/.test(event.clipboardData.getData('text'))) { event.preventDefault(); message('Este campo admite solo números enteros, sin letras ni signos.'); } });
+  });
 
   let id = crypto.randomUUID(), version = 0, pending = null, dirty = false, busy = false;
   let epoch = 0, listRequest = 0, page = 0, readOnly = false;
@@ -25,6 +48,8 @@
       const value = field.value.trim();
       data[table][column] = value === '' ? null : field.type === 'number' ? Number(value) : value;
     }
+    data.operativo.unidades_apoyo = [...supportRows.children].map(row => Object.fromEntries(
+      [...row.querySelectorAll('select')].map(select => [select.dataset.supportKey, select.value || null])));
     return data;
   }
   window.initializeOperativoForm = () => {
@@ -33,7 +58,7 @@
   window.resetOperativoModule = () => {
     epoch++; listRequest++;
     id = crypto.randomUUID(); version = 0; pending = null; dirty = false; busy = false; readOnly = false;
-    form.reset(); catalogs.reset(); lock(false); message('');
+    form.reset(); catalogs.reset(); supportRows.replaceChildren(); lock(false); message('');
     rows.replaceChildren(); listStatus.textContent = ''; page = 0;
     document.getElementById('operativoScope').textContent = '';
     document.getElementById('operativosPage').textContent = '';
@@ -45,7 +70,7 @@
   form.addEventListener('input', changed);
   form.addEventListener('change', changed);
   document.getElementById('continueOperativo').addEventListener('click', () => {
-    if (!busy && !dirty && version) window.openOperativoResults?.(id);
+    if (!busy && !dirty && version && form.reportValidity()) window.openOperativoResults?.(id);
   });
   window.addEventListener('beforeunload', event => {
     if (dirty || busy) { event.preventDefault(); event.returnValue = ''; }
@@ -97,6 +122,7 @@
       const detail = Array.isArray(data.intervencion_operativos) ? data.intervencion_operativos[0] : data.intervencion_operativos;
       if (!detail) throw new Error('Este registro no contiene el detalle de un operativo.');
       form.reset(); catalogs.reset(); catalogs.set(data, detail);
+      supportRows.replaceChildren(); (detail.unidades_apoyo || []).forEach(addSupport);
       for (const field of fields) {
         const [table, column] = field.name.split('.');
         const value = (table === 'intervencion' ? data : detail)[column] ?? '';

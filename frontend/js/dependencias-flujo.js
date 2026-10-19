@@ -7,6 +7,10 @@ window.DEPENDENCIAS_FLUJO = [
         "value": "DIRCTPTIM",
         "children": [
           {
+            "value": "DIVISIÓN DE INTELIGENCIA",
+            "children": []
+          },
+          {
             "value": "DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS",
             "children": []
           },

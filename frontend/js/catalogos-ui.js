@@ -247,6 +247,8 @@
     controls(['arma_categoria','arma_tipo',...keys]).forEach(control=>{const value=values[control.name];if(value&&!Array.from(control.options).some(o=>o.value===value)){control.append(new Option(value,value));control.value=value;control.disabled=false;}});
   };
 
+  window.bindOperativoSupport = selects => bindPolice(selects);
+
   window.bindOperativoCatalogs = function bindOperativoCatalogs(form) {
     const selects = kind => [...form.querySelectorAll(`[data-op-catalog="${kind}"]`)];
     const geo = bindCascade(selects('geo'), GEO, ['Seleccionar departamento', 'Seleccionar provincia', 'Seleccionar distrito']);

@@ -400,3 +400,12 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 #usersResult .user-actions{flex-wrap:nowrap;gap:4px}
 #usersResult .user-actions .table-action{margin:0;padding:7px 8px;white-space:nowrap;border-radius:6px}
 #usersResult .user-actions .table-action:not(:disabled):hover{background:#edf2f6}
+
+/* Hidden result cards must not take part in the grid layout. */
+#operativoResultsView [hidden], #operativoForm [hidden] { display: none !important; }
+#operativoResultsView .material-fields > label, #operativoForm .grid > label { min-width: 0; }
+#operativoResultsView .material-fields input, #operativoResultsView .material-fields select { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+#complementForm { scroll-margin-top: 100px; }
+.operativo-support-row { padding: 18px 0; border-bottom: 1px solid #d9e2ed; }
+.operativo-support-row > button { margin: 12px 0; }
+[data-inherited], #detaineeForm input[readonly] { background: #edf2f7; color: #486079; }

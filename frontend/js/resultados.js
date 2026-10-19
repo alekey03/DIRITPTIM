@@ -119,6 +119,11 @@
       const { data, error } = await supabaseClient.from('intervenciones').select('*').eq('id', recordId).single();
       if (token !== generation) return;
       if (error) throw error;
+      const missing = ['fecha','hora','nota_sicpip','departamento','provincia','distrito','direccion_policial','direccion_especializada_region','division_policial'].filter(key => !String(data[key] ?? '').trim());
+      if (missing.length && puedeRegistrarUnidad(data.unidad)) {
+        status.textContent = 'Complete primero los datos obligatorios del operativo: ' + missing.map(key=>key.replace(/_/g,' ')).join(', ') + '. Abra sus datos desde Operativos registrados.';
+        return;
+      }
       current = data;
       readOnly = !puedeRegistrarUnidad(data.unidad);
       boxes.forEach(box => { box.checked = (data.resultados_previstos || []).includes(box.value); }); renderSelection();

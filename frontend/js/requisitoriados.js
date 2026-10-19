@@ -39,7 +39,9 @@
         const control=document.createElement(options||isCrime||dependent?'select':field.type==='textarea'?'textarea':'input');control.name=field.key;
         if(options||isCrime||dependent){const blank=new Option('Sin indicar','');control.append(blank);for(const value of options||[])control.append(new Option(value,value));if(isCrime)control.dataset.field=crimeMap[baseKey];}
         else{control.type=field.type;control.maxLength=2000;if(field.type==='textarea')control.rows=4;if(field.type==='number'){control.min='0';control.max='120';control.step='1';}control.autocomplete='off';}
-        control.required=field.required;control.value=record?.datos[field.key]??(field.key==='es_funcionario'?'No':field.key==='fecha'?context.fecha:field.key==='hora'?context.hora:'');control.disabled=view;label.append(control);grid.append(label);
+        control.required=field.required;control.value=record?.datos[field.key]??(field.key==='es_funcionario'?'No':field.key==='fecha'?context.fecha:field.key==='hora'?context.hora:'');control.disabled=view;
+        if (['fecha','hora'].includes(field.key)) { control.value=context[field.key]||''; control.readOnly=true; control.title='Dato heredado del operativo; se modifica en el operativo.'; }
+label.append(control);grid.append(label);
       }
       if(group.startsWith('delito')){
         const suffix=group==='delito2'?'_2':'';const data=record?.datos||{};

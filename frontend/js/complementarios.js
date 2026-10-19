@@ -42,7 +42,9 @@
         control.required=field.required;control.readOnly=!!field.computed;
         const value=record?.datos[field.key]??(field.key==='fecha'?context.fecha:field.key==='hora'?context.hora:'');
         if(field.options&&value&&!field.options.includes(value))control.append(new Option(value,value));
-        control.value=value??'';control.disabled=view;label.append(control);grid.append(label);
+        control.value=value??'';control.disabled=view;
+        if (['fecha','hora'].includes(field.key)) { control.value=context[field.key]||''; control.readOnly=true; control.title='Dato heredado del operativo; se modifica en el operativo.'; }
+label.append(control);grid.append(label);
       }
       if(group.startsWith('delito')){
         const suffix=group==='delito2'?'_2':'',data=record?.datos||{};
@@ -59,7 +61,7 @@
     if(type.tipo==='celulares'){const note=document.createElement('p');note.className='results-note';note.textContent='Si registra un IMEI, la cantidad debe ser 1. Conserve los ceros iniciales.';inputs.prepend(note);}
     status.textContent=view?'Consulta del registro.':'';lock();
     if(view)inputs.querySelectorAll('input,select').forEach(c=>c.disabled=true);
-    form.scrollIntoView({behavior:'smooth',block:'nearest'});
+    form.scrollIntoView({behavior:'smooth',block:'start'});
   }
   async function load(token=epoch){
     if(!context||token!==epoch)return;
