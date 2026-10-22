@@ -442,3 +442,5 @@ form :is(input,select,textarea):disabled {
   cursor: not-allowed;
 }
 
+
+#detaineeForm .crime-row select:required:invalid:not(:disabled){border-color:#bd6767;background-color:#fffafa}

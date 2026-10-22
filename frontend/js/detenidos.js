@@ -62,11 +62,11 @@ function addCrimeRow(values = {}) {
   row.className = 'crime-row';
   row.innerHTML = `<div class="crime-row-heading"><strong>Delito ${order}</strong><button type="button" class="remove-crime" aria-label="Quitar delito">×</button></div>
     <div class="grid cols-5">
-      <label>Tentativa<select data-field="attempt"><option value="false">No</option><option value="true">Sí</option></select></label>
-      <label>Fuero/Ley especial<select data-field="jurisdiction"><option value="">Seleccionar fuero o ley</option></select></label>
-      <label>Delito general<select data-field="general" disabled><option value="">Seleccione primero un fuero</option></select></label><label>Delito específico<select data-field="specific" disabled><option value="">Seleccione primero el delito general</option></select></label><label>Subtipo<select data-field="subtype" disabled><option value="">Seleccione primero el delito específico</option></select></label>
+      <label>Tentativa *<select data-field="attempt" required><option value="">Seleccionar</option><option value="false">No</option><option value="true">Sí</option></select></label>
+      <label>Fuero/Ley especial *<select required data-field="jurisdiction"><option value="">Seleccionar fuero o ley</option></select></label>
+      <label>Delito general *<select required data-field="general" disabled><option value="">Seleccione primero un fuero</option></select></label><label>Delito específico *<select required data-field="specific" disabled><option value="">Seleccione primero el delito general</option></select></label><label>Subtipo *<select required data-field="subtype" disabled><option value="">Seleccione primero el delito específico</option></select></label>
     </div>`;
-  row.querySelector('[data-field="attempt"]').value = String(values.es_tentativa ?? false);
+  row.querySelector('[data-field="attempt"]').value = values.es_tentativa == null ? '' : String(values.es_tentativa);
   window.createCrimeCascade?.(row, values);
   row.querySelector('.remove-crime').addEventListener('click', () => {
     if (crimeList.children.length === 1) return;
@@ -115,7 +115,15 @@ async function saveDetainee(event) {
   event.preventDefault();
   const status = document.getElementById('detaineeStatus');
   const button = document.getElementById('saveDetaineeButton');
-  if (button.disabled || !detaineeForm.reportValidity()) return;
+  if (button.disabled) return;
+  if (!crimeList.querySelector('.crime-row')) addCrimeRow();
+  const unavailableCrime = [...crimeList.querySelectorAll('[data-field="jurisdiction"]')].find(select => select.disabled || select.options.length < 2);
+  if (unavailableCrime) {
+    status.textContent = 'No se cargó el catálogo de delitos. Vuelva a intentarlo cuando esté disponible; no se guardó el detenido.';
+    unavailableCrime.closest('.crime-row').scrollIntoView({ block: 'center', behavior: 'smooth' });
+    return;
+  }
+  if (!detaineeForm.reportValidity()) return;
   if (!currentProfile?.activo) { status.textContent = 'La sesión no está disponible.'; return; }
   if (!currentProfile.departamento) { status.textContent = 'Su cuenta no tiene departamento asignado.'; return; }
   const deadlineError = !editingDetaineeId && window.ProductionDeadline?.error(detaineeValue('fecha'));
