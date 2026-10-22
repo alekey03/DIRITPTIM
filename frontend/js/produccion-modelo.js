@@ -75,7 +75,7 @@
         }
       } else rows.push(context);
     }
-    for(const h of data.produccion_historica||[]){if(h.tabla!==sheet.tabla||(sheet.tipo&&h.tipo!==sheet.tipo))continue;if(!matches(h.fecha||'',h,filters))continue;rows.push({historico:h,fecha:h.fecha||'',recordId:h.id});}
+    for(const h of data.produccion_historica||[]){if(h.tabla!==sheet.tabla||(sheet.tipo&&h.tipo!==sheet.tipo&&!(sheet.tabla==='intervenciones'&&sheet.tipo==='operativo'&&h.tipo==='pendiente')))continue;if(!matches(h.fecha||'',h,filters))continue;rows.push({historico:h,fecha:h.fecha||'',recordId:h.id});}
     return rows.sort((a,b)=>a.fecha.localeCompare(b.fecha)||(a.sortId||a.recordId).localeCompare(b.sortId||b.recordId));
   }
   function sourceValue(context, source, index) {
@@ -126,6 +126,8 @@
     });
     if (issues.errors.length) throw new Error(`No se descargó un reporte incompleto. Revise:\n${[...new Set(issues.errors)].slice(0,12).join('\n')}${issues.errors.length>12?'\nHay más registros por revisar.':''}`);
     const warnings=[];
+    const pending=(data.produccion_historica||[]).filter(h=>h.tabla==='intervenciones'&&h.tipo==='pendiente'&&matches(h.fecha||'',h,filters)).length;
+    if(pending)warnings.push(`${pending} operativo(s) sin tipo indicado en el Excel se incluyen en la hoja de operativos con su tipo vacío.`);
     if (issues.orphans) warnings.push(`${issues.orphans} detenido(s) sin operativo autorizado quedaron fuera del reporte; revise su vinculación en Registros.`);
     if (issues.legacyWeapons) warnings.push('Las referencias de armas de Detenidos aparecen en esa hoja. Armas de fuego/blancas y Municiones exportan los registros de sus módulos; no se duplican automáticamente.');
     return {sheets:result,warnings,total:result.reduce((n,s)=>n+s.rows.length,0),filters:{...filters}};
@@ -148,3 +150,4 @@
   }
   window.ProduccionModelo={sheets,readTable,snapshot,build,workbook,validateFilters,stamp};
 })();
+

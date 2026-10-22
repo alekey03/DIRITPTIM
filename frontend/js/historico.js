@@ -12,7 +12,7 @@
    rows.push(...data.map(r=>({...r,historical:true,intervencion_id:r.operativo_id})));cursor=data[data.length-1].id;
   }
  }
- function normalize(r,c){const data={...r.datos};if(['detenidos','rq','menores','victimas','prostitucion','migraciones'].includes(c.id))data.nombre=[data.apellido_paterno,data.apellido_materno,data.nombres].filter(Boolean).join(' ');
+ function normalize(r,c){const data={...r.datos};if(['detenidos','rq','menores','victimas','prostitucion','migraciones','personas_ubicadas','expulsados'].includes(c.id))data.nombre=[data.apellido_paterno,data.apellido_materno,data.nombres].filter(Boolean).join(' ');
   if(c.table==='intervencion_drogas')data.medida=/KILO|^KG$/.test(norm(data.medida))?'kg':/ENV/.test(norm(data.medida))?'envoltorios':data.medida;
   if(c.table==='intervencion_grupos')data.integrantes=r.historicalMembers?.length||1;
   return {historical:true,source:r,id:r.id,data,date:r.fecha||'',unit:r.unidad||'',ni:r.nota_sicpip||'',parentId:c.table==='intervenciones'?r.id:r.operativo_id,place:[data.departamento,data.provincia,data.distrito].filter(Boolean).join(' / '),geography:{department:data.departamento||'',province:data.provincia||'',district:data.distrito||''}};
@@ -76,7 +76,7 @@
   if(membership)fill(select(membership),['NO ES INTEGRANTE','SI ES INTEGRANTE A UNA BB.CC','SI ES INTEGRANTE A UNA OO.CC'].map(value=>({value})),r.datos[membership]);
  }
 
- const labels={operativo_pendiente:'Operativo pendiente de vincular',sin_ni:'NI pendiente',fecha_pendiente:'Fecha pendiente',dependencia_pendiente:'Dependencia pendiente',dependencia_contradictoria:'Dependencia por revisar',area_pendiente:'Área pendiente',ubicacion_incompleta_o_fuera_catalogo:'Ubicación por revisar',ni_ambigua_o_no_numerica:'Revisar NI del original'};
+ const labels={tipo_operativo_pendiente:'Tipo de operativo no indicado en el Excel',posible_duplicado_conservado_del_excel:'Posible duplicado conservado del Excel',dependencia_vinculada_por_ni_fecha:'Dependencia vinculada por NI y fecha',operativo_pendiente:'Operativo pendiente de vincular',sin_ni:'NI pendiente',fecha_pendiente:'Fecha pendiente',dependencia_pendiente:'Dependencia pendiente',dependencia_contradictoria:'Dependencia por revisar',area_pendiente:'Área pendiente',ubicacion_incompleta_o_fuera_catalogo:'Ubicación por revisar',ni_ambigua_o_no_numerica:'Revisar NI del original'};
  function close(){epoch++;modal.close();card.replaceChildren();}
  modal.addEventListener('cancel',e=>{e.preventDefault();close();});
  async function open(id,edit=false,onSaved=()=>{}){
@@ -134,3 +134,4 @@
 
  window.HistoricoProduccion={read,normalize,canEdit,open,openGroup,groupRows,close,schema};
 })();
+

@@ -7,6 +7,7 @@
     const result = [
       {id:'desaparecidos',title:'Denuncias de desaparición',table:'desapariciones',fields:window.DESAPARECIDOS_CATALOGO||[]},
       {id:'operativos',title:'Operativos',table:'intervenciones',type:'operativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
+      {id:'operativos_pendientes',title:'Operativos · tipo pendiente',table:'intervenciones',type:'pendiente',historicalOnly:true,fields:fields([['nota_sicpip','NI principal']])},
       {id:'megaoperativos',title:'Megaoperativos',table:'intervenciones',type:'megaoperativo',fields:fields([['nota_sicpip','NI principal'],['detalle_ubicacion','Detalle del lugar']])},
       {id:'detenidos',title:'Detenidos',table:'detenciones_reportables',select:'*,personas(*),detencion_delitos(*)',fields:fields([['nombre','Apellidos y nombres'],['numero_documento','Documento'],['edad','Edad'],['genero','Género'],['nacionalidad','Nacionalidad'],['motivo_detencion','Motivo'],['situacion_actual','Situación'],['delitos','Delitos'],['nombre_organizacion','Banda / organización'],['codigo','Código']])},
       ...window.COMPLEMENTARIOS_CATALOGO.tipos.map(t=>({id:t.tipo,title:t.titulo,table:'intervencion_complementarios',type:t.tipo,fields:t.campos})),
@@ -53,6 +54,7 @@
     return out;
   }
   async function readAll(client, category, alive=()=>true) {
+    if(category.historicalOnly)return window.HistoricoProduccion.read(client,category,alive);
     const rows=[];
     // Cursor por UUID: no se limita el total a la primera página de la API.
     let cursor=null;
@@ -71,3 +73,4 @@
   }
   window.ConsultaModelo={categories,normalize,filter,metrics,readAll};
 })();
+
