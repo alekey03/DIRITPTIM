@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Franklin:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="frontend/css/styles.css?v=20261022-grupos" />
+  <link rel="stylesheet" href="frontend/css/styles.css?v=20261022-obligatorios" />
   <link rel="stylesheet" href="frontend/css/dashboard.css?v=20261012-charts" />
   <link rel="stylesheet" href="frontend/vendor/leaflet/leaflet.css?v=1.9.4">
   <link rel="stylesheet" href="frontend/css/registros.css?v=20260923-registros">
@@ -272,6 +272,7 @@
       <div class="records-toolbar"><div><h2>Registro del operativo</h2><p>Complete los datos generales. Puede guardar un borrador y continuar después.</p></div></div>
       <div class="privacy-banner"><div><strong id="operativoScope"></strong><p>La dependencia registradora se asigna desde su cuenta. Los campos con * son obligatorios para guardar.</p></div></div>
       <form id="operativoForm">
+        <p class="operativo-required-guide">Los campos con * son obligatorios. El borde rojo indica los que faltan completar correctamente.</p>
 <fieldset class="card operativo-section"><legend>1. Datos del operativo</legend><div class="grid cols-3">
 <label>Tipo de operativo *<select name="intervencion.tipo" id="op-tipo" required><option value="">Seleccionar</option><option value="operativo">Operativo</option><option value="megaoperativo">Megaoperativo</option></select></label>
 <label>Fecha *<input name="intervencion.fecha" id="op-fecha" type="date" required></label>
