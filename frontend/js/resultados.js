@@ -42,6 +42,8 @@
     cards.appendChild(label);
   }
   const boxes = [...cards.querySelectorAll('input')];
+  let registered = [];
+  const sameSelection = (a,b) => [...a].sort().join('|') === [...b].sort().join('|');
   function selected() { return boxes.filter(box => box.checked).map(box => box.value); }
   function renderSelection() {
     for (const box of boxes) {
@@ -78,10 +80,10 @@
     window.ProstitucionUI.lock(busy || !current,readOnly); window.VictimasUI.lock(busy || !current,readOnly); window.MenoresUI.lock(busy || !current,readOnly);
     window.NotasUI.lock(busy || !current,readOnly);
   }
-  cards.addEventListener('change', event => { if(event.target.value==='detenidos'&&!event.target.checked){if(!window.DetaineeInline?.discard()){event.target.checked=true;return;}window.DetaineeInline?.close();} dirty = true; selectionStatus.textContent = 'Selección sin guardar'; renderSelection(); });
+  cards.addEventListener('change', event => { if(!event.target.checked && registered.includes(event.target.value)){event.target.checked=true;selectionStatus.textContent='Esta categoría tiene registros y se conserva seleccionada. Puede seguir añadiendo registros.';return;} if(event.target.value==='detenidos'&&!event.target.checked){if(!window.DetaineeInline?.discard()){event.target.checked=true;return;}window.DetaineeInline?.close();} dirty = !sameSelection(selected(),current?.resultados_previstos||[]); selectionStatus.textContent = dirty?'Selección sin guardar':''; renderSelection(); });
   window.addEventListener('beforeunload', event => { if (dirty || drugDirty || (window.ComplementariosUI.dirty || window.MaterialesUI.dirty || window.VehiculosUI.dirty || window.GruposUI.dirty || window.NotasUI.dirty || window.ProstitucionUI.dirty || window.VictimasUI.dirty || window.MenoresUI.dirty || window.RequisitoriadosUI.dirty) || busy) { event.preventDefault(); event.returnValue = ''; } });
   window.resetResultadosModule = () => {
-    window.DetaineeInline?.close(); generation++; current = null; busy = false; dirty = false; readOnly = true; shown = 25;
+    window.DetaineeInline?.close(); generation++; registered = []; current = null; busy = false; dirty = false; readOnly = true; shown = 25;
     window.ComplementariosUI.reset(); window.MaterialesUI.reset(); window.VehiculosUI.reset(); window.GruposUI.reset(); window.RequisitoriadosUI.reset(); window.ProstitucionUI.reset(); window.VictimasUI.reset(); window.MenoresUI.reset(); window.NotasUI.reset();
     resetDrug(); drugShown = 25; drugRecords.replaceChildren(); drugStatus.textContent = '';
     boxes.forEach(box => { box.checked = false; }); renderSelection(); lock(); list.replaceChildren();
@@ -124,6 +126,9 @@
         status.textContent = 'Complete primero los datos obligatorios del operativo: ' + missing.map(key=>key.replace(/_/g,' ')).join(', ') + '. Abra sus datos desde Operativos registrados.';
         return;
       }
+      const actual = await supabaseClient.rpc('categorias_con_registros',{p_id:data.id});
+      if(token!==generation)return; if(actual.error)throw actual.error; registered=actual.data||[];
+      data.resultados_previstos=[...new Set([...(data.resultados_previstos||[]),...registered])];
       current = data;
       readOnly = !puedeRegistrarUnidad(data.unidad);
       boxes.forEach(box => { box.checked = (data.resultados_previstos || []).includes(box.value); }); renderSelection();
@@ -186,7 +191,7 @@
 
       });
       if(token!==generation)return;
-      status.textContent = readOnly ? 'Consulta de resultados: su cuenta no puede modificar este operativo.' : 'Puede seleccionar varios resultados. Seleccionar una categoría no equivale a completar su detalle.';
+      status.textContent = readOnly ? 'Consulta de resultados: su cuenta no puede modificar este operativo.' : (window.ProductionDeadline?.error(current.fecha)||'Puede seleccionar varios resultados. Seleccionar una categoría no equivale a completar su detalle.');
     } catch (error) {
       if (token === generation) { status.textContent = `No se pudieron cargar los resultados: ${error.message || 'Compruebe su conexión.'}`; readOnly = true; }
     } finally { if (token === generation) { busy = false; lock(); } }
@@ -198,8 +203,8 @@
       const { data, error } = await supabaseClient.rpc('seleccionar_resultados_operativo', { p_id: current.id, p_version: current.version, p_categorias: selected() });
       if (token !== generation) return false;
       if (error) throw error;
-      current.version = data.version; current.resultados_previstos = data.categorias; dirty = false;
-      selectionStatus.textContent = '✓ Selección guardada'; return true;
+      current.version = data.version; current.resultados_previstos = data.categorias; boxes.forEach(box=>{box.checked=data.categorias.includes(box.value);}); renderSelection(); dirty = false;
+      selectionStatus.textContent = '✓ Selección guardada. Las categorías con registros se conservan automáticamente.'; return true;
     } catch (error) {
       if (token === generation) selectionStatus.textContent = error.code === '40001' ? 'El operativo cambió. Actualice los resultados antes de guardar otra vez.' : `No se confirmó la selección: ${error.message || 'Reintente.'}`;
       return false;

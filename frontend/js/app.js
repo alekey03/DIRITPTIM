@@ -703,6 +703,7 @@ function resetMainView() {
   window.resetOperativoModule?.();
   window.resetResultadosModule?.();
   window.resetDetaineeWorkflow?.();
+  window.resetDetaineeSituation?.();
   editingRecordId = null;
   editingRecordCode = null;
   selectedRecord = null;

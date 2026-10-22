@@ -118,6 +118,8 @@ async function saveDetainee(event) {
   if (button.disabled || !detaineeForm.reportValidity()) return;
   if (!currentProfile?.activo) { status.textContent = 'La sesión no está disponible.'; return; }
   if (!currentProfile.departamento) { status.textContent = 'Su cuenta no tiene departamento asignado.'; return; }
+  const deadlineError = !editingDetaineeId && window.ProductionDeadline?.error(detaineeValue('fecha'));
+  if (deadlineError) { status.textContent = deadlineError; return; }
   const workflowToken = window.detaineeWorkflowToken;
   const linkedOperativo = window.getDetaineeOperativo?.();
   window.setDetaineeBusy?.(true);
@@ -198,12 +200,14 @@ window.loadDetaineeRecords = async function loadDetaineeRecords() {
 };
 
 async function openDetaineeRecord(id) {
+  window.renderDetaineeSituation?.(null);
   const workflowToken = window.detaineeWorkflowToken;
   document.getElementById('detaineeRecordDetail').innerHTML = '<div class="empty-state"><h3>Cargando detalle…</h3></div>';
   detaineeRecordModal.showModal();
   const { data, error } = await supabaseClient.from('detenciones_reportables').select('*,personas(*),detencion_delitos(*),detencion_armas(*)').eq('id', id).single();
   if (workflowToken !== window.detaineeWorkflowToken) return;
   if (error) { document.getElementById('detaineeRecordDetail').innerHTML = '<p class="records-error">No se pudo cargar el registro.</p>'; return; }
+  window.renderDetaineeSituation?.(data);
   selectedDetainee = data; const p = data.personas || {};
   document.getElementById('detaineeRecordModalCode').textContent = data.codigo || 'Registro de detenido';
   const crimes = (data.detencion_delitos || []).sort((a,b) => a.orden-b.orden).map((crime,index) => detailField(`Delito ${index+1}`, [crime.es_tentativa?'Tentativa':null,crime.fuero_ley_especial,crime.delito_general,crime.delito_especifico,crime.subtipo].filter(Boolean).join(' · '))).join('');

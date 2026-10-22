@@ -409,3 +409,10 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 .operativo-support-row { padding: 18px 0; border-bottom: 1px solid #d9e2ed; }
 .operativo-support-row > button { margin: 12px 0; }
 [data-inherited], #detaineeForm input[readonly] { background: #edf2f7; color: #486079; }
+
+#detaineeSituationDialog { width:min(920px,94vw); max-height:90dvh; overflow:auto; padding:24px; }
+#detaineeSituationDialog fieldset { border:0; padding:0; }
+#detaineeSituationDialog .grid>label { min-width:0; }
+#detaineeSituationDialog select,#detaineeSituationDialog input,#detaineeSituationDialog textarea { max-width:100%; box-sizing:border-box; }
+.record-modal [hidden] { display:none!important; }
+@media(max-width:600px){#detaineeSituationDialog .grid { grid-template-columns:1fr; }}

@@ -53,6 +53,9 @@
     return data;
   }
   window.initializeOperativoForm = () => {
+    const dateInput=form.elements.namedItem('intervencion.fecha');
+    window.ProductionDeadline?.configure(dateInput);
+    if(version){dateInput.min='';dateInput.max='';}
     document.getElementById('operativoScope').textContent = currentProfile?.unidad || 'Sin dependencia asignada';
   };
   window.resetOperativoModule = () => {
