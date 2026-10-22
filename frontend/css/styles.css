@@ -429,3 +429,16 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 #operativoForm .operativo-required-guide{font-size:.85rem;line-height:1.5;margin:0 0 16px;padding:12px 16px;border-left:3px solid #bd6767;border-radius:6px;background:#fff7f7;color:#7d3e3e}
 #operativoForm :is(input,select,textarea):required:invalid:not(:disabled):not([readonly]){border:1px solid #bd6767;background-color:#fffafa}
 #operativoForm :is(input,select,textarea):required:invalid:not(:disabled):not([readonly]):focus{border-color:#a63d3d;box-shadow:0 0 0 3px rgba(166,61,61,.12)}
+#operativoForm :is(input,select,textarea):disabled,
+#detaineeForm :is(input,select,textarea):disabled,
+form :is(input,select,textarea)[data-inherited],
+form :is(input,select,textarea)[readonly],
+form :is(input,select,textarea):disabled {
+  background-color: #f0f3f7;
+  border-color: #dce3ec;
+  color: #76859a;
+  -webkit-text-fill-color: #76859a;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
