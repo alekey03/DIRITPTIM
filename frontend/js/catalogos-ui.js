@@ -160,6 +160,23 @@
   );
   let victimLocationLegacy = '';
 
+  function updateDetaineeWeaponFields() {
+    const category = document.getElementById('weaponCategory');
+    const type = document.getElementById('weaponType');
+    const enabled = Boolean(category?.value) && !category.disabled;
+    if (type) type.disabled = !enabled || type.options.length < 2;
+    for (const name of ['armaCantidad', 'armaObservacion']) {
+      const field = document.querySelector('#detaineeForm [name="' + name + '"]');
+      if (!field) continue;
+      field.disabled = !enabled;
+      if (!enabled) field.value = '';
+      else if (name === 'armaCantidad' && field.value === '') field.value = '1';
+    }
+  }
+  document.getElementById('weaponCategory')?.addEventListener('change', updateDetaineeWeaponFields);
+  document.getElementById('detaineeForm')?.addEventListener('reset', () => queueMicrotask(updateDetaineeWeaponFields));
+  updateDetaineeWeaponFields();
+
   const organizationToggle = document.getElementById('criminalOrganization');
   const organizationRole = document.getElementById('organizationRole');
   const organizationName = document.getElementById('organizationName');
@@ -193,6 +210,8 @@
     policeDependency?.reset();
     receiverDependency?.reset();
     weaponDependency?.reset();
+    updateDetaineeWeaponFields();
+    window.syncDetaineeSituationFields?.();
     updateOrganizationFields();
   };
   window.setDetaineeDependencies = function setDetaineeDependencies(values = {}) {
@@ -200,6 +219,8 @@
     policeDependency?.set([values.direccion_policial, values.direccion_especializada_region, values.division_policial, values.departamento_policial, values.unidad_area_equipo]);
     receiverDependency?.set([values.disposicion_direccion,values.disposicion_region,values.disposicion_division,values.disposicion_departamento,values.disposicion_unidad]);
     weaponDependency?.set([values.arma_categoria, values.arma_tipo]);
+    updateDetaineeWeaponFields();
+    window.syncDetaineeSituationFields?.();
     if (organizationToggle) organizationToggle.value = values.integra_organizacion ? (values.tipo_organizacion || '') : 'false';
     updateOrganizationFields();
     if (organizationRole) organizationRole.value = values.rol_organizacion || '';
@@ -285,6 +306,8 @@
     policeDependency?.setRoots(POLICE);
     receiverDependency?.setRoots(POLICE);
     weaponDependency?.setRoots(WEAPONS);
+    updateDetaineeWeaponFields();
+    window.syncDetaineeSituationFields?.();
     document.querySelectorAll('.crime-row').forEach(row => {
       const values = {
         fuero_ley_especial: row.querySelector('[data-field="jurisdiction"]')?.value || '',
@@ -304,6 +327,7 @@
     policeDependency?.setRoots([]);
     receiverDependency?.setRoots([]);
     weaponDependency?.setRoots([]);
+    updateDetaineeWeaponFields();
     document.querySelectorAll('.crime-row').forEach(row => row._crimeCascade?.setRoots([]));
   };
 }());

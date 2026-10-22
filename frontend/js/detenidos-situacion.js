@@ -25,6 +25,8 @@
    label.append(control);grid.append(label);
   });
   window.bindOperativoSupport(keys.slice(5).map(k=>form.elements.namedItem(k))).set(keys.slice(5).map(k=>record[k]));
+  form.elements.namedItem('situacion_actual').addEventListener('change',()=>window.syncDetaineeSituationFields(form));
+  window.syncDetaineeSituationFields(form);
   dialog.showModal();const history=dialog.querySelector('[data-history]');history.textContent='Consultando historial…';const id=record.id;
   const {data,error}=await supabaseClient.from('detencion_situaciones_historial').select('creado_en,motivo,anterior,nueva,usuario_id').eq('detencion_id',id).order('creado_en',{ascending:false}).limit(20);
   if(turn!==generation||!dialog.open||record?.id!==id)return;history.replaceChildren();
@@ -34,7 +36,7 @@
  }
  form.addEventListener('submit',async event=>{
   event.preventDefault();if(busy||!record||!allowed(record)||!form.reportValidity())return;
-  const cambios=Object.fromEntries(keys.map(k=>[k,form.elements.namedItem(k).value.trim()||null])),motivo=form.elements.motivo.value.trim();
+  const cambios=Object.fromEntries(keys.map(k=>{const field=form.elements.namedItem(k);return [k,field.disabled?null:field.value.trim()||null]})),motivo=form.elements.motivo.value.trim();
   if(!motivo){status.textContent='Indique el motivo del cambio.';return;}
   const turn=generation;const payload={p_id:record.id,p_version:record.actualizado_en,p_cambios:cambios,p_motivo:motivo};
   const signature=JSON.stringify(payload);

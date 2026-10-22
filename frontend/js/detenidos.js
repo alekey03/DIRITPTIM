@@ -17,6 +17,26 @@ detaineeForm.elements.namedItem('esFuncionario').addEventListener('change', sync
 detaineeForm.addEventListener('reset', () => queueMicrotask(syncDetaineePublicEntity));
 syncDetaineePublicEntity();
 
+window.syncDetaineeSituationFields = function syncDetaineeSituationFields(form = detaineeForm) {
+  const field = (camel, snake) => form.elements.namedItem(camel) || form.elements.namedItem(snake);
+  const situation = String(field('situacionActual', 'situacion_actual')?.value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim();
+  const disposition = situation.startsWith('PUESTO A DISPOSICION');
+  const controls = [
+    ['documentoLibertad', 'documento_libertad', situation.startsWith('LIBERTAD')],
+    ['documentoDisposicion', 'documento_disposicion', disposition],
+    ['fiscalNombre', 'fiscal_nombre', disposition && situation.includes('FISCALIA')],
+    ['fiscalia', 'fiscalia', disposition && situation.includes('FISCALIA')],
+    ...[['disposicionDireccion','disposicion_direccion'],['disposicionRegion','disposicion_region'],['disposicionDivision','disposicion_division'],['disposicionDepartamento','disposicion_departamento'],['disposicionUnidad','disposicion_unidad']].map(names => [...names, disposition && situation.includes('UNIDAD PNP')])
+  ];
+  for (const [camel, snake, enabled] of controls) {
+    const control = field(camel, snake);
+    if (control) control.disabled = !enabled || (control.tagName === 'SELECT' && control.options.length < 2);
+  }
+};
+detaineeForm.elements.namedItem('situacionActual').addEventListener('change', () => window.syncDetaineeSituationFields());
+detaineeForm.addEventListener('reset', () => queueMicrotask(() => window.syncDetaineeSituationFields()));
+window.syncDetaineeSituationFields();
+
 function detaineeValue(name) {
   const value = new FormData(detaineeForm).get(name);
   return typeof value === 'string' ? value.trim() : '';
