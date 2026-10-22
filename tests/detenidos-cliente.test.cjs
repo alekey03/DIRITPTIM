@@ -22,7 +22,7 @@ function setup() {
   const context={currentProfile:{activo:true,id:'FICTICIO',unidad:'AREA FICTICIA',departamento:'LIMA'},
     editingDetaineeId:null, editingDetaineeReason:'', selectedDetainee:null,
     document:{getElementById:id=>elements[id]}, detaineeForm:{reportValidity:()=>true,reset:()=>resets++},
-    crimeList:{innerHTML:''}, window:{}, addCrimeRow(){}, nullable:v=>v===''?null:v,
+    crimeList:{innerHTML:''}, window:{readDetaineeGroup:()=>({id:null,modalidad:'MODALIDAD FICTICIA',referencia:null})}, addCrimeRow(){}, nullable:v=>v===''?null:v,
     detaineeValue:name=>fields[name]||'', readCrimes:()=>[{orden:1,delito_general:'FICTICIO'}],
     moduleUnavailable:e=>e.code==='PGRST202', console:{error(){}}, crypto:webcrypto, TextEncoder,
     sessionStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},

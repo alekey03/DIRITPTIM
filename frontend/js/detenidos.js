@@ -151,6 +151,7 @@ async function saveDetainee(event) {
     if (editingDetaineeId) weapons.push(...(selectedDetainee.detencion_armas || []).slice(1));
     const payload = { p_persona: person, p_detencion: detention, p_delitos: readCrimes(), p_armas: weapons, p_editar: Boolean(editingDetaineeId), p_motivo: editingDetaineeReason || null, p_version: editingDetaineeId ? selectedDetainee.actualizado_en : null };
     if (linkedOperativo && !editingDetaineeId) payload.p_detencion.intervencion_id = linkedOperativo.id;
+    if(belongsToOrganization){if(!window.readDetaineeGroup)throw new Error('No se pudo cargar la sección del grupo. Recargue la página.');payload.p_grupo=window.readDetaineeGroup();}
     const storageKey = 'detencion-pendiente:' + currentProfile.id;
     let requestId = editingDetaineeId;
     if (!requestId) {
@@ -163,13 +164,14 @@ async function saveDetainee(event) {
       // Solo guarda un identificador y un hash, nunca los datos personales.
       sessionStorage.setItem(storageKey, JSON.stringify({ id: requestId, signature }));
     }
-    const { data, error } = await supabaseClient.rpc('guardar_detenido_atomico', { ...payload, p_solicitud: requestId });
+    const { data, error } = await supabaseClient.rpc(belongsToOrganization?'guardar_detenido_con_grupo':'guardar_detenido_atomico', { ...payload, p_solicitud: requestId });
     if (workflowToken !== window.detaineeWorkflowToken) return;
     if (error) throw error;
     if (!data?.id || !data?.codigo) throw new Error('Respuesta de guardado incompleta. Consulte los registros antes de reintentar.');
     if (!editingDetaineeId) sessionStorage.removeItem(storageKey);
     status.className = 'success-text';
     status.textContent = '✓ Detenido ' + data.codigo + (editingDetaineeId ? ' actualizado correctamente.' : ' registrado correctamente.');
+    if(data.grupo_id)status.textContent+=' Vinculado a '+data.grupo_nombre+'.';
     editingDetaineeId = null; editingDetaineeReason = ''; selectedDetainee = null;
     detaineeForm.reset(); window.resetDetaineeDependencies?.(); crimeList.innerHTML = ''; addCrimeRow();
     window.afterDetaineeSave?.(linkedOperativo?.id);
@@ -235,6 +237,7 @@ async function beginDetaineeEdit() {
   Object.entries(values).forEach(([name,value]) => setDetaineeField(name,value));
   syncDetaineePublicEntity();
   window.setDetaineeDependencies?.({ departamento:p.departamento,provincia:p.provincia,distrito:p.distrito,direccion_policial:selectedDetainee.direccion_policial,direccion_especializada_region:selectedDetainee.direccion_especializada_region,division_policial:selectedDetainee.division_policial,departamento_policial:selectedDetainee.departamento_policial,unidad_area_equipo:selectedDetainee.unidad_area_equipo,disposicion_direccion:selectedDetainee.disposicion_direccion,disposicion_region:selectedDetainee.disposicion_region,disposicion_division:selectedDetainee.disposicion_division,disposicion_departamento:selectedDetainee.disposicion_departamento,disposicion_unidad:selectedDetainee.disposicion_unidad,integra_organizacion:selectedDetainee.integra_organizacion,tipo_organizacion:selectedDetainee.tipo_organizacion,rol_organizacion:selectedDetainee.rol_organizacion,nombre_organizacion:selectedDetainee.nombre_organizacion,arma_categoria:weapon.categoria,arma_tipo:weapon.tipo });
+  window.loadDetaineeGroup?.();
   lockDetaineeNote(Boolean(selectedDetainee.intervencion_id));
   crimeList.innerHTML=''; (selectedDetainee.detencion_delitos?.length ? selectedDetainee.detencion_delitos.sort((a,b)=>a.orden-b.orden) : [{}]).forEach(addCrimeRow);
   document.getElementById('saveDetaineeButton').textContent='Guardar cambios'; document.getElementById('detaineeStatus').textContent=`Editando ${selectedDetainee.codigo}. El motivo quedará registrado en Auditoría.`;
@@ -335,6 +338,7 @@ window.initializeDetaineeForm();
     setDetaineeField('notaSicpip', record.nota_sicpip); lockDetaineeNote(true); setDetaineeField('unidadArea', record.unidad_area_equipo);
     window.setDetaineeDependencies?.({ direccion_policial: record.direccion_policial, direccion_especializada_region: record.direccion_especializada_region, division_policial: record.division_policial, departamento_policial: record.departamento_policial, unidad_area_equipo: record.unidad_area_equipo });
     lockDetaineeNote(true);
+    window.loadDetaineeGroup?.();
     detaineeForm.querySelectorAll('.profile-registration-department').forEach(input => { input.value = record.departamento_registro; });
     detaineeForm.querySelectorAll('.profile-registration-area').forEach(input => { input.value = record.unidad; });
     document.getElementById('detaineeStatus').textContent = 'Al guardar, este detenido quedará vinculado al operativo indicado.';

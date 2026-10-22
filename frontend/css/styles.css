@@ -416,3 +416,11 @@ body.sidebar-collapsed .nav-item span{width:auto;font-size:17px}
 #detaineeSituationDialog select,#detaineeSituationDialog input,#detaineeSituationDialog textarea { max-width:100%; box-sizing:border-box; }
 .record-modal [hidden] { display:none!important; }
 @media(max-width:600px){#detaineeSituationDialog .grid { grid-template-columns:1fr; }}
+
+/* Grupo criminal integrado en el formulario del detenido. */
+.detainee-group-section{padding:20px;border:1px solid #dce3ec;border-left:3px solid #b79d61;border-radius:12px;background:#f8fafc;min-width:0}
+.detainee-group-section h3{margin:0 0 6px;color:#344d68;font-size:1rem}
+.detainee-group-section p{font-size:.85rem;color:#64748b;line-height:1.5;margin:0 0 16px}
+.detainee-group-section [data-group-status]{margin:14px 0 10px}
+.detainee-group-section textarea[readonly]{background:#eef2f6;color:#64748b}
+@media(max-width:600px){.detainee-group-section{padding:14px}.detainee-group-section .grid{grid-template-columns:minmax(0,1fr)}}
