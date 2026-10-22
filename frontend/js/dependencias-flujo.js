@@ -12,7 +12,23 @@ window.DEPENDENCIAS_FLUJO = [
           },
           {
             "value": "DIVISIÓN DE INVESTIGACIÓN DE TRATA DE PERSONAS",
-            "children": []
+            "children": [
+              {
+                "value": "DEPARTAMENTO DE EXPLOTACIÓN SEXUAL – GRUPO A",
+                "children": [
+                  { "value": "EQUIPO N.° 1", "children": [] },
+                  { "value": "EQUIPO N.° 2", "children": [] }
+                ]
+              },
+              {
+                "value": "DEPARTAMENTO DE EXPLOTACIÓN SEXUAL – GRUPO B",
+                "children": [
+                  { "value": "EQUIPO N.° 1", "children": [] },
+                  { "value": "EQUIPO N.° 2", "children": [] }
+                ]
+              },
+              { "value": "DEPIMTOTNTT", "children": [] }
+            ]
           },
           {
             "value": "DIVISIÓN DE INVESTIGACIÓN DE TRÁFICO ILÍCITO DE MIGRANTES",
