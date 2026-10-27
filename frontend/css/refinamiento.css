@@ -1,0 +1,40 @@
+/* Refinamiento visual (27/10/2026): misma identidad azul noche y latón, con superficies
+   más suaves, profundidad ligera y transiciones. Quitar este archivo devuelve el aspecto anterior. */
+:root{--bg:#edf1f6;--sombra-suave:0 1px 2px #1026380a,0 6px 18px #1026380f;--sombra-alta:0 2px 4px #1026380f,0 14px 30px #1026381c}
+body,.executive-dashboard,.records-workspace,.seguimiento-view{background:var(--bg)!important}
+body{-webkit-font-smoothing:antialiased}
+.page-title small::before{content:"";display:inline-block;width:18px;height:2px;margin-right:8px;border-radius:2px;background:#c9ab6e;vertical-align:middle}
+
+/* Menú lateral: degradado más profundo y elemento activo con acento de latón. */
+.sidebar{background:linear-gradient(175deg,#143046 0%,#0c2132 55%,#071520 100%)!important;scrollbar-width:thin;scrollbar-color:#ffffff26 transparent}
+.sidebar .nav-item,.sidebar .nav-group-toggle{transition:background-color .18s,color .18s}
+.sidebar .nav-item.active{background:linear-gradient(90deg,#334f64,#243c4f)!important;box-shadow:inset 3px 0 #d0b06e,0 4px 12px #0000002e!important;border-radius:9px}
+
+/* Barra superior translúcida y avatar con anillo dorado. */
+.topbar{background:#ffffffe8!important;-webkit-backdrop-filter:saturate(1.4) blur(8px);backdrop-filter:saturate(1.4) blur(8px);border-bottom-color:#e3e9ef!important;box-shadow:0 4px 14px #1026380a}
+.avatar{background:linear-gradient(140deg,#2c4b63,#1a3245)!important;box-shadow:0 0 0 3px #c9ab6e24}
+
+/* Tarjetas y paneles: esquinas algo más redondeadas y sombra suave. */
+main .card,.executive-dashboard .dash-card,.executive-dashboard .dash-filter-panel,.executive-dashboard .dash-kpis article,.executive-dashboard .dash-brief,.records-filter-panel,.records-metrics article,.seg-panel,.seg-metric,.seg-table-panel,.stats-grid article{border-radius:14px!important;box-shadow:var(--sombra-suave)!important}
+.executive-dashboard .dash-kpis article,.records-metrics article,.seg-metric,.stats-grid article{transition:transform .18s,box-shadow .18s}
+.executive-dashboard .dash-kpis article:hover,.records-metrics article:hover,.seg-metric:hover,.stats-grid article:hover{transform:translateY(-2px);box-shadow:var(--sombra-alta)!important}
+.executive-dashboard .dash-hero{background:radial-gradient(circle at 88% -10%,#d0b06e2e,transparent 42%),linear-gradient(112deg,#13293b 0%,#1f3a50 55%,#2c4d66 100%)!important;box-shadow:0 14px 30px #10263822,inset 0 -2px 0 #c9ab6e59!important}
+dialog{border-radius:16px}
+
+/* Botones con relieve leve; los secundarios toman el latón al pasar el cursor. */
+main .primary{background:linear-gradient(180deg,#30587a,#264a67)!important;box-shadow:0 1px 2px #10263826,inset 0 1px 0 #ffffff1c;transition:filter .15s,box-shadow .15s,transform .15s}
+main .primary:hover{filter:brightness(1.08);box-shadow:0 5px 14px #1d3c5433}
+main .primary:active{transform:translateY(1px)}
+main .secondary{transition:border-color .15s,background-color .15s}
+main .secondary:hover{border-color:#c9ab6e;background:#fbf8f1}
+
+/* Campos y tablas. */
+main input:focus,main select:focus,main textarea:focus{border-color:#4a6f8c!important;box-shadow:0 0 0 3px #4a6f8c21!important}
+main th{letter-spacing:.06em}
+main tbody tr{transition:background-color .12s}
+.dash-kpi strong,.records-metrics strong,.seg-metric strong,.stats-grid strong,.consulta-metrics strong{font-variant-numeric:tabular-nums}
+
+@media (prefers-reduced-motion:reduce){
+ .sidebar .nav-item,.sidebar .nav-group-toggle,main .primary,main .secondary,main tbody tr,.executive-dashboard .dash-kpis article,.records-metrics article,.seg-metric,.stats-grid article{transition:none}
+ .executive-dashboard .dash-kpis article:hover,.records-metrics article:hover,.seg-metric:hover,.stats-grid article:hover{transform:none}
+}
