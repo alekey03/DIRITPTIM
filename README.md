@@ -20,6 +20,6 @@ Sistema web de producción policial. Frontend publicado en GitHub Pages; autenti
 
 Servir la raíz con un servidor estático local; no abrir HTML con file://. Publicar esta estructura completa en GitHub Pages. Mantener index.html y las rutas frontend/... juntos. No publicar documentos privados, credenciales, archivos de producción ni respaldos locales. El historial de GitHub conserva los cambios del código.
 
-Las migraciones ya aplicadas no se vuelven a ejecutar completas: aplicar sólo la versión pendiente. Las políticas en Supabase son la autoridad de acceso, también para reportes y exportaciones.
+Las migraciones ya aplicadas no se vuelven a ejecutar completas: aplicar sólo la versión pendiente. `202609050001_base_inicial` y `202610260001_auditoria_e_importacion` reconstruyen lo que se creó directamente en Supabase; ya existen en producción y sólo se aplican al levantar un proyecto nuevo, junto con todas las demás en orden. Las políticas en Supabase son la autoridad de acceso, también para reportes y exportaciones.
 
 Seguimiento usa la migración 202609230022 y el contrato descrito en docs/seguimiento.md. Se puede probar su lógica en una base temporal PGlite con `node tests/seguimiento.test.cjs` (requiere @electric-sql/pglite). Las vistas de prueba nunca se conectan a producción.
