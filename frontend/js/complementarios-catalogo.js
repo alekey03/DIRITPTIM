@@ -706,10 +706,22 @@ window.COMPLEMENTARIOS_CATALOGO = {
         },
         {
           "key": "subtipo_infraccion",
-          "label": "Subtipo de infracción",
+          "label": "Infracción",
           "type": "text",
           "group": "registro",
-          "required": true
+          "required": false,
+          "options": [
+            "POR EXCEDER EL TIEMPO DE PERMANENCIA (ART.57 - 57.1 LITERAL \"a\")",
+            "POR CONDUCTA INFRACTORA MUY GRAVE EN MATERIA AMBIENTAL (ART.57 - 57.1 LITERAL \"b\")",
+            "FALSEAR INFORMACIÓN (ART.58 - 58.1 LITERAL \"a\")",
+            "POR REINCIDENCIA DE SALIDA OBLIGATORIA AL ART.57 (ART.58 - 58.1 LITERAL \"b\")",
+            "NO CUMPLIR CON LA SALIDA OBLIGATORIA (ART.58 - 58.1 LITERAL \"c\")",
+            "INGRESO CLANDESTINO (ART.58 - 58.1 LITERAL \"d\")",
+            "ATENTAR CONTRA EL PATRIMONIO CULTURAL DE LA NACIÓN (ART.58 - 58.1 LITERAL \"e\")",
+            "ATENTAR CONTRA EL ORDEN PÚBLICO (ART.58 - 58.1 LITERAL \"f\")",
+            "MANDATO JUDICIAL (ART.58 - 58.1 LITERAL \"g\")",
+            "CUMPLIMIENTO DE CONDENA (ART.58 - 58.1 LITERAL \"h\")"
+          ]
         }
       ],
       "columnas": {

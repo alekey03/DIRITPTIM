@@ -57,6 +57,9 @@ label.append(control);grid.append(label);
     if(age&&condition){const sync=()=>{condition.value=age.value===''?'':Number(age.value)<18?'MENOR':'MAYOR';};age.addEventListener('input',sync);sync();}
     const number=form.elements.namedItem('numero_documento'),doc=form.elements.namedItem('tipo_documento');
     if(number&&doc){const sync=()=>doc.required=!!number.value.trim();number.addEventListener('input',sync);sync();}
+    // Situación REGULAR no lleva infracción; IRREGULAR (o un valor anterior) la exige.
+    const situation=form.elements.namedItem('ley_migraciones'),offence=form.elements.namedItem('subtipo_infraccion');
+    if(type.tipo==='migraciones'&&situation&&offence&&!view){const caption=offence.closest('label').querySelector('span'),label=type.campos.find(f=>f.key==='subtipo_infraccion').label;const sync=()=>{const applies=!['','REGULAR'].includes(situation.value);offence.disabled=!applies;offence.required=applies;caption.textContent=label+(applies?' *':'');if(!applies)offence.value='';};situation.addEventListener('change',sync);sync();}
     if(type.tipo==='dinero'){const note=document.createElement('p');note.className='results-note';note.textContent='Los totales se separan en soles, dólares y euros. En otra moneda indique nombre e importe; no se sumará a las demás monedas.';inputs.prepend(note);}
     if(type.tipo==='celulares'){const note=document.createElement('p');note.className='results-note';note.textContent='Si registra un IMEI, la cantidad debe ser 1. Conserve los ceros iniciales.';inputs.prepend(note);}
     status.textContent=view?'Consulta del registro.':'';lock();
