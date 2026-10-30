@@ -695,10 +695,14 @@ window.COMPLEMENTARIOS_CATALOGO = {
         },
         {
           "key": "ley_migraciones",
-          "label": "Ley de Migraciones",
+          "label": "Situación migratoria",
           "type": "text",
           "group": "registro",
-          "required": true
+          "required": true,
+          "options": [
+            "REGULAR",
+            "IRREGULAR"
+          ]
         },
         {
           "key": "subtipo_infraccion",

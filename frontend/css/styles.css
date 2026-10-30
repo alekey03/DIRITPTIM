@@ -444,3 +444,4 @@ form :is(input,select,textarea):disabled {
 
 
 #detaineeForm .crime-row select:required:invalid:not(:disabled){border-color:#bd6767;background-color:#fffafa}
+#complementForm select:required:invalid:not(:disabled){border-color:var(--danger)}
