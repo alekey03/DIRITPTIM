@@ -149,8 +149,7 @@ const checks = `
   assert(detained.length===1,'Debe registrar detenido');
   assert(detained[0].intervencion_id===[...records.keys()][0],'Debe conservar vínculo');
   assert(document.querySelectorAll('.linked-detainee-row').length===1,'Debe volver al listado vinculado');
-  document.querySelector('#resultCards input[value="otros"]').click();
-  assert(!document.getElementById('resultsPendingNote').hidden,'Otros detalles pendientes deben estar señalados');
+  assert(!document.querySelector('#resultCards input[value="otros"]'),'No debe ofrecer la categoría genérica Otros resultados');
   document.querySelector('#resultCards input[value="drogas"]').click();
   const dtype=document.getElementById('drugType'),quantity=document.getElementById('drugQuantity');
   dtype.value='kg_sintetica';dtype.dispatchEvent(new Event('change'));

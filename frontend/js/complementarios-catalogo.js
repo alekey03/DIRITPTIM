@@ -1315,7 +1315,7 @@ window.COMPLEMENTARIOS_CATALOGO = {
       "tipo": "expulsados",
       "titulo": "Extranjeros expulsados",
       "hoja": "54_EXTR. EXPULSADOS",
-      "descripcion": "Identificación, condición e infracción.",
+      "descripcion": "Identificación, sanción e infracción.",
       "campos": [
         {
           "key": "fecha",
