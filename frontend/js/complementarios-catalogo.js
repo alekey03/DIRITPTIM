@@ -1659,10 +1659,15 @@ window.COMPLEMENTARIOS_CATALOGO = {
         },
         {
           "key": "condicion",
-          "label": "Condición",
+          "label": "Sanción",
           "type": "text",
           "group": "registro",
-          "required": true
+          "required": true,
+          "options": [
+            "EXPULSIONES",
+            "SALIDA OBLIGATORIA",
+            "TRASLADO PASIVO"
+          ]
         },
         {
           "key": "ley_migraciones",
