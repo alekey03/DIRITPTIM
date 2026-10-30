@@ -130,8 +130,7 @@
   const a=from.value,b=to.value;
   $('[data-pc-title]').textContent=a&&b?`PRODUCCIÓN POLICIAL DEL ${dmy(a)} AL ${dmy(b)}`:'PRODUCCIÓN POLICIAL';
   host.replaceChildren();
-  if(!data||(data.pending&&!data.cache.size)){status.textContent='Consultando la producción autorizada…';return;}
-  if(!data.cache.size){status.textContent='Inicie sesión para consultar la producción de su ámbito.';return;}
+  if(!data?.cache.size){status.textContent=typeof currentProfile!=='undefined'&&currentProfile?.activo?'Consultando la producción autorizada…':'Inicie sesión para consultar la producción de su ámbito.';return;}
   if(!a||!b||a>b){status.textContent='Indique un periodo válido: la fecha inicial no puede ser posterior a la final.';return;}
   const units=knownUnits.filter(u=>chosenUnits?.has(u));
   if(!units.length){status.textContent='Seleccione al menos una dependencia.';return;}
