@@ -1,4 +1,4 @@
--- Preparada el 30/10/2026. Pendiente de aplicar en producción.
+-- Aplicada en producción el 30/10/2026.
 -- Intervenidos por Ley de Migraciones: ley_migraciones se rotula "Situación migratoria" y
 -- "Infracción" (subtipo_infraccion) sólo es obligatoria cuando la situación no es REGULAR.
 -- No se validan opciones en el servidor para conservar los valores anteriores de texto libre.
